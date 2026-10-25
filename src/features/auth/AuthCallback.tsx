@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth, type LoginResponseDTO } from "./AuthContext";
+import { useAuth } from "./AuthContext";
+import { type LoginResponseDTO } from "./types";
 
 
 export default function AuthCallback() {
