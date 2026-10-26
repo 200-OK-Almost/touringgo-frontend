@@ -1,0 +1,150 @@
+.explorer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: 1.5rem 0;
+}
+
+.explorer-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.explorer-header__logo {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  color: #ffffff;
+  background: linear-gradient(135deg, #10b981, #059669);
+  box-shadow: 0 8px 16px -6px rgba(16, 185, 129, 0.5);
+  flex-shrink: 0;
+}
+
+.explorer-header__title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.explorer-header__title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-strong);
+  line-height: 1;
+}
+
+.explorer-header__api-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  color: #047857;
+  background: #d1fae5;
+}
+
+.explorer-header__subtitle {
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+
+.explorer-header__pills {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-strong);
+  white-space: nowrap;
+}
+
+.pill__dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #9ca3af;
+}
+
+.pill--ok .pill__dot {
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
+}
+
+.pill--error .pill__dot {
+  background: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
+}
+
+.pill--loading .pill__dot {
+  background: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
+}
+
+.pill--cuota {
+  gap: 0.45rem;
+}
+
+.pill__bolt {
+  display: grid;
+  place-items: center;
+  color: #f59e0b;
+}
+
+.pill__cuota-text {
+  color: var(--text-soft);
+  font-weight: 500;
+}
+
+.pill__badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+}
+
+.pill__badge--ok {
+  color: #047857;
+  background: #d1fae5;
+}
+
+.pill__badge--alta {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.pill__badge--critica {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.pill__badge--off {
+  color: #6b7280;
+  background: #f3f4f6;
+}
+
+@media (max-width: 640px) {
+  .explorer-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

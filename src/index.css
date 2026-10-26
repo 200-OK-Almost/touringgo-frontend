@@ -10,11 +10,25 @@
   --primary-hover: #0b5f58;
   --secondary: rgb(232, 89, 60);
 
+  /* Explorador de Lugares */
+  --bg-page: #f7f8fa;
+  --surface: #ffffff;
+  --line: #e5e7eb;
+  --text-strong: #111827;
+  --text-soft: #6b7280;
+  --emerald: #10b981;
+  --emerald-600: #059669;
+  --emerald-700: #047857;
+  --emerald-100: #d1fae5;
+  --ink: #0f172a;
+
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.05), 0 1px 3px rgba(16, 24, 40, 0.06);
+  --shadow-card-hover: 0 12px 28px -6px rgba(16, 24, 40, 0.14), 0 4px 10px -4px rgba(16, 24, 40, 0.08);
 
   --border-radius: 6px;
 
   /* Typography */
-  --font-sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, Consolas, monospace;
 
   /* Effects */
@@ -49,6 +63,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background: var(--bg-page);
 }
 
 button,
@@ -79,4 +94,19 @@ svg {
 
 main {
     padding: .5rem 2rem;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #eef0f3 25%, #f7f8fa 37%, #eef0f3 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
 }

@@ -1,0 +1,41 @@
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid #fecaca;
+  border-radius: 1rem;
+}
+
+.error-state__icon {
+  font-size: 2rem;
+}
+
+.error-state__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.error-state__text {
+  font-size: 0.88rem;
+  color: var(--text-soft);
+  max-width: 24rem;
+}
+
+.error-state__btn {
+  margin-top: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  background: var(--emerald-600);
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.error-state__btn:hover {
+  background: var(--emerald-700);
+}

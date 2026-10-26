@@ -1,0 +1,78 @@
+.filter-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-card);
+}
+
+.filter-panel__section-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-soft);
+  margin-bottom: 0.5rem;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: #f9fafb;
+  color: var(--text-soft);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.search-box:focus-within {
+  border-color: var(--emerald);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+}
+
+.search-box__icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.search-box__input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.9rem;
+  color: var(--text-strong);
+}
+
+.search-box__input::placeholder {
+  color: #9ca3af;
+}
+
+.filter-panel__toggles-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-panel__toggles {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  flex-wrap: wrap;
+}
+
+.filter-panel__count {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-soft);
+  white-space: nowrap;
+}

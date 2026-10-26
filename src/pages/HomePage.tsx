@@ -1,19 +1,11 @@
 import Navbar from "../components/layout/Navbar";
-import { useAuth } from "../features/auth/AuthContext";
+import Explorador from "./Explorador";
 
 const HomePage = () => {
-    const { auth, isAuthenticated } = useAuth();
-  
     return (
     <>
     <Navbar />
-    <main>
-        {isAuthenticated ? (
-            <p>Bienvenido, {auth!.usuario.nombre}!</p>
-        ) : (
-            <p>Aún no has iniciado sesión.</p>
-        )}
-    </main>
+    <Explorador />
     </>
     );
 }

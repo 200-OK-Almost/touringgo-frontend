@@ -1,0 +1,44 @@
+.skeleton-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.skeleton-card__media {
+  height: 11rem;
+}
+
+.skeleton-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem;
+}
+
+.skeleton-card__line {
+  height: 0.85rem;
+  border-radius: 0.35rem;
+}
+
+.skeleton-card__line--short {
+  width: 45%;
+}
+
+.skeleton-card__line--mid {
+  width: 70%;
+}
+
+.skeleton-card__chips {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.skeleton-card__chip {
+  width: 3.4rem;
+  height: 1.2rem;
+  border-radius: 999px;
+}
