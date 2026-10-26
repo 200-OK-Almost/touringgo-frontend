@@ -1,4 +1,6 @@
+import { Link } from "react-router-dom";
 import { useAuth } from "../../features/auth/AuthContext";
+import Logo from "../Logo";
 import "./Navbar.css"
 
 export default function Navbar() {
@@ -7,7 +9,9 @@ export default function Navbar() {
   return (
     <nav className="nav-container">
         <div className="nav-left-container">
-            <a>Turist<span>IA</span></a>
+            <Link to="/" className="nav-logo-link" aria-label="TouringGO">
+                <Logo variant="color" className="nav-logo" />
+            </Link>
         </div>
         <div className="nav-right-container">
             {isAuthenticated ? (
