@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDebouncedValue } from "../hooks/useDebounce";
 import { BARRIOS, CATEGORIAS, type FiltroPanel } from "../lib/filtros";
 import ChipGroup from "./ChipGroup";
@@ -33,12 +33,21 @@ function SearchIcon() {
 export default function FilterPanel({ filtro, onChange, total }: FilterPanelProps) {
   const [busqueda, setBusqueda] = useState(filtro.busqueda ?? "");
   const debounced = useDebouncedValue(busqueda, 300);
+  const emittedRef = useRef(filtro.busqueda ?? "");
 
   useEffect(() => {
-    if (debounced !== (filtro.busqueda ?? "")) {
+    if (debounced !== emittedRef.current) {
+      emittedRef.current = debounced;
       onChange({ ...filtro, busqueda: debounced || undefined });
     }
   }, [debounced, filtro, onChange]);
+
+  useEffect(() => {
+    const incoming = filtro.busqueda ?? "";
+    if (incoming !== emittedRef.current && incoming !== debounced) {
+      setBusqueda(incoming);
+    }
+  }, [filtro.busqueda, debounced]);
 
   return (
     <section className="filter-panel" aria-label="Filtros de búsqueda">
