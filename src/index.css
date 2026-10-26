@@ -10,11 +10,22 @@
   --primary-hover: #0b5f58;
   --secondary: rgb(232, 89, 60);
 
+  /* Explorador de Lugares */
+  --bg-page: #f7f8fa;
+  --surface: #ffffff;
+  --line: #e5e7eb;
+  --text-strong: #111827;
+  --text-soft: #6b7280;
+  --emerald: #10b981;
+  --emerald-600: #059669;
+  --emerald-700: #047857;
+  --emerald-100: #d1fae5;
+  --ink: #0f172a;
 
   --border-radius: 6px;
 
   /* Typography */
-  --font-sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, Consolas, monospace;
 
   /* Effects */
@@ -49,6 +60,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background: var(--bg-page);
 }
 
 button,
