@@ -28,14 +28,14 @@ function PinIcon() {
 }
 
 export default function PlaceCard({ lugar, onClick }: PlaceCardProps) {
-  const puntuacion = formatearPuntuacion(lugar.Puntuacion);
-  const ubicacion = lugar.Subzona ? `${barrioLabel(lugar.Barrio)} • ${lugar.Subzona}` : barrioLabel(lugar.Barrio);
-  const categoria = lugar.Categorias[0];
+  const puntuacion = formatearPuntuacion(lugar.puntuacion);
+  const ubicacion = lugar.subzona ? `${barrioLabel(lugar.barrio)} • ${lugar.subzona}` : barrioLabel(lugar.barrio);
+  const categoria = lugar.categorias[0];
 
   return (
     <button type="button" className="place-card" onClick={onClick}>
       <div className="place-card__media">
-        <SmartImage src={lugar.FotoPortadaUrl} alt={lugar.Nombre} />
+        <SmartImage src={lugar.fotoPortadaUrl} alt={lugar.nombre} />
         <span className="place-card__badge place-card__badge--barrio">{ubicacion}</span>
         {puntuacion && (
           <span className="place-card__badge place-card__badge--rating">★ {puntuacion}</span>
@@ -45,22 +45,22 @@ export default function PlaceCard({ lugar, onClick }: PlaceCardProps) {
       <div className="place-card__body">
         <div className="place-card__meta">
           <span className="place-card__categoria">{categoria}</span>
-          <span className="place-card__precio">{precioLabel(lugar.NivelPrecio)}</span>
+          <span className="place-card__precio">{precioLabel(lugar.nivelPrecio)}</span>
         </div>
 
-        <h3 className="place-card__nombre">{lugar.Nombre}</h3>
+        <h3 className="place-card__nombre">{lugar.nombre}</h3>
 
         <p className="place-card__direccion">
           <PinIcon />
-          {lugar.Direccion}
+          {lugar.direccion}
         </p>
 
         <div className="place-card__chips">
-          {lugar.AptoNinos && <span className="attr-chip attr-chip--ninos">Niños</span>}
-          {lugar.AccesibleMovilidadReducida && (
+          {lugar.aptoNinos && <span className="attr-chip attr-chip--ninos">Niños</span>}
+          {lugar.accesibleMovilidadReducida && (
             <span className="attr-chip attr-chip--accesible">Accesible</span>
           )}
-          {lugar.EsBajoTecho && <span className="attr-chip attr-chip--bajotecho">Bajo techo</span>}
+          {lugar.esBajoTecho && <span className="attr-chip attr-chip--bajotecho">Bajo techo</span>}
         </div>
 
         <span className="place-card__link">Ver detalle →</span>

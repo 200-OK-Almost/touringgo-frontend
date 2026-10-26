@@ -94,7 +94,7 @@ export default function Explorador() {
         onSelect={handleSeleccionar}
       />
 
-      <PlaceModal lugarId={seleccion?.Id ?? null} onClose={handleCerrar} />
+      <PlaceModal lugarId={seleccion?.id ?? null} onClose={handleCerrar} />
     </div>
   );
 }

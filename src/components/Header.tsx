@@ -32,7 +32,7 @@ function BoltIcon() {
 type CuotaLevel = "ok" | "alta" | "critica";
 
 function getCuotaLevel(data: ControlCuotaGoogleDto): { label: string; tone: CuotaLevel } {
-  const porcentaje = (data.LlamadasRealizadas / Math.max(1, data.LimiteDiario)) * 100;
+  const porcentaje = (data.llamadasRealizadas / Math.max(1, data.limiteDiario)) * 100;
   if (porcentaje > 90) return { label: "CRÍTICA", tone: "critica" };
   if (porcentaje > 70) return { label: "ALTA", tone: "alta" };
   return { label: "OK", tone: "ok" };
@@ -75,7 +75,7 @@ export default function Header() {
           </span>
           <span className="pill__cuota-text">
             Cuota Google:{" "}
-            {cuota.status === "ok" ? `${cuota.data.LlamadasRealizadas} / ${cuota.data.LimiteDiario}` : "— / —"}
+            {cuota.status === "ok" ? `${cuota.data.llamadasRealizadas} / ${cuota.data.limiteDiario}` : "— / —"}
           </span>
           <span className={`pill__badge ${cuotaLevel ? `pill__badge--${cuotaLevel.tone}` : "pill__badge--off"}`}>
             {cuotaLevel ? cuotaLevel.label : "—"}

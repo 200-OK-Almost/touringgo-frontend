@@ -63,22 +63,22 @@ interface ModalContentProps {
 }
 
 function ModalContent({ data }: ModalContentProps) {
-  const puntuacion = formatearPuntuacion(data.Puntuacion);
-  const ubicacion = data.Subzona ? `${barrioLabel(data.Barrio)} • ${data.Subzona}` : barrioLabel(data.Barrio);
-  const portada = data.Fotos.find((f) => f.EsPortada) ?? data.Fotos[0];
-  const resenas = `${data.CantidadResenas} ${data.CantidadResenas === 1 ? "reseña" : "reseñas"}`;
+  const puntuacion = formatearPuntuacion(data.puntuacion);
+  const ubicacion = data.subzona ? `${barrioLabel(data.barrio)} • ${data.subzona}` : barrioLabel(data.barrio);
+  const portada = data.fotos.find((f) => f.esPortada) ?? data.fotos[0];
+  const resenas = `${data.cantidadResenas} ${data.cantidadResenas === 1 ? "reseña" : "reseñas"}`;
 
   return (
     <>
       <div className="modal__hero">
-        <SmartImage src={portada?.Url} alt={data.Nombre} />
+        <SmartImage src={portada?.url} alt={data.nombre} />
         <div className="modal__hero-overlay" />
         <div className="modal__hero-content">
           <div className="modal__hero-badges">
             <span className="modal__badge modal__badge--barrio">{ubicacion.toUpperCase()}</span>
-            <span className="modal__badge modal__badge--precio">{precioLabel(data.NivelPrecio)}</span>
+            <span className="modal__badge modal__badge--precio">{precioLabel(data.nivelPrecio)}</span>
           </div>
-          <h2 className="modal__title">{data.Nombre}</h2>
+          <h2 className="modal__title">{data.nombre}</h2>
         </div>
       </div>
 
@@ -89,36 +89,36 @@ function ModalContent({ data }: ModalContentProps) {
           </span>
           <span className="modal__duration">
             <ClockIcon />
-            Duración estimada: {data.DuracionEstimadaMinutos} min
+            Duración estimada: {data.duracionEstimadaMinutos} min
           </span>
         </div>
 
         <section className="modal__section">
           <h3 className="modal__section-title">ACERCA DEL LUGAR</h3>
-          <p className="modal__text">{data.Descripcion ?? "Sin descripción disponible."}</p>
+          <p className="modal__text">{data.descripcion ?? "Sin descripción disponible."}</p>
         </section>
 
         <section className="modal__section">
           <h3 className="modal__section-title">UBICACIÓN</h3>
           <p className="modal__direccion">
             <PinIcon />
-            {data.Direccion}
+            {data.direccion}
           </p>
           <p className="modal__coords">
-            Coordenadas: {data.Latitud}, {data.Longitud}
+            Coordenadas: {data.latitud}, {data.longitud}
           </p>
         </section>
 
         <section className="modal__section">
           <h3 className="modal__section-title">CARACTERÍSTICAS</h3>
           <div className="modal__chips">
-            {data.AptoNinos && <span className="feat-chip">Apto niños</span>}
-            {data.AccesibleMovilidadReducida && <span className="feat-chip">Movilidad reducida</span>}
-            {data.EsBajoTecho && <span className="feat-chip">Bajo techo (Modo lluvia)</span>}
-            {data.EsAlAireLibre && <span className="feat-chip">Al aire libre</span>}
-            {data.Categorias.map((c) => (
-              <span key={c.Id} className="feat-chip feat-chip--cat">
-                {c.Nombre}
+            {data.aptoNinos && <span className="feat-chip">Apto niños</span>}
+            {data.accesibleMovilidadReducida && <span className="feat-chip">Movilidad reducida</span>}
+            {data.esBajoTecho && <span className="feat-chip">Bajo techo (Modo lluvia)</span>}
+            {data.esAlAireLibre && <span className="feat-chip">Al aire libre</span>}
+            {data.categorias.map((c) => (
+              <span key={c.id} className="feat-chip feat-chip--cat">
+                {c.nombre}
               </span>
             ))}
           </div>
@@ -126,8 +126,8 @@ function ModalContent({ data }: ModalContentProps) {
       </div>
 
       <footer className="modal__footer">
-        <span>ID: {data.Id}</span>
-        <span>Origen: {origenLabel(data.Origen)}</span>
+        <span>ID: {data.id}</span>
+        <span>Origen: {origenLabel(data.origen)}</span>
       </footer>
     </>
   );

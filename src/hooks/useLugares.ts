@@ -41,7 +41,7 @@ export function useLugares(filtro: LugarFiltro, reintento: number): LugaresState
 
     getLugares(filtro)
       .then((res) => {
-        if (active) dispatch({ type: "success", lugares: res.Items, total: res.Total });
+        if (active) dispatch({ type: "success", lugares: res.items, total: res.total });
       })
       .catch((err: unknown) => {
         if (active) {

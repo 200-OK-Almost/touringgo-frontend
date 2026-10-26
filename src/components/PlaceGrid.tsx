@@ -43,7 +43,7 @@ export default function PlaceGrid({
   return (
     <div className="place-grid">
       {lugares.map((lugar) => (
-        <PlaceCard key={lugar.Id} lugar={lugar} onClick={() => onSelect(lugar)} />
+        <PlaceCard key={lugar.id} lugar={lugar} onClick={() => onSelect(lugar)} />
       ))}
     </div>
   );

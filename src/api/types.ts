@@ -16,89 +16,89 @@ export type RestriccionDietaria =
   | "IntoleranteLactosa";
 
 export interface LugarResumenDto {
-  Id: string;
-  Nombre: string;
-  TipoLugar: TipoLugar;
-  Barrio: BarrioCaba;
-  Subzona: string | null;
-  Direccion: string;
-  Latitud: number;
-  Longitud: number;
-  DuracionEstimadaMinutos: number;
-  NivelPrecio: number;
-  Puntuacion: number | null;
-  CantidadResenas: number;
-  EsBajoTecho: boolean;
-  EsAlAireLibre: boolean;
-  AptoNinos: boolean;
-  AccesibleMovilidadReducida: boolean;
-  FotoPortadaUrl: string | null;
-  Categorias: string[];
-  DistanciaMetros: number | null;
+  id: string;
+  nombre: string;
+  tipoLugar: TipoLugar;
+  barrio: BarrioCaba;
+  subzona: string | null;
+  direccion: string;
+  latitud: number;
+  longitud: number;
+  duracionEstimadaMinutos: number;
+  nivelPrecio: number;
+  puntuacion: number | null;
+  cantidadResenas: number;
+  esBajoTecho: boolean;
+  esAlAireLibre: boolean;
+  aptoNinos: boolean;
+  accesibleMovilidadReducida: boolean;
+  fotoPortadaUrl: string | null;
+  categorias: string[];
+  distanciaMetros: number | null;
 }
 
 export interface CategoriaDto {
-  Id: number;
-  Codigo: string;
-  Nombre: string;
+  id: number;
+  codigo: string;
+  nombre: string;
 }
 
 export interface FotoDto {
-  Id: string;
-  Url: string;
-  Orden: number;
-  EsPortada: boolean;
+  id: string;
+  url: string;
+  orden: number;
+  esPortada: boolean;
 }
 
 export interface ResenaDto {
-  Id: string;
-  AutorNombre: string | null;
-  Puntuacion: number;
-  Comentario: string | null;
-  FechaResena: string | null;
+  id: string;
+  autorNombre: string | null;
+  puntuacion: number;
+  comentario: string | null;
+  fechaResena: string | null;
 }
 
 export interface LugarDetalleDto {
-  Id: string;
-  Origen: OrigenLugar;
-  IdGooglePlace: string | null;
-  TipoLugar: TipoLugar;
-  Nombre: string;
-  Barrio: BarrioCaba;
-  Subzona: string | null;
-  Direccion: string;
-  Latitud: number;
-  Longitud: number;
-  Descripcion: string | null;
-  DuracionEstimadaMinutos: number;
-  NivelPrecio: number;
-  Puntuacion: number | null;
-  CantidadResenas: number;
-  EsBajoTecho: boolean;
-  EsAlAireLibre: boolean;
-  AptoNinos: boolean;
-  AccesibleMovilidadReducida: boolean;
-  OfreceMenuInfantil: boolean;
-  Categorias: CategoriaDto[];
-  OpcionesDietarias: string[];
-  Fotos: FotoDto[];
-  Resenas: ResenaDto[];
+  id: string;
+  origen: OrigenLugar;
+  idGooglePlace: string | null;
+  tipoLugar: TipoLugar;
+  nombre: string;
+  barrio: BarrioCaba;
+  subzona: string | null;
+  direccion: string;
+  latitud: number;
+  longitud: number;
+  descripcion: string | null;
+  duracionEstimadaMinutos: number;
+  nivelPrecio: number;
+  puntuacion: number | null;
+  cantidadResenas: number;
+  esBajoTecho: boolean;
+  esAlAireLibre: boolean;
+  aptoNinos: boolean;
+  accesibleMovilidadReducida: boolean;
+  ofreceMenuInfantil: boolean;
+  categorias: CategoriaDto[];
+  opcionesDietarias: string[];
+  fotos: FotoDto[];
+  resenas: ResenaDto[];
 }
 
 export interface ControlCuotaGoogleDto {
-  Fecha: string;
-  LlamadasRealizadas: number;
-  LimiteDiario: number;
-  CircuitoAbierto: boolean;
-  LlamadasDisponibles: number;
-  FechaActualizacion: string;
+  fecha: string;
+  llamadasRealizadas: number;
+  limiteDiario: number;
+  circuitoAbierto: boolean;
+  llamadasDisponibles: number;
+  fechaActualizacion: string;
 }
 
 export interface ResultadoPaginadoDto<T> {
-  Items: T[];
-  Total: number;
-  Pagina: number;
-  Tamano: number;
+  items: T[];
+  total: number;
+  pagina: number;
+  tamano: number;
 }
 
 export interface LugarFiltro {
