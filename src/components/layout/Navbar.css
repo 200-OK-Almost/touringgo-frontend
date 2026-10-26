@@ -8,13 +8,23 @@
 }
 
 .nav-left-container {
-    font-size: 2rem;
-    font-weight: 700;
-    & a {
-        color: var(--primary);
-    }
-    & span {
-        color: var(--secondary);
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo-link {
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo {
+    height: 36px;
+    width: auto;
+}
+
+@media (max-width: 640px) {
+    .nav-logo {
+        height: 30px;
     }
 }
 
