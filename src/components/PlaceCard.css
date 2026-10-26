@@ -1,0 +1,136 @@
+.place-card {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.place-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.place-card:focus-visible {
+  outline: 2px solid var(--emerald);
+  outline-offset: 2px;
+}
+
+.place-card__media {
+  position: relative;
+  height: 11rem;
+  overflow: hidden;
+}
+
+.place-card__badge {
+  position: absolute;
+  top: 0.75rem;
+  padding: 0.28rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: rgba(17, 24, 39, 0.65);
+  backdrop-filter: blur(4px);
+}
+
+.place-card__badge--barrio {
+  left: 0.75rem;
+}
+
+.place-card__badge--rating {
+  right: 0.75rem;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.place-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+  padding: 0.9rem 1rem 1rem;
+}
+
+.place-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.place-card__categoria {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--emerald-600);
+}
+
+.place-card__precio {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-soft);
+}
+
+.place-card__nombre {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text-strong);
+}
+
+.place-card__direccion {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+}
+
+.place-card__direccion svg {
+  flex-shrink: 0;
+  color: #9ca3af;
+}
+
+.place-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.attr-chip {
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.attr-chip--ninos {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.attr-chip--accesible {
+  color: #7c3aed;
+  background: #ede9fe;
+}
+
+.attr-chip--bajotecho {
+  color: #b45309;
+  background: #fef3c7;
+}
+
+.place-card__link {
+  margin-top: auto;
+  align-self: flex-end;
+  padding-top: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--emerald-600);
+}
