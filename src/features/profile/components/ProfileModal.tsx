@@ -13,8 +13,9 @@ import type {
   TipoTransporte,
 } from "../types";
 import "./ProfileModal.css";
-import { IoCafeOutline, IoWalkOutline, IoFlashOutline, IoBusOutline, IoCarOutline, IoCheckmarkOutline, IoAddOutline, IoCheckmarkSharp, IoAddSharp } from "react-icons/io5";
+import { IoCafeOutline, IoWalkOutline, IoFlashOutline, IoBusOutline, IoCarOutline, IoCheckmarkSharp, IoAddSharp } from "react-icons/io5";
 import { FaWheelchair, FaRestroom } from "react-icons/fa";
+import SwitchCard from "../../../components/SwitchCard";
 
 export interface ProfileModalProps {
   isOpen: boolean;
@@ -481,16 +482,14 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
 
                     <div className="profile-chips-grid">
                       {TRANSPORTE_OPCIONES.map((opcion) => {
-                        const isSelected =
-                          perfil.preferencias.transportesPreferidos.includes(
-                            opcion.id
-                          );
+                        const isSelected = perfil.preferencias.transportesPreferidos.includes(
+                          opcion.id
+                        );
                         return (
                           <button
                             key={opcion.id}
                             type="button"
-                            className={`profile-chip-btn ${isSelected ? "profile-chip-btn--selected" : ""
-                              }`}
+                            className={`profile-chip-btn ${isSelected ? "profile-chip-btn--selected" : ""}`}
                             onClick={() => void handleTransporteToggle(opcion.id)}
                           >
                             <span className="profile-chip-btn__icon">
@@ -564,55 +563,33 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                     </p>
 
                     <div className="profile-switches-list">
-                      {/* RequiereRecorridoSinEscalones */}
-                      <label className="profile-switch-card">
-                        <div className="profile-switch-card__info">
-                          <span className="profile-switch-card__title">
-                            <FaWheelchair size={22} className="profile-switch-card__icon" />
-                            <p>Recorrido sin escalones</p>
-                          </span>
-                          <span className="profile-switch-card__desc">
-                            Priorizar accesos y trayectos sin escaleras, con rampas o ascensores.
-                          </span>
-                        </div>
-                        <input
-                          type="checkbox"
-                          className="profile-switch-input"
-                          checked={perfil.restricciones.requiereRecorridoSinEscalones}
-                          onChange={(e) =>
-                            void handleAccesibilidadToggle(
-                              "requiereRecorridoSinEscalones",
-                              e.target.checked
-                            )
-                          }
-                        />
-                        <span className="profile-switch-control" />
-                      </label>
+                      {/* SwitchCard para RequiereRecorridoSinEscalones */}
+                      <SwitchCard
+                        icon={<FaWheelchair size={22} className="profile-switch-card__icon" />}
+                        title="Recorrido sin escalones"
+                        description="Priorizar accesos y trayectos sin escaleras, con rampas o ascensores."
+                        checked={perfil.restricciones.requiereRecorridoSinEscalones}
+                        onChange={() =>
+                          void handleAccesibilidadToggle(
+                            "requiereRecorridoSinEscalones",
+                            !perfil.restricciones.requiereRecorridoSinEscalones
+                          )
+                        }
+                      />
 
                       {/* RequiereBanoAccesible */}
-                      <label className="profile-switch-card">
-                        <div className="profile-switch-card__info">
-                          <span className="profile-switch-card__title">
-                            <FaRestroom size={24} className="profile-switch-card__icon" />
-                            <p>Baño accesible</p>
-                          </span>
-                          <span className="profile-switch-card__desc">
-                            Priorizar instalaciones con sanitarios adaptados para personas con movilidad reducida.
-                          </span>
-                        </div>
-                        <input
-                          type="checkbox"
-                          className="profile-switch-input"
-                          checked={perfil.restricciones.requiereBanoAccesible}
-                          onChange={(e) =>
-                            void handleAccesibilidadToggle(
-                              "requiereBanoAccesible",
-                              e.target.checked
-                            )
-                          }
-                        />
-                        <span className="profile-switch-control" />
-                      </label>
+                      <SwitchCard
+                        icon={<FaRestroom size={24} className="profile-switch-card__icon" />}
+                        title="Baño accesible"
+                        description="Priorizar instalaciones con sanitarios adaptados para personas con movilidad reducida."
+                        checked={perfil.restricciones.requiereBanoAccesible}
+                        onChange={() =>
+                          void handleAccesibilidadToggle(
+                            "requiereBanoAccesible",
+                            !perfil.restricciones.requiereBanoAccesible
+                          )
+                        }
+                      />
                     </div>
                   </div>
                 </div>
