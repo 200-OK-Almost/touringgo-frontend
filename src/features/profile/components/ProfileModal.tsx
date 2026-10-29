@@ -13,6 +13,8 @@ import type {
   TipoTransporte,
 } from "../types";
 import "./ProfileModal.css";
+import { IoCafeOutline, IoWalkOutline, IoFlashOutline, IoBusOutline, IoCarOutline, IoCheckmarkOutline, IoAddOutline, IoCheckmarkSharp, IoAddSharp } from "react-icons/io5";
+import { FaWheelchair, FaRestroom } from "react-icons/fa";
 
 export interface ProfileModalProps {
   isOpen: boolean;
@@ -27,36 +29,36 @@ const RITMO_OPCIONES: {
   id: RitmoVisita;
   label: string;
   descripcion: string;
-  icon: string;
+  icon: React.ReactNode;
 }[] = [
     {
       id: "Relajado",
       label: "Relajado",
       descripcion: "Pausado y contemplativo, con pocas paradas y más tiempo libre.",
-      icon: "☕",
+      icon: <IoCafeOutline />,
     },
     {
       id: "Moderado",
       label: "Moderado",
       descripcion: "Equilibrado entre descanso y actividades programadas.",
-      icon: "🚶",
+      icon: <IoWalkOutline />,
     },
     {
       id: "Activo",
       label: "Activo",
       descripcion: "Días intensos aprovechando al máximo cada atracción.",
-      icon: "⚡",
+      icon: <IoFlashOutline />,
     },
   ];
 
 const TRANSPORTE_OPCIONES: {
   id: TipoTransporte;
   label: string;
-  icon: string;
+  icon: React.ReactNode;
 }[] = [
-    { id: "Caminando", label: "Caminando (A pie)", icon: "👟" },
-    { id: "TransportePublico", label: "Transporte público", icon: "🚌" },
-    { id: "VehiculoPersonal", label: "Vehículo personal", icon: "🚗" },
+    { id: "Caminando", label: "Caminando (A pie)", icon: <IoWalkOutline /> },
+    { id: "TransportePublico", label: "Transporte público", icon: <IoBusOutline /> },
+    { id: "VehiculoPersonal", label: "Vehículo personal", icon: <IoCarOutline /> },
   ];
 
 const DIETA_OPCIONES: {
@@ -232,6 +234,8 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
         day: "numeric",
         month: "long",
         year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
       });
     } catch {
       return fechaStr;
@@ -326,12 +330,13 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
               )}
               {saveStatus === "saved" && (
                 <span className="profile-status profile-status--saved">
-                  ✓ Cambios guardados
+                  <IoCheckmarkSharp />
+                  <p>Cambios guardados</p>
                 </span>
               )}
               {saveStatus === "error" && (
                 <span className="profile-status profile-status--error">
-                  ⚠ {feedbackMessage ?? "Error al guardar los cambios"}
+                  <p>Error al guardar los cambios</p>
                 </span>
               )}
               {feedbackMessage && saveStatus !== "error" && (
@@ -495,7 +500,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                               {opcion.label}
                             </span>
                             <span className="profile-chip-btn__check">
-                              {isSelected ? "✓" : "+"}
+                              {isSelected ? <IoCheckmarkSharp size={18} /> : <IoAddSharp size={18} />}
                             </span>
                           </button>
                         );
@@ -541,7 +546,7 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                               {opcion.label}
                             </span>
                             <span className="profile-chip-btn__check">
-                              {isSelected ? "✓" : "+"}
+                              {isSelected ? <IoCheckmarkSharp size={18} /> : <IoAddSharp size={18} />}
                             </span>
                           </button>
                         );
@@ -563,7 +568,8 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                       <label className="profile-switch-card">
                         <div className="profile-switch-card__info">
                           <span className="profile-switch-card__title">
-                            ♿ Recorrido sin escalones
+                            <FaWheelchair size={22} className="profile-switch-card__icon" />
+                            <p>Recorrido sin escalones</p>
                           </span>
                           <span className="profile-switch-card__desc">
                             Priorizar accesos y trayectos sin escaleras, con rampas o ascensores.
@@ -587,7 +593,8 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                       <label className="profile-switch-card">
                         <div className="profile-switch-card__info">
                           <span className="profile-switch-card__title">
-                            🚻 Baño accesible
+                            <FaRestroom size={24} className="profile-switch-card__icon" />
+                            <p>Baño accesible</p>
                           </span>
                           <span className="profile-switch-card__desc">
                             Priorizar instalaciones con sanitarios adaptados para personas con movilidad reducida.

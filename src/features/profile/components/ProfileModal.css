@@ -103,6 +103,7 @@
     opacity: 0;
     transform: translateY(-4px) scale(0.96);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -159,7 +160,8 @@
 .profile-section__header {
   border-bottom: 1px solid var(--border, #e5e4e7);
   padding-bottom: 0.875rem;
-  padding-right: 10rem; /* Espacio para el indicador flotante de estado */
+  padding-right: 10rem;
+  /* Espacio para el indicador flotante de estado */
 }
 
 .profile-section__title {
@@ -389,7 +391,11 @@
 }
 
 .profile-chip-btn__check {
-  font-size: 0.875rem;
+  /* font-size: 0.875rem;
+  font-weight: 700;
+  margin-left: 0.25rem; */
+
+  font-size: 1rem;
   font-weight: 700;
   margin-left: 0.25rem;
 }
@@ -429,6 +435,16 @@
   font-size: 0.9375rem;
   font-weight: 600;
   color: var(--text-heading, #17141c);
+
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+
+}
+
+.profile-switch-card__icon {
+  font-size: 1.15rem;
+
 }
 
 .profile-switch-card__desc {
@@ -467,11 +483,11 @@
   transition: transform 0.18s ease;
 }
 
-.profile-switch-input:checked + .profile-switch-control {
+.profile-switch-input:checked+.profile-switch-control {
   background: var(--primary, #0f766e);
 }
 
-.profile-switch-input:checked + .profile-switch-control::after {
+.profile-switch-input:checked+.profile-switch-control::after {
   transform: translateX(1.1rem);
 }
 
@@ -559,4 +575,3 @@
     padding-right: 7.5rem;
   }
 }
-
