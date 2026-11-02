@@ -1,28 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import { Modal } from "../../../components/Modal";
-import { Avatar } from "../../../components/Avatar";
-import SwitchCard from "../../../components/SwitchCard";
-
-// New generic components
-import { SelectableCard } from "../../../components/SelectableCard";
-import { SelectableChip } from "../../../components/SelectableChip";
 import { VerticalTabs, type TabItem } from "../../../components/VerticalTabs";
 import { StatusBar, type SaveStatus } from "../../../components/StatusBar";
 
-import {
-  actualizarPreferencias,
-  actualizarRestricciones,
-  getPerfil,
-} from "../api/perfil";
-import type {
-  PerfilUsuarioDTO,
-  RitmoVisita,
-  TipoDieta,
-  TipoTransporte,
-} from "../types";
+// API and Types
+import { actualizarPreferencias, actualizarRestricciones, getPerfil } from "../api/perfil";
+import type { PerfilUsuarioDTO, RitmoVisita, TipoDieta, TipoTransporte } from "../types";
+
+// Tab Components
+import { ProfileInfoTab } from "./ProfileInfoTab";
+import { PreferencesTab } from "./PreferencesTab";
+import { RestrictionsTab } from "./RestrictionsTab";
+
 import "./ProfileModal.css";
-import { IoCafeOutline, IoWalkOutline, IoFlashOutline, IoBusOutline, IoCarOutline } from "react-icons/io5";
-import { FaWheelchair, FaRestroom } from "react-icons/fa";
 
 export interface ProfileModalProps {
   isOpen: boolean;
@@ -31,15 +21,13 @@ export interface ProfileModalProps {
 
 type TabType = "perfil" | "preferencias" | "restricciones";
 
-// Configuración de pestañas extraída de la vista
 const TAB_ITEMS: TabItem<TabType>[] = [
   {
     id: "perfil",
     label: "Perfil",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-        <circle cx="12" cy="7" r="4" />
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
       </svg>
     )
   },
@@ -62,25 +50,6 @@ const TAB_ITEMS: TabItem<TabType>[] = [
       </svg>
     )
   }
-];
-
-const RITMO_OPCIONES: { id: RitmoVisita; label: string; descripcion: string; icon: React.ReactNode; }[] = [
-  { id: "Relajado", label: "Relajado", descripcion: "Pausado y contemplativo, con pocas paradas y más tiempo libre.", icon: <IoCafeOutline /> },
-  { id: "Moderado", label: "Moderado", descripcion: "Equilibrado entre descanso y actividades programadas.", icon: <IoWalkOutline /> },
-  { id: "Activo", label: "Activo", descripcion: "Días intensos aprovechando al máximo cada atracción.", icon: <IoFlashOutline /> },
-];
-
-const TRANSPORTE_OPCIONES: { id: TipoTransporte; label: string; icon: React.ReactNode; }[] = [
-  { id: "Caminando", label: "Caminando (A pie)", icon: <IoWalkOutline /> },
-  { id: "TransportePublico", label: "Transporte público", icon: <IoBusOutline /> },
-  { id: "VehiculoPersonal", label: "Vehículo personal", icon: <IoCarOutline /> },
-];
-
-const DIETA_OPCIONES: { id: TipoDieta; label: string; }[] = [
-  { id: "Celiaco", label: "Celíaco (Sin TACC)" },
-  { id: "Vegetariano", label: "Vegetariano" },
-  { id: "Vegano", label: "Vegano" },
-  { id: "IntoleranteLactosa", label: "Intolerante a la lactosa" },
 ];
 
 export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
@@ -122,10 +91,9 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
 
   const handleRitmoChange = async (ritmo: RitmoVisita) => {
     if (!perfil || perfil.preferencias.ritmoVisitaPreferido === ritmo) return;
-
     const prevPerfil = perfil;
     setPerfil({ ...perfil, preferencias: { ...perfil.preferencias, ritmoVisitaPreferido: ritmo } });
-
+    
     setSaveStatus("saving");
     try {
       await actualizarPreferencias({ ritmoVisitaPreferido: ritmo });
@@ -150,7 +118,6 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
 
     const nuevos = exists ? actuales.filter((t) => t !== transporte) : [...actuales, transporte];
     const prevPerfil = perfil;
-    
     setPerfil({ ...perfil, preferencias: { ...perfil.preferencias, transportesPreferidos: nuevos } });
 
     setSaveStatus("saving");
@@ -167,10 +134,9 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const handleDietaToggle = async (dieta: TipoDieta) => {
     if (!perfil) return;
     const actuales = perfil.restricciones.dieta;
-    const exists = actuales.includes(dieta);
-    const nuevas = exists ? actuales.filter((d) => d !== dieta) : [...actuales, dieta];
-
+    const nuevas = actuales.includes(dieta) ? actuales.filter((d) => d !== dieta) : [...actuales, dieta];
     const prevPerfil = perfil;
+    
     setPerfil({ ...perfil, restricciones: { ...perfil.restricciones, dieta: nuevas } });
 
     setSaveStatus("saving");
@@ -190,7 +156,6 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   ) => {
     if (!perfil) return;
     const prevPerfil = perfil;
-    
     setPerfil({ ...perfil, restricciones: { ...perfil.restricciones, [campo]: valor } });
 
     setSaveStatus("saving");
@@ -204,20 +169,9 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     }
   };
 
-  const formatearFecha = (fechaStr: string) => {
-    try {
-      return new Date(fechaStr).toLocaleDateString("es-ES", {
-        day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit",
-      });
-    } catch {
-      return fechaStr;
-    }
-  };
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Configuración de Cuenta" size="xl" className="profile-modal">
       <div className="profile-panel">
-        
         <VerticalTabs 
           tabs={TAB_ITEMS} 
           activeTab={activeTab} 
@@ -241,120 +195,20 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
             </div>
           ) : (
             <>
-              {activeTab === "perfil" && (
-                <div className="profile-section">
-                  <header className="profile-section__header">
-                    <h3 className="profile-section__title">Información de Usuario</h3>
-                    <p className="profile-section__desc">Datos vinculados a tu cuenta de acceso.</p>
-                  </header>
-
-                  <div className="profile-user-card">
-                    <Avatar src={perfil.usuario.fotoUrl} alt={perfil.usuario.nombre} name={perfil.usuario.nombre} size="lg" className="profile-user-card__avatar" />
-                    <div className="profile-user-card__info">
-                      <h4 className="profile-user-card__name">{perfil.usuario.nombre}</h4>
-                      <p className="profile-user-card__email">{perfil.usuario.email}</p>
-                      <span className="profile-user-card__badge">Cuenta de Google verificada</span>
-                    </div>
-                  </div>
-
-                  <div className="profile-fields">
-                    <div className="profile-field">
-                      <span className="profile-field__label">Fecha de registro</span>
-                      <span className="profile-field__value">{formatearFecha(perfil.usuario.fechaCreacion)}</span>
-                    </div>
-                    <div className="profile-field">
-                      <span className="profile-field__label">Último acceso</span>
-                      <span className="profile-field__value">{formatearFecha(perfil.usuario.ultimoAcceso)}</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
+              {activeTab === "perfil" && <ProfileInfoTab perfil={perfil} />}
               {activeTab === "preferencias" && (
-                <div className="profile-section">
-                  <header className="profile-section__header">
-                    <h3 className="profile-section__title">Preferencias de Viaje</h3>
-                    <p className="profile-section__desc">Personaliza cómo TouringGo planifica y te sugiere itinerarios.</p>
-                  </header>
-
-                  <div className="profile-group">
-                    <label className="profile-group__label">Ritmo de visita preferido</label>
-                    <p className="profile-group__hint">Selecciona la intensidad deseada para tus recorridos.</p>
-                    <div className="profile-options-grid">
-                      {RITMO_OPCIONES.map((opcion) => (
-                        <SelectableCard
-                          key={opcion.id}
-                          title={opcion.label}
-                          description={opcion.descripcion}
-                          icon={opcion.icon}
-                          selected={perfil.preferencias.ritmoVisitaPreferido === opcion.id}
-                          onClick={() => void handleRitmoChange(opcion.id)}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="profile-group">
-                    <label className="profile-group__label">Transportes preferidos</label>
-                    <p className="profile-group__hint">Elige los medios que prefieres utilizar (selecciona uno o más).</p>
-                    <div className="profile-chips-grid">
-                      {TRANSPORTE_OPCIONES.map((opcion) => (
-                        <SelectableChip
-                          key={opcion.id}
-                          label={opcion.label}
-                          icon={opcion.icon}
-                          selected={perfil.preferencias.transportesPreferidos.includes(opcion.id)}
-                          onClick={() => void handleTransporteToggle(opcion.id)}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                <PreferencesTab 
+                  preferencias={perfil.preferencias} 
+                  onRitmoChange={handleRitmoChange} 
+                  onTransporteToggle={handleTransporteToggle} 
+                />
               )}
-
               {activeTab === "restricciones" && (
-                <div className="profile-section">
-                  <header className="profile-section__header">
-                    <h3 className="profile-section__title">Restricciones y Accesibilidad</h3>
-                    <p className="profile-section__desc">Filtros automáticos para adaptar lugares y gastronomía a tus necesidades.</p>
-                  </header>
-
-                  <div className="profile-group">
-                    <label className="profile-group__label">Preferencia y tipo de dieta</label>
-                    <p className="profile-group__hint">Selecciona las opciones que aplican a tus hábitos o restricciones alimentarias.</p>
-                    <div className="profile-chips-grid">
-                      {DIETA_OPCIONES.map((opcion) => (
-                        <SelectableChip
-                          key={opcion.id}
-                          label={opcion.label}
-                          selected={perfil.restricciones.dieta.includes(opcion.id)}
-                          onClick={() => void handleDietaToggle(opcion.id)}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="profile-group">
-                    <label className="profile-group__label">Accesibilidad y movilidad</label>
-                    <p className="profile-group__hint">Ajustes para asegurar lugares adecuados a tus requerimientos de movilidad.</p>
-                    <div className="profile-switches-list">
-                      <SwitchCard
-                        icon={<FaWheelchair size={22} className="profile-switch-card__icon" />}
-                        title="Recorrido sin escalones"
-                        description="Priorizar accesos y trayectos sin escaleras, con rampas o ascensores."
-                        checked={perfil.restricciones.requiereRecorridoSinEscalones}
-                        onChange={() => void handleAccesibilidadToggle("requiereRecorridoSinEscalones", !perfil.restricciones.requiereRecorridoSinEscalones)}
-                      />
-                      <SwitchCard
-                        icon={<FaRestroom size={24} className="profile-switch-card__icon" />}
-                        title="Baño accesible"
-                        description="Priorizar instalaciones con sanitarios adaptados para personas con movilidad reducida."
-                        checked={perfil.restricciones.requiereBanoAccesible}
-                        onChange={() => void handleAccesibilidadToggle("requiereBanoAccesible", !perfil.restricciones.requiereBanoAccesible)}
-                      />
-                    </div>
-                  </div>
-                </div>
+                <RestrictionsTab 
+                  restricciones={perfil.restricciones} 
+                  onDietaToggle={handleDietaToggle} 
+                  onAccesibilidadToggle={handleAccesibilidadToggle} 
+                />
               )}
             </>
           )}
