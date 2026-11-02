@@ -1,0 +1,124 @@
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  z-index: 1000;
+  min-width: 180px;
+  background-color: var(--surface, #ffffff);
+  border: 1px solid var(--border, #e5e4e7);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  animation: dropdown-fade-in 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top;
+}
+
+.dropdown-menu--right {
+  right: 0;
+}
+
+.dropdown-menu--left {
+  left: 0;
+}
+
+.dropdown-header {
+  padding: 8px 12px;
+  font-size: 0.8125rem;
+  color: var(--text-muted, #6b6375);
+  user-select: none;
+}
+
+.dropdown-divider {
+  height: 1px;
+  margin: 4px -4px;
+  background-color: var(--border, #e5e4e7);
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text, #34313a);
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.12s ease, color 0.12s ease;
+  user-select: none;
+}
+
+.dropdown-item:hover:not(:disabled) {
+  background-color: var(--bg-subtle, #f8f7fa);
+}
+
+.dropdown-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dropdown-item--default:hover:not(:disabled) {
+  color: var(--primary, #0f766e);
+}
+
+.dropdown-item--danger {
+  color: #dc2626;
+}
+
+.dropdown-item--danger:hover:not(:disabled) {
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+.dropdown-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.dropdown-item-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.dropdown-item-text {
+  flex: 1;
+  white-space: nowrap;
+}
+
+@keyframes dropdown-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
