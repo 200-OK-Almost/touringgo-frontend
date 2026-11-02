@@ -1,0 +1,40 @@
+.selectable-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 999px;
+  border: 1px solid var(--border, #e5e4e7);
+  background: #ffffff;
+  color: var(--text, #34313a);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.selectable-chip-btn:hover {
+  border-color: var(--primary, #0f766e);
+  background-color: var(--bg-subtle, #f8f7fa);
+}
+
+.selectable-chip-btn--selected {
+  border-color: var(--primary, #0f766e);
+  background-color: rgba(15, 118, 110, 0.08);
+  color: var(--primary, #0f766e);
+  font-weight: 600;
+}
+
+.selectable-chip-btn__icon {
+  font-size: 1rem;
+}
+
+.selectable-chip-btn__check {
+  /* font-size: 0.875rem;
+  font-weight: 700;
+  margin-left: 0.25rem; */
+
+  font-size: 1rem;
+  font-weight: 700;
+  margin-left: 0.25rem;
+}
