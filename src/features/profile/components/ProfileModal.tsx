@@ -1,11 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { Modal } from "../../../components/Modal";
 import { VerticalTabs, type TabItem } from "../../../components/VerticalTabs";
-import { StatusBar, type SaveStatus } from "../../../components/StatusBar";
-
-// API and Types
-import { actualizarPreferencias, actualizarRestricciones, getPerfil } from "../api/perfil";
-import type { PerfilUsuarioDTO, RitmoVisita, TipoDieta, TipoTransporte } from "../types";
+import { StatusBar } from "../../../components/StatusBar";
 
 // Tab Components
 import { ProfileInfoTab } from "./ProfileInfoTab";
@@ -13,6 +9,7 @@ import { PreferencesTab } from "./PreferencesTab";
 import { RestrictionsTab } from "./RestrictionsTab";
 
 import "./ProfileModal.css";
+import { useProfileManager } from "../hooks/useProfileManager";
 
 export interface ProfileModalProps {
   isOpen: boolean;
@@ -54,123 +51,27 @@ const TAB_ITEMS: TabItem<TabType>[] = [
 
 export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const [activeTab, setActiveTab] = useState<TabType>("perfil");
-  const [perfil, setPerfil] = useState<PerfilUsuarioDTO | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
-  const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const {
+    perfil,
+    isLoading,
+    error,
+    saveStatus,
+    feedbackMessage,
+    loadPerfil,
+    updateRitmo,
+    toggleTransporte,
+    toggleDieta,
+    toggleAccesibilidad
+  } = useProfileManager(isOpen);
 
-  const loadPerfil = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const data = await getPerfil();
-      setPerfil(data);
-    } catch {
-      setError("No se pudo cargar la información del perfil.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isOpen) {
-      void loadPerfil();
-      setActiveTab("perfil");
-      setSaveStatus("idle");
-      setFeedbackMessage(null);
-    }
-  }, [isOpen, loadPerfil]);
-
-  const notifySaved = () => {
-    setSaveStatus("saved");
-    setTimeout(() => {
-      setSaveStatus((prev) => (prev === "saved" ? "idle" : prev));
-    }, 2500);
-  };
-
-  const handleRitmoChange = async (ritmo: RitmoVisita) => {
-    if (!perfil || perfil.preferencias.ritmoVisitaPreferido === ritmo) return;
-    const prevPerfil = perfil;
-    setPerfil({ ...perfil, preferencias: { ...perfil.preferencias, ritmoVisitaPreferido: ritmo } });
-    
-    setSaveStatus("saving");
-    try {
-      await actualizarPreferencias({ ritmoVisitaPreferido: ritmo });
-      notifySaved();
-    } catch {
-      setPerfil(prevPerfil);
-      setSaveStatus("error");
-      setFeedbackMessage("No se pudo guardar el ritmo de visita.");
-    }
-  };
-
-  const handleTransporteToggle = async (transporte: TipoTransporte) => {
-    if (!perfil) return;
-    const actuales = perfil.preferencias.transportesPreferidos;
-    const exists = actuales.includes(transporte);
-
-    if (exists && actuales.length === 1) {
-      setFeedbackMessage("Debes mantener al menos un medio de transporte seleccionado.");
-      setTimeout(() => setFeedbackMessage(null), 3000);
-      return;
-    }
-
-    const nuevos = exists ? actuales.filter((t) => t !== transporte) : [...actuales, transporte];
-    const prevPerfil = perfil;
-    setPerfil({ ...perfil, preferencias: { ...perfil.preferencias, transportesPreferidos: nuevos } });
-
-    setSaveStatus("saving");
-    try {
-      await actualizarPreferencias({ transportesPreferidos: nuevos });
-      notifySaved();
-    } catch {
-      setPerfil(prevPerfil);
-      setSaveStatus("error");
-      setFeedbackMessage("No se pudieron guardar los medios de transporte.");
-    }
-  };
-
-  const handleDietaToggle = async (dieta: TipoDieta) => {
-    if (!perfil) return;
-    const actuales = perfil.restricciones.dieta;
-    const nuevas = actuales.includes(dieta) ? actuales.filter((d) => d !== dieta) : [...actuales, dieta];
-    const prevPerfil = perfil;
-    
-    setPerfil({ ...perfil, restricciones: { ...perfil.restricciones, dieta: nuevas } });
-
-    setSaveStatus("saving");
-    try {
-      await actualizarRestricciones({ dieta: nuevas });
-      notifySaved();
-    } catch {
-      setPerfil(prevPerfil);
-      setSaveStatus("error");
-      setFeedbackMessage("No se pudieron guardar las restricciones dietarias.");
-    }
-  };
-
-  const handleAccesibilidadToggle = async (
-    campo: "requiereBanoAccesible" | "requiereRecorridoSinEscalones",
-    valor: boolean
-  ) => {
-    if (!perfil) return;
-    const prevPerfil = perfil;
-    setPerfil({ ...perfil, restricciones: { ...perfil.restricciones, [campo]: valor } });
-
-    setSaveStatus("saving");
-    try {
-      await actualizarRestricciones({ [campo]: valor });
-      notifySaved();
-    } catch {
-      setPerfil(prevPerfil);
-      setSaveStatus("error");
-      setFeedbackMessage("No se pudo guardar la opción de accesibilidad.");
-    }
+  // Reiniciar la pestaña a "perfil" cuando se cierra el modal
+  const handleClose = () => {
+    onClose();
+    setTimeout(() => setActiveTab("perfil"), 300); // Espera a la animación de cierre
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Configuración de Cuenta" size="xl" className="profile-modal">
+    <Modal isOpen={isOpen} onClose={handleClose} title="Configuración de Cuenta" size="xl" className="profile-modal">
       <div className="profile-panel">
         <VerticalTabs 
           tabs={TAB_ITEMS} 
@@ -191,7 +92,9 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           ) : error || !perfil ? (
             <div className="profile-error">
               <p>{error ?? "Ocurrió un error al cargar el perfil."}</p>
-              <button type="button" className="profile-retry-btn" onClick={() => void loadPerfil()}>Reintentar</button>
+              <button type="button" className="profile-retry-btn" onClick={() => void loadPerfil()}>
+                Reintentar
+              </button>
             </div>
           ) : (
             <>
@@ -199,15 +102,15 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
               {activeTab === "preferencias" && (
                 <PreferencesTab 
                   preferencias={perfil.preferencias} 
-                  onRitmoChange={handleRitmoChange} 
-                  onTransporteToggle={handleTransporteToggle} 
+                  onRitmoChange={updateRitmo} 
+                  onTransporteToggle={toggleTransporte} 
                 />
               )}
               {activeTab === "restricciones" && (
                 <RestrictionsTab 
                   restricciones={perfil.restricciones} 
-                  onDietaToggle={handleDietaToggle} 
-                  onAccesibilidadToggle={handleAccesibilidadToggle} 
+                  onDietaToggle={toggleDieta} 
+                  onAccesibilidadToggle={toggleAccesibilidad} 
                 />
               )}
             </>
