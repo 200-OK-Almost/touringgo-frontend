@@ -5,13 +5,14 @@ export interface SelectableCardProps {
   title: string;
   description?: string;
   icon?: React.ReactNode;
+  coloredIcon: boolean
   selected: boolean;
   onClick: () => void;
   selectionIndicator?: "radio" | "checkbox" | "none";
   variant?: "big" | "small";
 }
 
-export function SelectableCard({ title, description, icon, selected, onClick, selectionIndicator = "radio", variant = "small" }: SelectableCardProps) {
+export function SelectableCard({ title, description, icon, coloredIcon = true, selected, onClick, selectionIndicator = "radio", variant = "small" }: SelectableCardProps) {
   return (
     <button
       type="button"
@@ -19,7 +20,11 @@ export function SelectableCard({ title, description, icon, selected, onClick, se
         {`selectable-card-option ${selected ? "selectable-card-option--selected" : ""} ${variant == "small" ? "selectable-card-small" : "selectable-card-big"}`}
       onClick={onClick}
     >
-      {icon && <span className="selectable-card-option__icon">{icon}</span>}
+      {icon && 
+      <span className={`selectable-card-option__icon ${coloredIcon && "selectable-card-colored-icon"}`}>
+        {icon}
+      </span>
+      }
       <div className="selectable-card-option__content">
         <span className="selectable-card-option__title">{title}</span>
         {description && <span className="selectable-card-option__desc">{description}</span>}
