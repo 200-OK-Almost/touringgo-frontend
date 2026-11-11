@@ -7,13 +7,16 @@ export interface SelectableCardProps {
   icon?: React.ReactNode;
   selected: boolean;
   onClick: () => void;
+  selectionIndicator?: "radio" | "checkbox" | "none";
+  variant?: "big" | "small";
 }
 
-export function SelectableCard({ title, description, icon, selected, onClick }: SelectableCardProps) {
+export function SelectableCard({ title, description, icon, selected, onClick, selectionIndicator = "radio", variant = "small" }: SelectableCardProps) {
   return (
     <button
       type="button"
-      className={`selectable-card-option ${selected ? "selectable-card-option--selected" : ""}`}
+      className=
+        {`selectable-card-option ${selected ? "selectable-card-option--selected" : ""} ${variant == "small" ? "selectable-card-small" : "selectable-card-big"}`}
       onClick={onClick}
     >
       {icon && <span className="selectable-card-option__icon">{icon}</span>}
@@ -21,9 +24,14 @@ export function SelectableCard({ title, description, icon, selected, onClick }: 
         <span className="selectable-card-option__title">{title}</span>
         {description && <span className="selectable-card-option__desc">{description}</span>}
       </div>
-      <span className="selectable-card-option__radio">
-        {selected && <span className="selectable-card-option__radio-dot" />}
-      </span>
+      {selectionIndicator == "radio" && 
+        <span className="selectable-card-option__radio">
+          {selected && <span className="selectable-card-option__radio-dot" />}
+      </span>}
+      {selectionIndicator == "checkbox" && 
+        <span className="selectable-card-option__radio">
+          {selected && <span className="selectable-card-option__radio-dot" />}
+      </span>}
     </button>
   );
 }

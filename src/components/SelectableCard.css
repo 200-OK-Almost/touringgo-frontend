@@ -1,14 +1,12 @@
 .selectable-card-option {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.875rem 1rem;
   border-radius: 10px;
   border: 1px solid var(--border, #e5e4e7);
   background: #ffffff;
   cursor: pointer;
   text-align: left;
   transition: all 0.15s ease;
+  position: relative;
+  flex: 1;
 }
 
 .selectable-card-option:hover {
@@ -23,7 +21,6 @@
 }
 
 .selectable-card-option__icon {
-  font-size: 1.5rem;
   flex-shrink: 0;
 }
 
@@ -35,13 +32,10 @@
 }
 
 .selectable-card-option__title {
-  font-size: 0.9375rem;
-  font-weight: 600;
   color: var(--text-heading, #17141c);
 }
 
 .selectable-card-option__desc {
-  font-size: 0.75rem;
   color: var(--text-muted, #6b6375);
 }
 
@@ -66,3 +60,58 @@
   border-radius: 50%;
   background-color: var(--primary, #0f766e);
 }
+
+/* small variant */
+.selectable-card-option.selectable-card-small {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+}
+.selectable-card-option.selectable-card-small {
+
+  & .selectable-card-option__icon {
+    font-size: 1.5rem;
+  }
+
+  & .selectable-card-option__desc {
+    font-size: 0.75rem;
+  }
+  & .selectable-card-option__title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+}
+
+
+/* big variant */
+.selectable-card-option.selectable-card-big {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+}
+.selectable-card-option.selectable-card-big {
+
+  & .selectable-card-option__radio {
+    position: absolute;
+    top: 1rem;
+    right: .5rem;
+  }
+
+  & .selectable-card-option__icon {
+    font-size: 1.75rem;
+  }
+
+  & .selectable-card-option__desc {
+    font-size: 1rem;
+  }
+
+  & .selectable-card-option__title {
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+
+}
+
