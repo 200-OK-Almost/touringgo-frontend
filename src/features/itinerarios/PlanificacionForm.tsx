@@ -8,10 +8,13 @@ import TravelStyleStep from "./steps/TravelStyleStep";
 import PlanificacionFormNavigation from "./PlanificacionFormNavigation";
 
 import "./PlanificacionForm.css"
+import type { BarrioCaba } from "../../api/types";
+import type { PuntoInicio } from "./types";
 
 export interface ItineraryFormData {
-  barrioInicio: string | null;
-  puntoInicio: string | null;
+  barrioInicio: BarrioCaba | null;
+  puntoInicio: PuntoInicio | null;
+  hospedajeDireccion?: string | null;
 
   cantidadDias: number;
   disponibilidadDiaria: string;
@@ -35,8 +38,17 @@ function PlanificacionForm() {
     { label: "Estilo", Component: TravelStyleStep }
   ];
 
-  const CurrentStep = steps[currentStepCounter];
+  const currentStep = steps[currentStepCounter];
   
+  function updateFormData(
+    changes: Partial<ItineraryFormData>
+  ) {
+    setFormData(previous => ({
+      ...previous,
+      ...changes,
+    }));
+  }
+
   function handleNext() {
     setCurrentStepCounter(prev => {
       if (prev >= steps.length-1) return prev
@@ -49,17 +61,47 @@ function PlanificacionForm() {
       return prev - 1
     })
   }
-  
+
+  const [formData, setFormData] = useState<ItineraryFormData>({
+    barrioInicio: null,
+    puntoInicio: null,
+
+    cantidadDias: 1,
+    disponibilidadDiaria: "Completo",
+    modalidadViaje: "",
+    categoriasPrioritarias: [],
+    ritmo: "",
+    presupuesto: "",
+  });
+
+  function renderCurrentStep() {
+    switch (currentStepCounter) {
+      case 0:
+        return (
+          <LocationStep
+            barrioInicio={formData.barrioInicio}
+            puntoInicio={formData.puntoInicio}
+            onChange={(changes) => updateFormData(changes)}
+          />
+        );
+
+      
+      default:
+        return null;
+      }
+    }
   return (
     <>
     <main className="planificacion-form-main">
       <StepIndicator 
         currentStep={currentStepCounter}
-        stepLabel={CurrentStep.label}
+        stepLabel={currentStep.label}
         totalSteps={steps.length}
       />
       
-      <CurrentStep.Component />
+      <div className="planificacion-step-content">
+        {renderCurrentStep()}
+      </div>
 
       <PlanificacionFormNavigation 
         onBack={handleBack}

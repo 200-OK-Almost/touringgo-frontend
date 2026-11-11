@@ -5,7 +5,7 @@ export interface SelectableCardProps {
   title: string;
   description?: string;
   icon?: React.ReactNode;
-  coloredIcon: boolean
+  coloredIcon?: boolean
   selected: boolean;
   onClick: () => void;
   selectionIndicator?: "radio" | "checkbox" | "none";
