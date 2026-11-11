@@ -8,7 +8,8 @@
   --border: #e5e4e7;
   --primary: #0f766e;
   --primary-hover: #0b5f58;
-  --secondary: rgb(232, 89, 60);
+  --secondary: rgb(245, 158, 11);
+  --secondary-hover: #e08e00;
 
   /* Explorador de Lugares */
   --bg-page: #f7f8fa;

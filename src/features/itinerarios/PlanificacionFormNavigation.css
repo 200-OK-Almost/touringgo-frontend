@@ -1,0 +1,54 @@
+.form-navigation {
+  display: flex;
+  justify-content: space-between;
+
+}
+
+.form-navigation-button {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+
+  padding: .5rem 2rem;
+  border-radius: var(--border-radius);
+}
+
+/* back button */
+.form-back-button {
+  color: #6c757d;
+  border: 1px solid #6c757d;
+}
+.form-back-button:hover {
+  background-color: #6c757d;
+  color: white;
+}
+.form-back-button:active {
+  background-color: #575e64;
+  color: white;
+}
+
+/* next button */
+.form-next-button {
+  color: white;
+  background-color: var(--primary);
+}
+.form-next-button:hover {
+  background-color: var(--primary-hover);
+}
+.form-next-button:active {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* confirm button */
+.form-confirm-button {
+  color: var(--text);
+  background-color: var(--secondary);
+}
+.form-confirm-button:hover {
+  background-color: var(--secondary-hover);
+}
+.form-confirm-button:active {
+  background-color: var(--bg);
+  color: var(--text);
+}
