@@ -1,6 +1,6 @@
-import { IoCafeOutline, IoWalkOutline, IoFlashOutline } from "react-icons/io5";
+import { IoCafeOutline, IoWalkOutline, IoFlashOutline, IoBusOutline, IoCarOutline } from "react-icons/io5";
 import { SelectableCard } from "../../../components/SelectableCard";
-import type { RitmoVisita } from "../../profile/types";
+import type { RitmoVisita, TipoTransporte } from "../../profile/types";
 import { BsGem, BsPiggyBank, BsWallet2 } from "react-icons/bs";
 import type { FormErrors } from "../PlanificationForm.validation";
 
@@ -9,6 +9,12 @@ type RitmoVisitaOption = {
   description: string,
   icon: React.ReactNode
   value: RitmoVisita
+}
+
+type TipoTransporteOption = {
+  title: string, 
+  icon: React.ReactNode
+  value: TipoTransporte
 }
 
 type PresupuestoOption = {
@@ -21,15 +27,17 @@ type PresupuestoOption = {
 interface TravelStyleStepProps {
   ritmoVisita: RitmoVisita | null, 
   presupuestoNivel: number | null, 
+  tipoTransporte: TipoTransporte | null,
   onChange: (changes: {
-    presupuestoNivel?: number | null, 
     ritmoVisita?: RitmoVisita | null, 
+    tipoTransporte?: TipoTransporte | null, 
+    presupuestoNivel?: number | null, 
   }) => void;
   errors: FormErrors
 
 }
 
-function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: TravelStyleStepProps) {
+function TravelStyleStep({ritmoVisita, tipoTransporte, presupuestoNivel, onChange, errors}: TravelStyleStepProps) {
 
   const ritmoVisitaOptions: RitmoVisitaOption[] = [
     { 
@@ -45,6 +53,12 @@ function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: Trav
       icon: <IoFlashOutline /> 
     },
   ]
+  const transporteOptions: TipoTransporteOption[] = [
+    { value: "Caminando", title: "Caminando (A pie)", icon: <IoWalkOutline /> },
+    { value: "TransportePublico", title: "Transporte público", icon: <IoBusOutline /> },
+    { value: "VehiculoPersonal", title: "Vehículo personal", icon: <IoCarOutline /> },
+  ];
+  
 
   const presupuestoOptions: PresupuestoOption[] = [
     { 
@@ -78,6 +92,22 @@ function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: Trav
     </div>
     {errors.ritmoVisita && <div className="planificacion-field-error">
       <p>{errors.ritmoVisita}</p>
+    </div>
+    }
+    <h2>Medio de transporte</h2>
+    <div className="selectable-card-group horizontal-group">
+      {transporteOptions.map(t => 
+        <SelectableCard 
+          title={t.title}
+          icon={t.icon}
+          selected={tipoTransporte === t.value}
+          onClick={() => onChange({tipoTransporte: t.value})}
+          variant="big"
+        />
+      )}
+    </div>
+    {errors.tipoTransporte && <div className="planificacion-field-error">
+      <p>{errors.tipoTransporte}</p>
     </div>
     }
     <h2>Presupuesto</h2>

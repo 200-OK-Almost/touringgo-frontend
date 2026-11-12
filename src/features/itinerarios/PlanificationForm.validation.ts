@@ -35,10 +35,13 @@ export function validateStep(formData: ItineraryFormData, step: number): FormErr
     
     case 3:
       if (formData.ritmoVisita == null) {
-        errors.ritmoVisita = "Seleccioná el ritmo de la salida";
+        errors.ritmoVisita = "Seleccioná el ritmo de la salida.";
+      }
+      if (formData.tipoTransporte == null) {
+        errors.presupuestoNivel = "Seleccioná un medio de transporte.";
       }
       if (formData.presupuestoNivel == null) {
-        errors.presupuestoNivel = "Seleccioná un nivel de presupuesto";
+        errors.presupuestoNivel = "Seleccioná un nivel de presupuesto.";
       }
   }
 

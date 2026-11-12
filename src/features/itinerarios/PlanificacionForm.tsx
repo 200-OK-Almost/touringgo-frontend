@@ -10,7 +10,7 @@ import "./PlanificacionForm.css"
 import type { BarrioCaba, CategoriaDto } from "../../api/types";
 import type { DisponibilidadDiaria, ModalidadViaje, PuntoInicio } from "./types";
 import { getCategorias } from "../../api/lugares";
-import type { RitmoVisita } from "../profile/types";
+import type { RitmoVisita, TipoTransporte } from "../profile/types";
 import { validateStep, type FormErrors } from "./PlanificationForm.validation";
 
 export interface ItineraryFormData {
@@ -27,6 +27,7 @@ export interface ItineraryFormData {
 
   ritmoVisita: RitmoVisita | null;
   presupuestoNivel: number | null;
+  tipoTransporte: TipoTransporte | null;
 }
 
 function PlanificacionForm() {
@@ -49,9 +50,6 @@ function PlanificacionForm() {
       ... changes
     }
     setFormData(newFormData);
-
-    const validationErrors = validateStep(newFormData, currentStepCounter)
-    setErrors(validationErrors)
   }
 
   function handleNext() {
@@ -99,6 +97,7 @@ function PlanificacionForm() {
     modalidadViaje: null,
     categoriasPrioritarias: [],
     ritmoVisita: null,
+    tipoTransporte: null,
     presupuestoNivel: null,
   });
 
@@ -139,6 +138,7 @@ function PlanificacionForm() {
         return (
           <TravelStyleStep
             ritmoVisita={formData.ritmoVisita}
+            tipoTransporte={formData.tipoTransporte}
             presupuestoNivel={formData.presupuestoNivel}
             onChange={(changes) => updateFormData(changes)}
             errors={errors}
