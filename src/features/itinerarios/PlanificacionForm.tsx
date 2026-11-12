@@ -67,6 +67,11 @@ function PlanificacionForm() {
   }
   function handleBack() {
     setErrors({}) // clear errors
+
+    if (currentStepCounter <= 0) {
+      navigation.navigate("/")
+    }
+    
     setCurrentStepCounter(prev => {
       if (prev <= 0) return prev
       return prev - 1

@@ -15,11 +15,10 @@ function PlanificacionFormNavigation(
     <div className="form-navigation">
       <button
         className="form-navigation-button form-back-button"
-        style={{visibility: isFirstStep ? "hidden" : "visible"}}
         onClick={onBack}
       >
         <IoArrowBackOutline />
-        <p>Atrás</p>
+        <p>{!isFirstStep ? "Atrás" : "Volver al inicio"}</p>
       </button>
 
       <button
