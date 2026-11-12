@@ -15,4 +15,3 @@ export type ModalidadViaje =
   | "grupo"
   | "pareja"
   | "familia"
-  | null

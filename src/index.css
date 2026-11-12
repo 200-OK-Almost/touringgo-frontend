@@ -11,6 +11,10 @@
   --secondary: rgb(245, 158, 11);
   --secondary-hover: #e08e00;
 
+  --warning-bg-subtle: #fff3cd;
+  --warning-border-subtle: #ffe69c;
+  --warning-text: #664d03;
+
   /* Explorador de Lugares */
   --bg-page: #f7f8fa;
   --surface: #ffffff;

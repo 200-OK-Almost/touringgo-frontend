@@ -3,6 +3,7 @@ import { SelectableCard } from "../../../components/SelectableCard";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import type { PuntoInicio } from "../types";
 import { IoBusinessOutline, IoHomeOutline, IoTrailSignOutline } from "react-icons/io5";
+import type { FormErrors } from "../PlanificationForm.validation";
 
 interface LocationStepProps {
   puntoInicio: PuntoInicio | null
@@ -11,6 +12,7 @@ interface LocationStepProps {
     barrioInicio?: BarrioCaba
     puntoInicio?: PuntoInicio
   }) => void;
+  errors: FormErrors
 }
 
 type BarrioAndName = {
@@ -24,7 +26,7 @@ type PuntoInicioAndName = {
   value: PuntoInicio
 }
 
-function LocationStep({puntoInicio, barrioInicio, onChange}: LocationStepProps) {
+function LocationStep({puntoInicio, barrioInicio, onChange, errors}: LocationStepProps) {
 
   const barrios: BarrioAndName[] = [
     {title: "Palermo", value: "Palermo"},
@@ -62,6 +64,10 @@ function LocationStep({puntoInicio, barrioInicio, onChange}: LocationStepProps) 
         />
       )}
     </div>
+    {errors.barrioInicio && <div className="planificacion-field-error">
+      <p>{errors.barrioInicio}</p>
+    </div>
+    }
     <h2>Punto de partida</h2>
     <div className="selectable-card-group horizontal-group">
       {alojamientoOptions.map(a => 
@@ -75,6 +81,10 @@ function LocationStep({puntoInicio, barrioInicio, onChange}: LocationStepProps) 
         />
       )}
     </div>
+    {errors.puntoInicio && <div className="planificacion-field-error">
+      <p>{errors.puntoInicio}</p>
+    </div>
+    }
     </>
   )
 }

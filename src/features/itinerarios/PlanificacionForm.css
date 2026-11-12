@@ -40,6 +40,14 @@
   }
 }
 
+.planificacion-field-error {
+  background-color: var(--warning-bg-subtle);
+  border: 1px solid var(--warning-border-subtle);
+  border-radius: var(--border-radius);
+  color: var(--warning-text);
+  padding: .5rem;
+}
+
 @media (max-width: 991px) {
   .planificacion-form-main {
     padding: .5rem 1rem;

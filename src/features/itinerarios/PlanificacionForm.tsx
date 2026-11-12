@@ -11,6 +11,7 @@ import type { BarrioCaba, CategoriaDto } from "../../api/types";
 import type { DisponibilidadDiaria, ModalidadViaje, PuntoInicio } from "./types";
 import { getCategorias } from "../../api/lugares";
 import type { RitmoVisita } from "../profile/types";
+import { validateStep, type FormErrors } from "./PlanificationForm.validation";
 
 export interface ItineraryFormData {
   barrioInicio: BarrioCaba | null;
@@ -18,7 +19,7 @@ export interface ItineraryFormData {
   hospedajeDireccion?: string | null;
 
   cantidadDias: number | null;
-  disponibilidadDiaria: DisponibilidadDiaria;
+  disponibilidadDiaria: DisponibilidadDiaria | null;
 
   modalidadViaje: ModalidadViaje | null;
 
@@ -29,33 +30,45 @@ export interface ItineraryFormData {
 }
 
 function PlanificacionForm() {
+  const [errors, setErrors] = useState<FormErrors>({});
+  
   const [currentStepCounter, setCurrentStepCounter] = useState(0);
 
   const steps = [
-    { label: "Barrio y punto de partida", Component: LocationStep },
-    { label: "Duración y disponibilidad diaria", Component: DurationStep },
-    { label: "Compañía e Intereses", Component: TravelCompanionsAndInterestsStep },
-    { label: "Estilo", Component: TravelStyleStep }
+    { label: "Barrio y punto de partida" },
+    { label: "Duración y disponibilidad diaria" },
+    { label: "Compañía e Intereses" },
+    { label: "Estilo" }
   ];
 
   const currentStep = steps[currentStepCounter];
   
-  function updateFormData(
-    changes: Partial<ItineraryFormData>
-  ) {
-    setFormData(previous => ({
-      ...previous,
-      ...changes,
-    }));
+  function updateFormData(changes: Partial<ItineraryFormData>) {    
+    const newFormData = {
+      ... formData,
+      ... changes
+    }
+    setFormData(newFormData);
+
+    const validationErrors = validateStep(newFormData, currentStepCounter)
+    setErrors(validationErrors)
   }
 
   function handleNext() {
+    const validationErrors = validateStep(formData, currentStepCounter)
+    setErrors(validationErrors)
+
+    if (Object.keys(validationErrors).length > 0) {
+      return
+    }
+
     setCurrentStepCounter(prev => {
       if (prev >= steps.length-1) return prev
       return prev + 1
     })
   }
   function handleBack() {
+    setErrors({}) // clear errors
     setCurrentStepCounter(prev => {
       if (prev <= 0) return prev
       return prev - 1
@@ -81,8 +94,8 @@ function PlanificacionForm() {
     barrioInicio: null,
     puntoInicio: null,
 
-    cantidadDias: 1,
-    disponibilidadDiaria: "diaCompleto",
+    cantidadDias: null,
+    disponibilidadDiaria: null,
     modalidadViaje: null,
     categoriasPrioritarias: [],
     ritmoVisita: null,
@@ -97,6 +110,7 @@ function PlanificacionForm() {
             barrioInicio={formData.barrioInicio}
             puntoInicio={formData.puntoInicio}
             onChange={(changes) => updateFormData(changes)}
+            errors={errors}
           />
         );
 
@@ -106,6 +120,7 @@ function PlanificacionForm() {
             cantidadDias={formData.cantidadDias}
             disponibilidadDiaria={formData.disponibilidadDiaria}
             onChange={(changes) => updateFormData(changes)}
+            errors={errors}
           />
         );
 
@@ -116,6 +131,7 @@ function PlanificacionForm() {
             modalidadViaje={formData.modalidadViaje}
             categoriasPrioritarias={formData.categoriasPrioritarias}
             onChange={(changes) => updateFormData(changes)}
+            errors={errors}
           />
         );
 
@@ -125,9 +141,9 @@ function PlanificacionForm() {
             ritmoVisita={formData.ritmoVisita}
             presupuestoNivel={formData.presupuestoNivel}
             onChange={(changes) => updateFormData(changes)}
+            errors={errors}
           />
         );
-
 
       default:
         return null;

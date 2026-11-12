@@ -1,4 +1,5 @@
 import { SelectableCard } from "../../../components/SelectableCard";
+import type { FormErrors } from "../PlanificationForm.validation";
 import type { DisponibilidadDiaria } from "../types"
 
 type DayAvailabilityOption = {
@@ -15,6 +16,7 @@ interface DurationStepProps {
       cantidadDias?: number | null
       disponibilidadDiaria?: DisponibilidadDiaria
     }) => void;
+  errors: FormErrors
 }
 
 type DuracionOption = {
@@ -23,7 +25,7 @@ type DuracionOption = {
   value: number
 }
 
-function DurationStep({cantidadDias, disponibilidadDiaria, onChange}: DurationStepProps) {
+function DurationStep({cantidadDias, disponibilidadDiaria, onChange, errors}: DurationStepProps) {
   const disponiblidadDiariaOptions: DayAvailabilityOption[] = [
     {
       title: "Dia completo", value: "diaCompleto", description: "Mañana y tarde",
@@ -64,6 +66,11 @@ function DurationStep({cantidadDias, disponibilidadDiaria, onChange}: DurationSt
         />
       )}
     </div>
+    {errors.cantidadDias && <div className="planificacion-field-error">
+      <p>{errors.cantidadDias}</p>
+    </div>
+    }
+
     <h2>¿Cuanto tiempo querés dedicar a recorrer cada día?</h2>
     <div className="selectable-card-group horizontal-group">
       {disponiblidadDiariaOptions.map(d => 
@@ -77,6 +84,10 @@ function DurationStep({cantidadDias, disponibilidadDiaria, onChange}: DurationSt
         />
       )}
     </div>
+    {errors.disponibilidadDiaria && <div className="planificacion-field-error">
+      <p>{errors.disponibilidadDiaria}</p>
+    </div>
+    }
     </>
   )
 }

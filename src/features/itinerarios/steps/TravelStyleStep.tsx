@@ -2,6 +2,7 @@ import { IoCafeOutline, IoWalkOutline, IoFlashOutline } from "react-icons/io5";
 import { SelectableCard } from "../../../components/SelectableCard";
 import type { RitmoVisita } from "../../profile/types";
 import { BsGem, BsPiggyBank, BsWallet2 } from "react-icons/bs";
+import type { FormErrors } from "../PlanificationForm.validation";
 
 type RitmoVisitaOption = {
   title: string, 
@@ -24,9 +25,11 @@ interface TravelStyleStepProps {
     presupuestoNivel?: number | null, 
     ritmoVisita?: RitmoVisita | null, 
   }) => void;
+  errors: FormErrors
+
 }
 
-function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange}: TravelStyleStepProps) {
+function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: TravelStyleStepProps) {
 
   const ritmoVisitaOptions: RitmoVisitaOption[] = [
     { 
@@ -73,6 +76,10 @@ function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange}: TravelStyleS
         />
       )}
     </div>
+    {errors.ritmoVisita && <div className="planificacion-field-error">
+      <p>{errors.ritmoVisita}</p>
+    </div>
+    }
     <h2>Presupuesto</h2>
     <div className="selectable-card-group horizontal-group">
       {presupuestoOptions.map(p => 
@@ -86,6 +93,11 @@ function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange}: TravelStyleS
         />
       )}
     </div>
+    {errors.presupuestoNivel && <div className="planificacion-field-error">
+      <p>{errors.presupuestoNivel}</p>
+    </div>
+    }
+
     </>
   )
 }

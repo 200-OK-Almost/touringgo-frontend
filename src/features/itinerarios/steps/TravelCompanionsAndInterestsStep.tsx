@@ -2,15 +2,17 @@ import { IoBeerOutline, IoCafeOutline, IoColorPaletteOutline, IoHeartOutline, Io
 import { SelectableCard } from "../../../components/SelectableCard";
 import type { ModalidadViaje } from "../types"
 import type { CategoriaDto } from "../../../api/types";
+import type { FormErrors } from "../PlanificationForm.validation";
 
 interface TravelCompanionsAndInterestsStepProps {
-    modalidadViaje: ModalidadViaje
+    modalidadViaje: ModalidadViaje | null
     categoriasPrioritarias: CategoriaDto[]
     categorias: CategoriaDto[]
     onChange: (changes: {
       modalidadViaje?: ModalidadViaje
       categoriasPrioritarias?: CategoriaDto[]
     }) => void;
+  errors: FormErrors
 }
 
 type ModalidadViajeOption = {
@@ -25,7 +27,7 @@ type CategoriaOption = {
   value: CategoriaDto
 }
 
-function TravelCompanionsAndInterestsStep({categorias, modalidadViaje, categoriasPrioritarias, onChange}: TravelCompanionsAndInterestsStepProps) {
+function TravelCompanionsAndInterestsStep({categorias, modalidadViaje, categoriasPrioritarias, onChange, errors}: TravelCompanionsAndInterestsStepProps) {
   const modalidadViajeOptions: ModalidadViajeOption[] = [
     {
       title: "Solo", value: "solo", description: "Viajo por mi cuenta",
@@ -55,7 +57,7 @@ function TravelCompanionsAndInterestsStep({categorias, modalidadViaje, categoria
     "cocteleria_autor": <IoWineOutline />,
   }
 
-  const categoriaOptions = categorias.map(c => {
+  const categoriaOptions: CategoriaOption[] = categorias.map(c => {
     return ({
       title: c.nombre,
       value: c,
@@ -78,6 +80,11 @@ function TravelCompanionsAndInterestsStep({categorias, modalidadViaje, categoria
         />
       )}
     </div>
+    {errors.modalidadViaje && <div className="planificacion-field-error">
+      <p>{errors.modalidadViaje}</p>
+    </div>
+    }
+
     <h2>Categorías de interés</h2>
     <div className="selectable-card-group horizontal-grid">
       {categoriaOptions.map(c => 
