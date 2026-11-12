@@ -24,7 +24,7 @@
   flex-shrink: 0;
 }
 .selectable-card-colored-icon {
-  color: var(--primary)
+  color: var(--primary);
 }
 
 .selectable-card-option__content {
@@ -42,27 +42,53 @@
   color: var(--text-muted, #6b6375);
 }
 
-.selectable-card-option__radio {
+/* Estructura compartida entre radio y checkbox */
+.selectable-card-option__radio,
+.selectable-card-option__checkbox {
   width: 18px;
   height: 18px;
-  border-radius: 50%;
   border: 2px solid var(--border, #e5e4e7);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: all 0.15s ease;
 }
 
+/* Modificador de forma para radio */
+.selectable-card-option__radio {
+  border-radius: 50%;
+}
+
+/* Modificador de forma para checkbox */
+.selectable-card-option__checkbox {
+  border-radius: 4px;
+}
+
+/* Estados seleccionados */
 .selectable-card-option--selected .selectable-card-option__radio {
   border-color: var(--primary, #0f766e);
 }
 
+.selectable-card-option--selected .selectable-card-option__checkbox {
+  border-color: var(--primary, #0f766e);
+  background-color: var(--primary, #0f766e);
+}
+
+/* Elementos internos (punto del radio y palomita del check) */
 .selectable-card-option__radio-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background-color: var(--primary, #0f766e);
 }
+
+.selectable-card-option__check-icon {
+  width: 12px;
+  height: 12px;
+  color: #ffffff;
+}
+
 
 /* small variant */
 .selectable-card-option.selectable-card-small {
@@ -72,11 +98,9 @@
   padding: 0.875rem 1rem;
 }
 .selectable-card-option.selectable-card-small {
-
   & .selectable-card-option__icon {
     font-size: 1.5rem;
   }
-
   & .selectable-card-option__desc {
     font-size: 0.75rem;
   }
@@ -84,9 +108,7 @@
     font-size: 0.9375rem;
     font-weight: 600;
   }
-
 }
-
 
 /* big variant */
 .selectable-card-option.selectable-card-big {
@@ -96,25 +118,21 @@
   padding: 0.875rem 1rem;
 }
 .selectable-card-option.selectable-card-big {
-
-  & .selectable-card-option__radio {
+  /* Posicionamiento aplicable tanto a radio como a checkbox */
+  & .selectable-card-option__radio,
+  & .selectable-card-option__checkbox {
     position: absolute;
     top: 1rem;
     right: .5rem;
   }
-
   & .selectable-card-option__icon {
     font-size: 1.75rem;
   }
-
   & .selectable-card-option__desc {
     font-size: .95rem;
   }
-
   & .selectable-card-option__title {
     font-size: 1rem;
     font-weight: 600;
   }
-
 }
-
