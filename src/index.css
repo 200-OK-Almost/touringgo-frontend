@@ -91,6 +91,9 @@ svg {
 
 #root {
   min-height: 100vh;
+  /* para poder usar flex:1 en componentes y centrar verticalmente */
+  display: flex;
+  flex-direction: column;
 }
 
 main {

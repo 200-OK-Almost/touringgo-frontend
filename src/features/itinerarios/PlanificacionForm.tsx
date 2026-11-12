@@ -1,15 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StepIndicator from "./StepIndicator";
 import DurationStep from "./steps/DurationStep";
 import LocationStep from "./steps/LocationStep";
-import TravelCompanionsStep from "./steps/TravelCompanionsStep";
+import TravelCompanionsAndInterestsStep from "./steps/TravelCompanionsAndInterestsStep";
 import InterestsStep from "./steps/InterestsStep";
 import TravelStyleStep from "./steps/TravelStyleStep";
 import PlanificacionFormNavigation from "./PlanificacionFormNavigation";
 
 import "./PlanificacionForm.css"
-import type { BarrioCaba } from "../../api/types";
-import type { DisponibilidadDiaria, PuntoInicio } from "./types";
+import type { BarrioCaba, CategoriaDto } from "../../api/types";
+import type { DisponibilidadDiaria, ModalidadViaje, PuntoInicio } from "./types";
+import { getCategorias } from "../../api/lugares";
 
 export interface ItineraryFormData {
   barrioInicio: BarrioCaba | null;
@@ -19,9 +20,9 @@ export interface ItineraryFormData {
   cantidadDias: number | null;
   disponibilidadDiaria: DisponibilidadDiaria;
 
-  modalidadViaje: string;
+  modalidadViaje: ModalidadViaje;
 
-  categoriasPrioritarias: string[];
+  categoriasPrioritarias: CategoriaDto[];
 
   ritmo: string;
   presupuesto: string;
@@ -33,7 +34,7 @@ function PlanificacionForm() {
   const steps = [
     { label: "Barrio y punto de partida", Component: LocationStep },
     { label: "Duración y disponibilidad diaria", Component: DurationStep },
-    { label: "Compañía", Component: TravelCompanionsStep },
+    { label: "Compañía", Component: TravelCompanionsAndInterestsStep },
     { label: "Intereses", Component: InterestsStep },
     { label: "Estilo", Component: TravelStyleStep }
   ];
@@ -62,13 +63,28 @@ function PlanificacionForm() {
     })
   }
 
+  const [categorias, setCategorias] = useState<CategoriaDto[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  useEffect(() => {
+    const fetchCategorias = async () => {
+      try {
+        setIsLoading(true);
+        setCategorias(await getCategorias())
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchCategorias()
+  }, [])
+  
+
   const [formData, setFormData] = useState<ItineraryFormData>({
     barrioInicio: null,
     puntoInicio: null,
 
     cantidadDias: 1,
     disponibilidadDiaria: "diaCompleto",
-    modalidadViaje: "",
+    modalidadViaje: null,
     categoriasPrioritarias: [],
     ritmo: "",
     presupuesto: "",
@@ -94,7 +110,16 @@ function PlanificacionForm() {
           />
         );
 
-      
+      case 2:
+        return (
+          <TravelCompanionsAndInterestsStep
+            categorias={categorias}
+            modalidadViaje={formData.modalidadViaje}
+            categoriasPrioritarias={formData.categoriasPrioritarias}
+            onChange={(changes) => updateFormData(changes)}
+          />
+        );
+
       default:
         return null;
       }

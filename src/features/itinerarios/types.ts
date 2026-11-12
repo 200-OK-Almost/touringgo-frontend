@@ -9,3 +9,10 @@ export type DisponibilidadDiaria =
   | "mañana"
   | "tarde"
   | "noche"
+
+export type ModalidadViaje = 
+  "solo"
+  | "grupo"
+  | "pareja"
+  | "familia"
+  | null

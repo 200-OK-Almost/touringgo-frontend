@@ -1,5 +1,6 @@
 import { http } from "./client";
 import type {
+  CategoriaDto,
   ControlCuotaGoogleDto,
   LugarDetalleDto,
   LugarFiltro,
@@ -39,4 +40,8 @@ export function getLugar(id: string): Promise<LugarDetalleDto> {
 
 export function getCuota(): Promise<ControlCuotaGoogleDto> {
   return http.get(`${LUGARES_BASE}/google/cuota`);
+}
+
+export function getCategorias(): Promise<CategoriaDto[]> {
+  return http.get(`${LUGARES_BASE}/categorias`);
 }
