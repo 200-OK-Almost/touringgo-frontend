@@ -9,15 +9,15 @@ import PlanificacionFormNavigation from "./PlanificacionFormNavigation";
 
 import "./PlanificacionForm.css"
 import type { BarrioCaba } from "../../api/types";
-import type { PuntoInicio } from "./types";
+import type { DisponibilidadDiaria, PuntoInicio } from "./types";
 
 export interface ItineraryFormData {
   barrioInicio: BarrioCaba | null;
   puntoInicio: PuntoInicio | null;
   hospedajeDireccion?: string | null;
 
-  cantidadDias: number;
-  disponibilidadDiaria: string;
+  cantidadDias: number | null;
+  disponibilidadDiaria: DisponibilidadDiaria;
 
   modalidadViaje: string;
 
@@ -32,7 +32,7 @@ function PlanificacionForm() {
 
   const steps = [
     { label: "Barrio y punto de partida", Component: LocationStep },
-    { label: "Duración", Component: DurationStep },
+    { label: "Duración y disponibilidad diaria", Component: DurationStep },
     { label: "Compañía", Component: TravelCompanionsStep },
     { label: "Intereses", Component: InterestsStep },
     { label: "Estilo", Component: TravelStyleStep }
@@ -67,7 +67,7 @@ function PlanificacionForm() {
     puntoInicio: null,
 
     cantidadDias: 1,
-    disponibilidadDiaria: "Completo",
+    disponibilidadDiaria: "diaCompleto",
     modalidadViaje: "",
     categoriasPrioritarias: [],
     ritmo: "",
@@ -81,6 +81,15 @@ function PlanificacionForm() {
           <LocationStep
             barrioInicio={formData.barrioInicio}
             puntoInicio={formData.puntoInicio}
+            onChange={(changes) => updateFormData(changes)}
+          />
+        );
+
+      case 1:
+        return (
+          <DurationStep
+            cantidadDias={formData.cantidadDias}
+            disponibilidadDiaria={formData.disponibilidadDiaria}
             onChange={(changes) => updateFormData(changes)}
           />
         );
