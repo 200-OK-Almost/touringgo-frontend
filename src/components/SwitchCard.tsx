@@ -2,7 +2,7 @@ import './SwitchCard.css';
 
 interface SwitchCardProps {
     icon: React.ReactNode;
-    coloredIcon: boolean
+    coloredIcon?: boolean
     title: string;
     description: string;
     checked: boolean;

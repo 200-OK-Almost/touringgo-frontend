@@ -3,7 +3,6 @@ import StepIndicator from "./StepIndicator";
 import DurationStep from "./steps/DurationStep";
 import LocationStep from "./steps/LocationStep";
 import TravelCompanionsAndInterestsStep from "./steps/TravelCompanionsAndInterestsStep";
-import InterestsStep from "./steps/InterestsStep";
 import TravelStyleStep from "./steps/TravelStyleStep";
 import PlanificacionFormNavigation from "./PlanificacionFormNavigation";
 
@@ -11,6 +10,7 @@ import "./PlanificacionForm.css"
 import type { BarrioCaba, CategoriaDto } from "../../api/types";
 import type { DisponibilidadDiaria, ModalidadViaje, PuntoInicio } from "./types";
 import { getCategorias } from "../../api/lugares";
+import type { RitmoVisita } from "../profile/types";
 
 export interface ItineraryFormData {
   barrioInicio: BarrioCaba | null;
@@ -20,12 +20,12 @@ export interface ItineraryFormData {
   cantidadDias: number | null;
   disponibilidadDiaria: DisponibilidadDiaria;
 
-  modalidadViaje: ModalidadViaje;
+  modalidadViaje: ModalidadViaje | null;
 
   categoriasPrioritarias: CategoriaDto[];
 
-  ritmo: string;
-  presupuesto: string;
+  ritmoVisita: RitmoVisita | null;
+  presupuestoNivel: number | null;
 }
 
 function PlanificacionForm() {
@@ -34,8 +34,7 @@ function PlanificacionForm() {
   const steps = [
     { label: "Barrio y punto de partida", Component: LocationStep },
     { label: "Duración y disponibilidad diaria", Component: DurationStep },
-    { label: "Compañía", Component: TravelCompanionsAndInterestsStep },
-    { label: "Intereses", Component: InterestsStep },
+    { label: "Compañía e Intereses", Component: TravelCompanionsAndInterestsStep },
     { label: "Estilo", Component: TravelStyleStep }
   ];
 
@@ -86,8 +85,8 @@ function PlanificacionForm() {
     disponibilidadDiaria: "diaCompleto",
     modalidadViaje: null,
     categoriasPrioritarias: [],
-    ritmo: "",
-    presupuesto: "",
+    ritmoVisita: null,
+    presupuestoNivel: null,
   });
 
   function renderCurrentStep() {
@@ -119,6 +118,16 @@ function PlanificacionForm() {
             onChange={(changes) => updateFormData(changes)}
           />
         );
+
+      case 3:
+        return (
+          <TravelStyleStep
+            ritmoVisita={formData.ritmoVisita}
+            presupuestoNivel={formData.presupuestoNivel}
+            onChange={(changes) => updateFormData(changes)}
+          />
+        );
+
 
       default:
         return null;
