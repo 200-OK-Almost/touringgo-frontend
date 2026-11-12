@@ -1,12 +1,12 @@
-import { IoCafeOutline, IoWalkOutline, IoFlashOutline, IoBusOutline, IoCarOutline } from "react-icons/io5";
+import { IoCafeOutline, IoWalkOutline, IoFlashOutline, IoBusOutline, IoCarOutline, IoHourglassOutline } from "react-icons/io5";
 import { SelectableCard } from "../../../components/SelectableCard";
 import { SelectableChip } from "../../../components/SelectableChip";
 import type { PerfilUsuarioDTO, RitmoVisita, TipoTransporte } from "../types";
 
 const RITMO_OPCIONES: { id: RitmoVisita; label: string; descripcion: string; icon: React.ReactNode; }[] = [
-  { id: "relajado", label: "Relajado", descripcion: "Pausado y contemplativo, con pocas paradas y más tiempo libre.", icon: <IoCafeOutline /> },
-  { id: "moderado", label: "Moderado", descripcion: "Equilibrado entre descanso y actividades programadas.", icon: <IoWalkOutline /> },
-  { id: "activo", label: "Activo", descripcion: "Días intensos aprovechando al máximo cada atracción.", icon: <IoFlashOutline /> },
+  { id: "Relajado", label: "Relajado", descripcion: "Pausado y contemplativo, con pocas paradas y más tiempo libre.", icon: <IoCafeOutline /> },
+  { id: "Moderado", label: "Moderado", descripcion: "Equilibrado entre descanso y actividades programadas.", icon: <IoHourglassOutline /> },
+  { id: "Activo", label: "Activo", descripcion: "Días intensos aprovechando al máximo cada atracción.", icon: <IoFlashOutline /> },
 ];
 
 const TRANSPORTE_OPCIONES: { id: TipoTransporte; label: string; icon: React.ReactNode; }[] = [

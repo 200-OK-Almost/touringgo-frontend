@@ -1,4 +1,4 @@
-import { IoCafeOutline, IoWalkOutline, IoFlashOutline, IoBusOutline, IoCarOutline } from "react-icons/io5";
+import { IoCafeOutline, IoWalkOutline, IoFlashOutline, IoBusOutline, IoCarOutline, IoHourglassOutline } from "react-icons/io5";
 import { SelectableCard } from "../../../components/SelectableCard";
 import type { RitmoVisita, TipoTransporte } from "../../profile/types";
 import { BsGem, BsPiggyBank, BsWallet2 } from "react-icons/bs";
@@ -41,15 +41,15 @@ function TravelStyleStep({ritmoVisita, tipoTransporte, presupuestoNivel, onChang
 
   const ritmoVisitaOptions: RitmoVisitaOption[] = [
     { 
-      value: "relajado", title: "Relajado", description: "Pausado y contemplativo, con pocas paradas y más tiempo libre.", 
+      value: "Relajado", title: "Relajado", description: "Pausado y contemplativo, con pocas paradas y más tiempo libre.", 
       icon: <IoCafeOutline /> 
     },
     { 
-      value: "moderado", title: "Moderado", description: "Equilibrado entre descanso y actividades programadas.", 
-      icon: <IoWalkOutline /> 
+      value: "Moderado", title: "Moderado", description: "Equilibrado entre descanso y actividades programadas.", 
+      icon: <IoHourglassOutline /> 
     },
     { 
-      value: "activo", title: "Activo", description: "Días intensos aprovechando al máximo cada atracción.", 
+      value: "Activo", title: "Activo", description: "Días intensos aprovechando al máximo cada atracción.", 
       icon: <IoFlashOutline /> 
     },
   ]
