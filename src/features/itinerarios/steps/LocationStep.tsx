@@ -10,10 +10,12 @@ interface LocationStepProps {
   puntoInicio: PuntoInicio | null;
   barrio: BarrioCaba | null;
   hospedajeLugarGuid: string | null;
+  hospedajeBarrio: BarrioCaba | null;
   onChange: (changes: {
     barrio?: BarrioCaba;
     puntoInicio?: PuntoInicio;
     hospedajeLugarGuid?: string | null;
+    hospedajeBarrio?: BarrioCaba | null;
   }) => void;
   errors: FormErrors;
 }
@@ -34,6 +36,7 @@ function LocationStep({
   puntoInicio,
   barrio,
   hospedajeLugarGuid,
+  hospedajeBarrio,
   onChange,
   errors,
 }: LocationStepProps) {
@@ -79,7 +82,15 @@ function LocationStep({
             title={b.title}
             icon={<FaMapMarkerAlt />}
             selected={barrio === b.value}
-            onClick={() => onChange({ barrio: b.value })}
+            onClick={() => {
+              const isDifferent = barrio !== b.value;
+              onChange({
+                barrio: b.value,
+                ...(puntoInicio === "recomendarHospedaje" && isDifferent
+                  ? { hospedajeLugarGuid: null, hospedajeBarrio: null }
+                  : {}),
+              });
+            }}
             variant="big"
           />
         ))}
@@ -103,6 +114,7 @@ function LocationStep({
               onChange({
                 puntoInicio: a.value,
                 hospedajeLugarGuid: a.value === "sinHospedaje" ? null : hospedajeLugarGuid,
+                hospedajeBarrio: a.value === "sinHospedaje" ? null : hospedajeBarrio,
               })
             }
             variant="big"
@@ -121,7 +133,12 @@ function LocationStep({
           puntoInicio={puntoInicio}
           barrio={barrio}
           selectedLugarId={hospedajeLugarGuid}
-          onSelectLugar={(id) => onChange({ hospedajeLugarGuid: id })}
+          onSelectLugar={(id, lugar) =>
+            onChange({
+              hospedajeLugarGuid: id,
+              hospedajeBarrio: lugar?.barrio ?? null,
+            })
+          }
           error={errors.hospedajeLugarGuid}
         />
       )}

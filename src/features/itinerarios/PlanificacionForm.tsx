@@ -17,6 +17,7 @@ export interface ItineraryFormData {
   barrio: BarrioCaba | null;
   puntoInicio: PuntoInicio | null;
   hospedajeLugarGuid: string | null;
+  hospedajeBarrio: BarrioCaba | null;
 
   cantidadDias: number | null;
   disponibilidadDiaria: DisponibilidadDiaria | null;
@@ -99,6 +100,7 @@ function PlanificacionForm() {
     barrio: null,
     puntoInicio: null,
     hospedajeLugarGuid: null,
+    hospedajeBarrio: null,
 
     cantidadDias: null,
     disponibilidadDiaria: null,
@@ -117,6 +119,7 @@ function PlanificacionForm() {
             barrio={formData.barrio}
             puntoInicio={formData.puntoInicio}
             hospedajeLugarGuid={formData.hospedajeLugarGuid}
+            hospedajeBarrio={formData.hospedajeBarrio}
             onChange={(changes) => updateFormData(changes)}
             errors={errors}
           />

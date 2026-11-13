@@ -1,4 +1,5 @@
 import type { ItineraryFormData } from "./PlanificacionForm";
+import { barrioLabel } from "../../lib/format";
 
 export type FormErrors = Partial<
   Record<keyof ItineraryFormData, string>
@@ -19,6 +20,14 @@ export function validateStep(formData: ItineraryFormData, step: number): FormErr
         formData.hospedajeLugarGuid == null
       ) {
         errors.hospedajeLugarGuid = "Seleccioná un lugar de alojamiento de la lista.";
+      } else if (
+        formData.puntoInicio === "recomendarHospedaje" &&
+        formData.hospedajeLugarGuid != null &&
+        formData.barrio != null &&
+        formData.hospedajeBarrio != null &&
+        formData.hospedajeBarrio !== formData.barrio
+      ) {
+        errors.hospedajeLugarGuid = `El alojamiento recomendado debe pertenecer al barrio seleccionado (${barrioLabel(formData.barrio)}).`;
       }
 
       break;

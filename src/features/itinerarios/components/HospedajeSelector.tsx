@@ -12,7 +12,7 @@ export interface HospedajeSelectorProps {
   puntoInicio: "hospedajeDefinido" | "recomendarHospedaje";
   barrio: BarrioCaba | null;
   selectedLugarId: string | null;
-  onSelectLugar: (id: string | null) => void;
+  onSelectLugar: (id: string | null, lugar?: LugarResumenDto | null) => void;
   error?: string;
 }
 
@@ -175,7 +175,17 @@ export function HospedajeSelector({
           allLabel="Todos"
           options={BARRIOS}
           value={selectedBarrio}
-          onChange={(barrio) => setSelectedBarrio(barrio)}
+          onChange={(b) => setSelectedBarrio(b)}
+          isOptionDisabled={
+            puntoInicio === "recomendarHospedaje" && barrio
+              ? (val) => val !== barrio
+              : undefined
+          }
+          disabledTooltip={
+            puntoInicio === "recomendarHospedaje"
+              ? `Solo se muestran hospedajes del barrio seleccionado${barrio ? ` (${barrioLabel(barrio)})` : ""}`
+              : undefined
+          }
         />
       </div>
 
@@ -231,7 +241,7 @@ export function HospedajeSelector({
                 key={lugar.id}
                 lugar={lugar}
                 selected={selectedLugarId === lugar.id}
-                onClick={() => onSelectLugar(lugar.id)}
+                onClick={() => onSelectLugar(lugar.id, lugar)}
                 showImage={true}
               />
             ))}
