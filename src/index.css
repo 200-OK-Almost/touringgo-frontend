@@ -110,6 +110,10 @@ main {
   animation: shimmer 1.4s ease infinite;
 }
 
+.text-muted {
+  color: var(--text-muted);
+}
+
 @keyframes shimmer {
   0% {
     background-position: 100% 0;

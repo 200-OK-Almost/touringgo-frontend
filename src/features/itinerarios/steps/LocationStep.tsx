@@ -74,7 +74,9 @@ function LocationStep({
 
   return (
     <>
-      <h2>¿Qué barrio querés recorrer?</h2>
+      <div className="planificacion-form-header">
+        <h2>¿Qué barrio querés recorrer?</h2>
+      </div>
       <div className="selectable-card-group grid-5">
         {barrios.map((b) => (
           <SelectableCard
@@ -100,8 +102,9 @@ function LocationStep({
           <p>{errors.barrio}</p>
         </div>
       )}
-
-      <h2>Punto de partida</h2>
+      <div className="planificacion-form-header">
+        <h2>Punto de partida</h2>
+      </div>
       <div className="selectable-card-group grid-3">
         {alojamientoOptions.map((a) => (
           <SelectableCard

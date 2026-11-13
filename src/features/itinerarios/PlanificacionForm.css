@@ -17,6 +17,12 @@
   width: 100%;
 }
 
+.planificacion-form-header {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+
 /* =========================================================
    GRID RESPONSIVE POR CANTIDAD DE OPCIONES
    ========================================================= */

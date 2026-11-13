@@ -54,7 +54,9 @@ function DurationStep({cantidadDias, disponibilidadDiaria, onChange, errors}: Du
 
   return (
     <>
-    <h2>Duración de la salida</h2>
+    <div className="planificacion-form-header">
+      <h2>Duración de la salida</h2>
+    </div>
     <div className="selectable-card-group grid-4">
       {cantidadDiasOptions.map(c => 
         <SelectableCard 
@@ -71,8 +73,9 @@ function DurationStep({cantidadDias, disponibilidadDiaria, onChange, errors}: Du
       <p>{errors.cantidadDias}</p>
     </div>
     }
-
-    <h2>¿Cuanto tiempo querés dedicar a recorrer cada día?</h2>
+    <div className="planificacion-form-header">
+      <h2>¿Cuanto tiempo querés dedicar a recorrer cada día?</h2>
+    </div>
     <div className="selectable-card-group grid-4">
       {disponiblidadDiariaOptions.map(d => 
         <SelectableCard 

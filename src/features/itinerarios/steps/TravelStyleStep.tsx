@@ -13,6 +13,7 @@ type RitmoVisitaOption = {
 
 type TipoTransporteOption = {
   title: string, 
+  description: string,
   icon: React.ReactNode
   value: TipoTransporte
 }
@@ -54,30 +55,43 @@ function TravelStyleStep({ritmoVisita, tipoTransporte, presupuestoNivel, onChang
     },
   ]
   const transporteOptions: TipoTransporteOption[] = [
-    { value: "Caminando", title: "Caminando (A pie)", icon: <IoWalkOutline /> },
-    { value: "TransportePublico", title: "Transporte público", icon: <IoBusOutline /> },
-    { value: "VehiculoPersonal", title: "Vehículo personal", icon: <IoCarOutline /> },
+    { 
+      value: "Caminando", title: "Caminando (A pie)", 
+      description: "Prioriza lugares cercanos y recorridos a pie", icon: <IoWalkOutline /> 
+    },
+    { 
+      value: "TransportePublico", title: "Transporte público", 
+      description: "Combina caminatas con colectivos, subtes y trenes.", icon: <IoBusOutline />
+
+    },
+    { 
+      value: "VehiculoPersonal", title: "Vehículo personal", 
+      description: "Considera desplazamientos en auto entre las distintas zonas", icon: <IoCarOutline />
+
+    },
   ];
   
 
   const presupuestoOptions: PresupuestoOption[] = [
     { 
-      value: 1, title: "Económico", description: "$", 
-      icon: <BsPiggyBank /> 
+      value: 1, title: "Económico", 
+      description: "Prioriza actividades gratuitas o de bajo costo", icon: <BsPiggyBank /> 
     },
     { 
-      value: 2, title: "Equilibrado", description: "$$", 
-      icon: <BsWallet2 /> 
+      value: 2, title: "Equilibrado", 
+      description: "Combina opciones gratuitas y de bajo costo con algunas experiencias pagas", icon: <BsWallet2 /> 
     },
     { 
-      value: 3, title: "Sin restricciones", description: "$$$", 
-      icon: <BsGem /> 
+      value: 3, title: "Flexible", 
+      description: "Considera una mayor variedad de actividades y experiencias", icon: <BsGem /> 
     },
   ]
 
   return (
     <>
-    <h2>Ritmo</h2>
+    <div className="planificacion-form-header">
+      <h2>Ritmo</h2>
+    </div>
     <div className="selectable-card-group grid-3">
       {ritmoVisitaOptions.map(r => 
         <SelectableCard 
@@ -95,13 +109,16 @@ function TravelStyleStep({ritmoVisita, tipoTransporte, presupuestoNivel, onChang
       <p>{errors.ritmoVisita}</p>
     </div>
     }
-    <h2>Medio de transporte</h2>
+    <div className="planificacion-form-header">
+      <h2>Medio de transporte</h2>
+    </div>
     <div className="selectable-card-group grid-3">
       {transporteOptions.map(t => 
         <SelectableCard 
           key={t.value}
           title={t.title}
           icon={t.icon}
+          description={t.description}
           selected={tipoTransporte === t.value}
           onClick={() => onChange({tipoTransporte: t.value})}
           variant="big"

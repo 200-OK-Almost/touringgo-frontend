@@ -30,19 +30,19 @@ type CategoriaOption = {
 function TravelCompanionsAndInterestsStep({categorias, modalidadViaje, categoriasPrioritarias, onChange, errors}: TravelCompanionsAndInterestsStepProps) {
   const modalidadViajeOptions: ModalidadViajeOption[] = [
     {
-      title: "Solo", value: "solo", description: "Viajo por mi cuenta",
+      title: "Solo", value: "solo", description: "Un recorrido pensado para disfrutar a tu propio ritmo",
       icon: <IoPersonOutline />
     },
     {
-      title: "Grupo", value: "grupo", description: "Viajo con amigos",
+      title: "Con Grupo", value: "grupo", description: "Propuestas para disfrutar en grupo",
       icon: <IoPeopleOutline />
     },
     {
-      title: "Familia", value: "familia", description: "Viajo con familiares",
+      title: "Con familia", value: "familia", description: "Actividades para las necesidades de los distintos integrantes",
       icon: <IoPeople />
     },
     {
-      title: "Pareja", value: "pareja", description: "Viajo en pareja",
+      title: "En pareja", value: "pareja", description: "Experiencias para compartir de a dos",
       icon: <IoHeartOutline />
     },
   ]
@@ -67,7 +67,9 @@ function TravelCompanionsAndInterestsStep({categorias, modalidadViaje, categoria
   
   return (
     <>
-    <h2>Modalidad de viaje</h2>
+    <div className="planificacion-form-header">
+      <h2>Modalidad de viaje</h2>
+    </div>
     <div className="selectable-card-group grid-4">
       {modalidadViajeOptions.map(m => 
         <SelectableCard 
@@ -86,7 +88,11 @@ function TravelCompanionsAndInterestsStep({categorias, modalidadViaje, categoria
     </div>
     }
 
-    <h2>Categorías de interés</h2>
+    <div className="planificacion-form-header">
+      <h2>Categorías de interés</h2>
+      <p className="planificacion-form-description">Elegí las categorías que más te interesan para esta salida. Las vamos a priorizar, pero también tendremos en cuenta tus preferencias habituales y podremos incluir otras actividades que complementen el recorrido.</p>
+      <p className="planificacion-form-description text-muted">Podés dejar todas las categorías sin seleccionar para usar tus preferencias habituales.</p>
+    </div>
     <div className="selectable-card-group grid-auto">
       {categoriaOptions.map(c => 
         <SelectableCard 
