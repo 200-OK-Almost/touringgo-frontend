@@ -30,10 +30,13 @@ export interface ItineraryFormData {
   tipoTransporte: TipoTransporte | null;
 }
 
+type NavigationDirection = "forward" | "backward";
 function PlanificacionForm() {
   const [errors, setErrors] = useState<FormErrors>({});
   
   const [currentStepCounter, setCurrentStepCounter] = useState(0);
+
+  const [direction, setDirection] = useState<NavigationDirection>("forward");
 
   const steps = [
     { label: "Barrio y punto de partida" },
@@ -59,7 +62,7 @@ function PlanificacionForm() {
     if (Object.keys(validationErrors).length > 0) {
       return
     }
-
+    setDirection("forward");
     setCurrentStepCounter(prev => {
       if (prev >= steps.length-1) return prev
       return prev + 1
@@ -71,7 +74,8 @@ function PlanificacionForm() {
     if (currentStepCounter <= 0) {
       navigation.navigate("/")
     }
-
+    
+    setDirection("backward");
     setCurrentStepCounter(prev => {
       if (prev <= 0) return prev
       return prev - 1
@@ -163,7 +167,10 @@ function PlanificacionForm() {
         totalSteps={steps.length}
       />
       
-      <div className="planificacion-step-content">
+      <div 
+        key={currentStepCounter}
+        className={`planificacion-step-content planificacion-step-content--${direction}`}
+      >
         {renderCurrentStep()}
       </div>
 

@@ -68,9 +68,10 @@ function TravelCompanionsAndInterestsStep({categorias, modalidadViaje, categoria
   return (
     <>
     <h2>Modalidad de viaje</h2>
-    <div className="selectable-card-group horizontal-group">
+    <div className="selectable-card-group grid-4">
       {modalidadViajeOptions.map(m => 
         <SelectableCard 
+          key={m.value}
           title={m.title}
           icon={m.icon}
           selected={modalidadViaje === m.value}
@@ -86,9 +87,10 @@ function TravelCompanionsAndInterestsStep({categorias, modalidadViaje, categoria
     }
 
     <h2>Categorías de interés</h2>
-    <div className="selectable-card-group horizontal-grid">
+    <div className="selectable-card-group grid-auto">
       {categoriaOptions.map(c => 
         <SelectableCard 
+          key={c.value.id ?? c.title}
           title={c.title}
           icon={c.icon}
           selected={categoriasPrioritarias.includes(c.value)}

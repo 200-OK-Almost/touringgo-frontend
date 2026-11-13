@@ -55,9 +55,10 @@ function DurationStep({cantidadDias, disponibilidadDiaria, onChange, errors}: Du
   return (
     <>
     <h2>Duración de la salida</h2>
-    <div className="selectable-card-group horizontal-group">
+    <div className="selectable-card-group grid-4">
       {cantidadDiasOptions.map(c => 
         <SelectableCard 
+          key={c.value}
           title={c.title}
           selected={cantidadDias === c.value}
           description={c.description}
@@ -72,9 +73,10 @@ function DurationStep({cantidadDias, disponibilidadDiaria, onChange, errors}: Du
     }
 
     <h2>¿Cuanto tiempo querés dedicar a recorrer cada día?</h2>
-    <div className="selectable-card-group horizontal-group">
+    <div className="selectable-card-group grid-4">
       {disponiblidadDiariaOptions.map(d => 
         <SelectableCard 
+          key={d.value}
           title={d.title}
           icon={d.icon}
           description={d.description}

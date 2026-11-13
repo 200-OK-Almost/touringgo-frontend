@@ -78,9 +78,10 @@ function TravelStyleStep({ritmoVisita, tipoTransporte, presupuestoNivel, onChang
   return (
     <>
     <h2>Ritmo</h2>
-    <div className="selectable-card-group horizontal-group">
+    <div className="selectable-card-group grid-3">
       {ritmoVisitaOptions.map(r => 
         <SelectableCard 
+          key={r.value}
           title={r.title}
           selected={ritmoVisita === r.value}
           icon={r.icon}
@@ -95,9 +96,10 @@ function TravelStyleStep({ritmoVisita, tipoTransporte, presupuestoNivel, onChang
     </div>
     }
     <h2>Medio de transporte</h2>
-    <div className="selectable-card-group horizontal-group">
+    <div className="selectable-card-group grid-3">
       {transporteOptions.map(t => 
         <SelectableCard 
+          key={t.value}
           title={t.title}
           icon={t.icon}
           selected={tipoTransporte === t.value}
@@ -111,9 +113,10 @@ function TravelStyleStep({ritmoVisita, tipoTransporte, presupuestoNivel, onChang
     </div>
     }
     <h2>Presupuesto</h2>
-    <div className="selectable-card-group horizontal-group">
+    <div className="selectable-card-group grid-3">
       {presupuestoOptions.map(p => 
         <SelectableCard 
+          key={p.value}
           title={p.title}
           icon={p.icon}
           description={p.description}
