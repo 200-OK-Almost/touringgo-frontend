@@ -9,11 +9,17 @@ export function validateStep(formData: ItineraryFormData, step: number): FormErr
 
   switch (step) {
     case 0: 
-      if (formData.barrioInicio == null) 
-        errors.barrioInicio = "Seleccioná un barrio.";
+      if (formData.barrio == null) 
+        errors.barrio = "Seleccioná un barrio.";
       
-      if (formData.puntoInicio == null)
+      if (formData.puntoInicio == null) {
         errors.puntoInicio = "Seleccioná un punto de partida.";
+      } else if (
+        (formData.puntoInicio === "hospedajeDefinido" || formData.puntoInicio === "recomendarHospedaje") &&
+        formData.hospedajeLugarGuid == null
+      ) {
+        errors.hospedajeLugarGuid = "Seleccioná un lugar de alojamiento de la lista.";
+      }
 
       break;
 

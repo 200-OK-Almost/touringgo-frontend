@@ -14,6 +14,7 @@ function buildQuery(filtro: LugarFiltro): string {
   const params = new URLSearchParams();
 
   if (filtro.barrio) params.set("barrio", filtro.barrio);
+  if (filtro.tipoLugar) params.set("tipoLugar", filtro.tipoLugar);
   if (filtro.categoriaCodigo) params.set("categoriaCodigo", filtro.categoriaCodigo);
   if (filtro.soloBajoTecho) params.set("soloBajoTecho", "true");
   if (filtro.soloAlAireLibre) params.set("soloAlAireLibre", "true");

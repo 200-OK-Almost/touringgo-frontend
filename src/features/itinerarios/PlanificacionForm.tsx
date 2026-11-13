@@ -14,9 +14,9 @@ import type { RitmoVisita, TipoTransporte } from "../profile/types";
 import { validateStep, type FormErrors } from "./PlanificationForm.validation";
 
 export interface ItineraryFormData {
-  barrioInicio: BarrioCaba | null;
+  barrio: BarrioCaba | null;
   puntoInicio: PuntoInicio | null;
-  hospedajeDireccion?: string | null;
+  hospedajeLugarGuid: string | null;
 
   cantidadDias: number | null;
   disponibilidadDiaria: DisponibilidadDiaria | null;
@@ -71,7 +71,7 @@ function PlanificacionForm() {
     if (currentStepCounter <= 0) {
       navigation.navigate("/")
     }
-    
+
     setCurrentStepCounter(prev => {
       if (prev <= 0) return prev
       return prev - 1
@@ -79,14 +79,12 @@ function PlanificacionForm() {
   }
 
   const [categorias, setCategorias] = useState<CategoriaDto[]>([])
-  const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        setIsLoading(true);
         setCategorias(await getCategorias())
-      } finally {
-        setIsLoading(false)
+      } catch {
+        // Ignore error
       }
     }
     fetchCategorias()
@@ -94,8 +92,9 @@ function PlanificacionForm() {
   
 
   const [formData, setFormData] = useState<ItineraryFormData>({
-    barrioInicio: null,
+    barrio: null,
     puntoInicio: null,
+    hospedajeLugarGuid: null,
 
     cantidadDias: null,
     disponibilidadDiaria: null,
@@ -111,8 +110,9 @@ function PlanificacionForm() {
       case 0:
         return (
           <LocationStep
-            barrioInicio={formData.barrioInicio}
+            barrio={formData.barrio}
             puntoInicio={formData.puntoInicio}
+            hospedajeLugarGuid={formData.hospedajeLugarGuid}
             onChange={(changes) => updateFormData(changes)}
             errors={errors}
           />

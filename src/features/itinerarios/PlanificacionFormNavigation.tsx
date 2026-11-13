@@ -1,4 +1,4 @@
-import { IoArrowBackOutline, IoArrowForwardOutline, IoSparkles, IoSparklesOutline } from "react-icons/io5"
+import { IoArrowBackOutline, IoArrowForwardOutline, IoSparkles } from "react-icons/io5"
 import "./PlanificacionFormNavigation.css"
 
 export interface PlanificacionFormNavigationProps {
