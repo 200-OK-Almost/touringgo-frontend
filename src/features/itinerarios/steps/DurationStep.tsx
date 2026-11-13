@@ -1,0 +1,99 @@
+import { SelectableCard } from "../../../components/SelectableCard";
+import type { FormErrors } from "../PlanificationForm.validation";
+import type { DisponibilidadDiaria } from "../types"
+
+type DayAvailabilityOption = {
+  title: string, 
+  description: string,
+  icon: React.ReactNode
+  value: DisponibilidadDiaria
+}
+
+interface DurationStepProps {
+  cantidadDias: number | null, 
+  disponibilidadDiaria: DisponibilidadDiaria | null, 
+    onChange: (changes: {
+      cantidadDias?: number | null
+      disponibilidadDiaria?: DisponibilidadDiaria
+    }) => void;
+  errors: FormErrors
+}
+
+type DuracionOption = {
+  title: string, 
+  description: string,
+  value: number
+}
+
+function DurationStep({cantidadDias, disponibilidadDiaria, onChange, errors}: DurationStepProps) {
+  const disponiblidadDiariaOptions: DayAvailabilityOption[] = [
+    {
+      title: "Dia completo", value: "diaCompleto", description: "Mañana y tarde",
+      icon: <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" data-d-component="icon"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 1C12.5523 1 13 1.44772 13 2V4C13 4.55228 12.5523 5 12 5C11.4477 5 11 4.55228 11 4V2C11 1.44772 11.4477 1 12 1ZM4.22183 4.22183C4.61235 3.8313 5.24551 3.8313 5.63604 4.22183L7.05025 5.63604C7.44078 6.02656 7.44078 6.65973 7.05025 7.05025C6.65973 7.44078 6.02656 7.44078 5.63604 7.05025L4.22183 5.63604C3.8313 5.24551 3.8313 4.61235 4.22183 4.22183ZM19.7782 4.22183C20.1687 4.61235 20.1687 5.24551 19.7782 5.63604L18.364 7.05025C17.9734 7.44078 17.3403 7.44078 16.9497 7.05025C16.5592 6.65973 16.5592 6.02656 16.9497 5.63604L18.364 4.22183C18.7545 3.8313 19.3876 3.8313 19.7782 4.22183ZM12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9ZM7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12ZM1 12C1 11.4477 1.44772 11 2 11H4C4.55228 11 5 11.4477 5 12C5 12.5523 4.55228 13 4 13H2C1.44772 13 1 12.5523 1 12ZM19 12C19 11.4477 19.4477 11 20 11H22C22.5523 11 23 11.4477 23 12C23 12.5523 22.5523 13 22 13H20C19.4477 13 19 12.5523 19 12ZM7.05025 16.9497C7.44078 17.3403 7.44078 17.9734 7.05025 18.364L5.63604 19.7782C5.24551 20.1687 4.61235 20.1687 4.22183 19.7782C3.8313 19.3876 3.8313 18.7545 4.22183 18.364L5.63604 16.9497C6.02656 16.5592 6.65973 16.5592 7.05025 16.9497ZM16.9497 16.9497C17.3403 16.5592 17.9734 16.5592 18.364 16.9497L19.7782 18.364C20.1687 18.7545 20.1687 19.3876 19.7782 19.7782C19.3877 20.1687 18.7545 20.1687 18.364 19.7782L16.9497 18.364C16.5592 17.9734 16.5592 17.3403 16.9497 16.9497ZM12 19C12.5523 19 13 19.4477 13 20V22C13 22.5523 12.5523 23 12 23C11.4477 23 11 22.5523 11 22V20C11 19.4477 11.4477 19 12 19Z" fill="currentColor"></path></svg>
+    },
+    {
+      title: "Mañana", value: "mañana", description: "Hasta el mediodía",
+      icon: <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-d-component="icon"><path d="M12 2v8"></path><path d="m4.93 10.93 1.41 1.41"></path><path d="M2 18h2"></path><path d="M20 18h2"></path><path d="m19.07 10.93-1.41 1.41"></path><path d="M22 22H2"></path><path d="m8 6 4-4 4 4"></path><path d="M16 18a4 4 0 0 0-8 0"></path></svg>
+    },
+    {
+      title: "Tarde", value: "tarde", description: "Desde el mediodía hasta la noche",
+      icon: <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-d-component="icon"><path d="M12 10V2"></path><path d="m4.93 10.93 1.41 1.41"></path><path d="M2 18h2"></path><path d="M20 18h2"></path><path d="m19.07 10.93-1.41 1.41"></path><path d="M22 22H2"></path><path d="m16 6-4 4-4-4"></path><path d="M16 18a4 4 0 0 0-8 0"></path></svg>
+    },
+    {
+      title: "Noche", value: "noche", description: "Actividades nocturnas",
+      icon: <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" data-d-component="icon" ><path d="M12.7836 2.47048C12.9676 2.76512 12.9855 3.13415 12.8309 3.44525C12.2994 4.51497 12 5.7211 12 7.00001C12 11.4183 15.5817 15 20 15L20.0575 14.9998C20.4049 14.9974 20.7287 15.1754 20.9127 15.47C21.0968 15.7647 21.1147 16.1337 20.9601 16.4448C19.325 19.7352 15.9279 22 12 22C6.47715 22 2 17.5229 2 12C2 6.50107 6.43841 2.03886 11.9284 2.00027C12.2758 1.99783 12.5995 2.17584 12.7836 2.47048ZM10.4099 4.15803C6.75344 4.8954 4 8.12619 4 12C4 16.4183 7.58172 20 12 20C14.587 20 16.8886 18.7721 18.3516 16.8648C13.6131 16.0789 10 11.9614 10 7.00001C10 6.01361 10.1431 5.05953 10.4099 4.15803Z" fill="currentColor"></path></svg>
+    },
+  ]
+
+  const cantidadDiasOptions: DuracionOption[] = [
+    {title: "1 Día", description: "", value: 1},
+    {title: "3 Días", description: "", value: 4},
+    {title: "5 Días", description: "", value: 5},
+    {title: "7 Días", description: "", value: 7},
+  ]
+
+  return (
+    <>
+    <div className="planificacion-form-header">
+      <h2>Duración de la salida</h2>
+    </div>
+    <div className="selectable-card-group grid-4">
+      {cantidadDiasOptions.map(c => 
+        <SelectableCard 
+          key={c.value}
+          title={c.title}
+          selected={cantidadDias === c.value}
+          description={c.description}
+          onClick={() => onChange({cantidadDias: c.value})}
+          variant="big"
+        />
+      )}
+    </div>
+    {errors.cantidadDias && <div className="planificacion-field-error">
+      <p>{errors.cantidadDias}</p>
+    </div>
+    }
+    <div className="planificacion-form-header">
+      <h2>¿Cuanto tiempo querés dedicar a recorrer cada día?</h2>
+    </div>
+    <div className="selectable-card-group grid-4">
+      {disponiblidadDiariaOptions.map(d => 
+        <SelectableCard 
+          key={d.value}
+          title={d.title}
+          icon={d.icon}
+          description={d.description}
+          selected={disponibilidadDiaria === d.value}
+          onClick={() => onChange({disponibilidadDiaria: d.value})}
+          variant="big"
+        />
+      )}
+    </div>
+    {errors.disponibilidadDiaria && <div className="planificacion-field-error">
+      <p>{errors.disponibilidadDiaria}</p>
+    </div>
+    }
+    </>
+  )
+}
+export default DurationStep

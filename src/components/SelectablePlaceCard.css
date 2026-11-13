@@ -1,0 +1,163 @@
+.selectable-place-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.875rem 1rem;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.selectable-place-card:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Header: Barrio y Radio indicator */
+.selectable-place-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.selectable-place-card__barrio {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--primary, #0f766e);
+  background-color: rgba(15, 118, 110, 0.08);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  max-width: calc(100% - 30px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Body: Imagen opcional, Nombre y Dirección */
+.selectable-place-card__body {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.selectable-place-card__thumb {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: var(--bg-subtle, #f8f7fa);
+  border: 1px solid var(--border, #e5e4e7);
+}
+
+.selectable-place-card__thumb .smart-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.selectable-place-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.selectable-place-card__nombre {
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-heading, #17141c);
+  margin: 0;
+  word-break: break-word;
+}
+
+.selectable-place-card__direccion {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: var(--text-muted, #6b6375);
+  margin: 0;
+  word-break: break-word;
+}
+
+.selectable-place-card__pin-icon {
+  flex-shrink: 0;
+  color: #9ca3af;
+}
+
+/* Footer: Puntuación/Reseñas y Accesibilidad */
+.selectable-place-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border, #f0eff2);
+  margin-top: auto;
+}
+
+.selectable-place-card__rating {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+}
+
+.selectable-place-card__rating-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-weight: 700;
+  color: var(--text-heading, #17141c);
+}
+
+.selectable-place-card__star-icon {
+  color: #f59e0b;
+}
+
+.selectable-place-card__rating-score--empty {
+  color: var(--text-muted, #6b6375);
+}
+
+.selectable-place-card__rating-count {
+  color: var(--text-muted, #6b6375);
+}
+
+.selectable-place-card__accessibility-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.selectable-place-card__accessibility {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  line-height: 1.2;
+}
+
+.selectable-place-card__accessibility svg {
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.selectable-place-card__accessibility--accessible {
+  background-color: #ede9fe;
+  color: #6d28d9;
+}
+
+.selectable-place-card__accessibility--not-accessible {
+  background-color: var(--bg-subtle, #f3f4f6);
+  color: var(--text-muted, #6b7280);
+}
+

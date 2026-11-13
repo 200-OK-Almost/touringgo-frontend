@@ -1,5 +1,6 @@
 import { http } from "./client";
 import type {
+  CategoriaDto,
   ControlCuotaGoogleDto,
   LugarDetalleDto,
   LugarFiltro,
@@ -13,6 +14,7 @@ function buildQuery(filtro: LugarFiltro): string {
   const params = new URLSearchParams();
 
   if (filtro.barrio) params.set("barrio", filtro.barrio);
+  if (filtro.tipoLugar) params.set("tipoLugar", filtro.tipoLugar);
   if (filtro.categoriaCodigo) params.set("categoriaCodigo", filtro.categoriaCodigo);
   if (filtro.soloBajoTecho) params.set("soloBajoTecho", "true");
   if (filtro.soloAlAireLibre) params.set("soloAlAireLibre", "true");
@@ -39,4 +41,8 @@ export function getLugar(id: string): Promise<LugarDetalleDto> {
 
 export function getCuota(): Promise<ControlCuotaGoogleDto> {
   return http.get(`${LUGARES_BASE}/google/cuota`);
+}
+
+export function getCategorias(): Promise<CategoriaDto[]> {
+  return http.get(`${LUGARES_BASE}/categorias`);
 }

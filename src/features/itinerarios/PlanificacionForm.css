@@ -1,0 +1,187 @@
+.planificacion-form-main {
+  width: 100%;
+  max-width: 1050px;
+  margin: 0.5rem auto;
+  padding: 1rem 2rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  flex: 1;
+}
+
+.planificacion-step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.planificacion-form-header {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+
+/* =========================================================
+   GRID RESPONSIVE POR CANTIDAD DE OPCIONES
+   ========================================================= */
+
+.selectable-card-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+/* Fallback legacy por si se utiliza horizontal-group o horizontal-grid en otros lados */
+.selectable-card-group.horizontal-group {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.selectable-card-group.horizontal-grid {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+}
+
+/* 1. Grilla para 5 opciones (Barrios) */
+.selectable-card-group.grid-5 {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+@media (max-width: 1100px) {
+  .selectable-card-group.grid-5 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .selectable-card-group.grid-5 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .selectable-card-group.grid-5 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 2. Grilla para 4 opciones (Modalidad de viaje, Duración días, Disponibilidad diaria) */
+.selectable-card-group.grid-4 {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 992px) {
+  .selectable-card-group.grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .selectable-card-group.grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 3. Grilla para 3 opciones (Punto de partida, Ritmo, Presupuesto, Transporte) */
+.selectable-card-group.grid-3 {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 860px) {
+  .selectable-card-group.grid-3 {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .selectable-card-group.grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 4. Grilla auto-ajustable densa para muchas cards (Categorías de interés) */
+.selectable-card-group.grid-auto {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+}
+
+@media (max-width: 480px) {
+  .selectable-card-group.grid-auto {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+
+.planificacion-field-error {
+  background-color: var(--warning-bg-subtle);
+  border: 1px solid var(--warning-border-subtle);
+  border-radius: var(--border-radius);
+  color: var(--warning-text);
+  padding: 0.5rem 0.75rem;
+}
+
+/* Transiciones entre pasos */
+.planificacion-step-content {
+  animation-duration: 250ms;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
+.planificacion-step-content--forward {
+  animation-name: slide-from-right;
+}
+
+.planificacion-step-content--backward {
+  animation-name: slide-from-left;
+}
+
+@keyframes slide-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .planificacion-step-content {
+    animation: none;
+  }
+}
+
+@media (max-width: 991px) {
+  .planificacion-form-main {
+    padding: 0.5rem 1rem;
+  }
+}

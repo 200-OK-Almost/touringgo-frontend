@@ -8,7 +8,12 @@
   --border: #e5e4e7;
   --primary: #0f766e;
   --primary-hover: #0b5f58;
-  --secondary: rgb(232, 89, 60);
+  --secondary: rgb(245, 158, 11);
+  --secondary-hover: #e08e00;
+
+  --warning-bg-subtle: #fff3cd;
+  --warning-border-subtle: #ffe69c;
+  --warning-text: #664d03;
 
   /* Explorador de Lugares */
   --bg-page: #f7f8fa;
@@ -90,6 +95,9 @@ svg {
 
 #root {
   min-height: 100vh;
+  /* para poder usar flex:1 en componentes y centrar verticalmente */
+  display: flex;
+  flex-direction: column;
 }
 
 main {
@@ -100,6 +108,10 @@ main {
   background: linear-gradient(90deg, #eef0f3 25%, #f7f8fa 37%, #eef0f3 63%);
   background-size: 400% 100%;
   animation: shimmer 1.4s ease infinite;
+}
+
+.text-muted {
+  color: var(--text-muted);
 }
 
 @keyframes shimmer {

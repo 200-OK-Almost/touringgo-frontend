@@ -1,0 +1,27 @@
+.step-indicator {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.step-indicator-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.step-indicator-bar,
+.step-indicator-progress {
+  height: .5rem;
+  width: 100%;
+  border-radius: 16px;
+  background-color: var(--bg);
+  transition: all .25s;
+
+}
+.step-indicator-bar {
+  background-color: var(--bg);
+}
+
+.step-indicator-progress {
+  background-color: var(--primary);
+}

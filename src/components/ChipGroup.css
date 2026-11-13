@@ -31,3 +31,23 @@
   border-color: var(--emerald);
   color: #ffffff;
 }
+
+/* Estado deshabilitado / bloqueado */
+.chip:disabled,
+.chip--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: auto;
+  background: var(--bg-subtle, #f3f4f6);
+  border-color: var(--line, #e5e7eb);
+  color: var(--text-soft, #9ca3af);
+}
+
+.chip:disabled:hover,
+.chip--disabled:hover {
+  border-color: var(--line, #e5e7eb);
+  color: var(--text-soft, #9ca3af);
+  background: var(--bg-subtle, #f3f4f6);
+  box-shadow: none;
+  cursor: not-allowed;
+}

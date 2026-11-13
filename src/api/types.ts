@@ -103,6 +103,7 @@ export interface ResultadoPaginadoDto<T> {
 
 export interface LugarFiltro {
   barrio?: BarrioCaba;
+  tipoLugar?: TipoLugar
   categoriaCodigo?: string;
   soloBajoTecho?: boolean;
   soloAlAireLibre?: boolean;
