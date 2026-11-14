@@ -1,0 +1,12 @@
+.recorrido-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.recorrido-dia {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+  padding-right: .5rem;
+}

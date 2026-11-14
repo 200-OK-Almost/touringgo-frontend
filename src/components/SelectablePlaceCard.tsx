@@ -15,7 +15,7 @@ export interface SelectablePlaceCardProps {
   className?: string;
 }
 
-function PinIcon() {
+export function PinIcon() {
   return (
     <svg
       className="selectable-place-card__pin-icon"

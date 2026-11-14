@@ -24,3 +24,15 @@ export function formatearPuntuacion(puntuacion: number | null): string | null {
   if (puntuacion == null) return null;
   return puntuacion.toFixed(1);
 }
+
+export function capitalize(string: string) {
+  if (!string) return "";
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export function getHourAndMinutes(date: Date) {
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+
+  return `${hours}:${minutes}`;
+}
