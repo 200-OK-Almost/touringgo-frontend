@@ -15,10 +15,10 @@ export interface SelectablePlaceCardProps {
   className?: string;
 }
 
-export function PinIcon() {
+export function PinIcon({className}: {className?: string}) {
   return (
     <svg
-      className="selectable-place-card__pin-icon"
+      className={`selectable-place-card__pin-icon ${className}`}
       width="13"
       height="13"
       viewBox="0 0 24 24"

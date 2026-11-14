@@ -1,0 +1,43 @@
+.dia-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+}
+
+.dia-selector__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+
+  padding: .5rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
+}
+.dia-selector__item:hover {
+  background: var(--bg-subtle);
+  border-color: var(--primary);
+}
+
+
+.dia-selector__item.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.dia-selector__numero {
+  font-weight: 600;
+}
+
+.dia-selector__fecha {
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
