@@ -47,21 +47,22 @@ function ViajeView({viaje, itinerariosViewModel}: ViajeViewProps) {
       <main className="viaje-content">
           {/* Trip header */}
           <header className="viaje-header">
+            <div className="viaje-header-info">
               <h1>Salida por {viaje.barrio}</h1>
               <p>
                   {capitalize(viaje.tipoViaje)}
                   <span>·</span>
                   {viaje.ritmoCaminata}
               </p>
-          </header>
-          {/* Map */}
-          <div className="recorrido-header">
-            <h2>Recorrido</h2>
+            </div>
             <DiaSelector 
               dias={dias}
               diaActual={diaActual}
               onDiaChange={setDiaActual}
             />
+          </header>
+          <div className="recorrido-header">
+            <h2>Recorrido</h2>
           </div>
           <section className="viaje-mapa">
               <ViajeMap

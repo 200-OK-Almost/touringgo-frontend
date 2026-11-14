@@ -1,7 +1,7 @@
 /* Main layout */
 .viaje-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1.8fr) minmax(320px, 1fr);
+    grid-template-columns: minmax(0, 2.25fr) minmax(320px, 1fr);
     gap: 0;
 
     width: 100%;
@@ -21,63 +21,64 @@
     padding: 1rem 0 1rem 1rem;
 
     overflow-y: auto;
+    background-color: var(--bg);
 }
 
 /* Trip header */
 .viaje-header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: row;
+  gap: 0.35rem;
+  justify-content: space-between;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
 }
 
 .viaje-header h1 {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 600;
-    line-height: 1.3;
-    color: var(--text);
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text);
 }
 
 .viaje-header p {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
-    margin: 0;
-    font-size: 0.875rem;
-    color: var(--text-muted);
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-muted);
 }
 
 /* Map */
 .viaje-mapa {
-    flex: 1;
-    min-height: 0;
+  flex: 1;
+  min-height: 0;
 }
 
 /* Itinerary */
 .viaje-recorrido {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
 }
 
 /* Right sidebar */
 .viaje-sidebar {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    min-width: 0;
-    min-height: 0;
-    overflow: hidden;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 
-    border-left: 1px solid var(--border);
+  border-left: 2px solid var(--border);
 }
 
 /* panel de recorrido */
@@ -94,6 +95,33 @@
   flex-direction: column;
   gap: .25rem;
   padding-right: .5rem;
+}
+
+/* scrollbar */
+.recorrido-dia {
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+/* Chrome, Edge, Safari */
+.recorrido-dia::-webkit-scrollbar {
+    width: 6px;
+}
+
+.recorrido-dia::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.recorrido-dia::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 10px;
+}
+
+.recorrido-dia::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
 }
 
 /* Responsive */
