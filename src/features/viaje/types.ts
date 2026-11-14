@@ -1,4 +1,4 @@
-import type { BarrioCaba } from "../../api/types"
+import type { BarrioCaba, LugarDetalleDto } from "../../api/types"
 import type { DisponibilidadDiaria, ModalidadViaje, PuntoInicio } from "../itinerarios/types"
 import type { RitmoVisita } from "../profile/types"
 
@@ -56,6 +56,16 @@ export type ParadaItinerarioDto = {
   sugerenciaIa?: string 
   notasPersonales?: string
 }
+
+export type ParadaViewModel = {
+    parada: ParadaItinerarioDto;
+    lugar: LugarDetalleDto;
+};
+
+export type ItinerarioViewModel = {
+    itinerario: ItinerarioDto;
+    paradas: ParadaViewModel[];
+};
 
 export type ParametrosFamiliaDto = {
   cantidadAcompanantes: number

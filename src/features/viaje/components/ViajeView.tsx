@@ -1,15 +1,27 @@
+import { useState } from "react"
 import { capitalize } from "../../../lib/format"
-import type { ViajeDto } from "../types"
+import type { ItinerarioViewModel, ViajeDto } from "../types"
 import AsistentePanel from "./AsistentePanel"
 import RecorridoPanel from "./RecorridoPanel"
 import ViajeMap from "./ViajeMap"
 import "./ViajeView.css"
 export interface ViajeViewProps {
   viaje: ViajeDto
+  itinerariosViewModel: ItinerarioViewModel[]
 }
 
-function ViajeView({viaje}: ViajeViewProps) {
-  
+function ViajeView({viaje, itinerariosViewModel}: ViajeViewProps) {
+  const [diaActual, setDiaActual] = useState(1);
+  const [paradaSeleccionadaId, setParadaSeleccionadaId] = useState<string | null>(null);
+
+  const itinerarioActual = itinerariosViewModel.find(
+      i => i.itinerario.numeroDia === diaActual
+  );
+
+  if (!itinerarioActual) {
+      return <p>No hay itinerario disponible para este día.</p>;
+  }
+
   return (
     <div className="viaje-layout">
       {/* Main content */}
@@ -25,17 +37,23 @@ function ViajeView({viaje}: ViajeViewProps) {
           </header>
           {/* Map */}
           <section className="viaje-mapa">
-              <ViajeMap viaje={viaje} />
+              <ViajeMap
+                itinerarioViewModel={itinerarioActual}
+              />
           </section>
           {/* Itinerary */}
           <section className="viaje-recorrido">
-              <RecorridoPanel viaje={viaje} />
+              <RecorridoPanel 
+                paradas={itinerarioActual.paradas}
+              />
           </section>
       </main>
 
       {/* Chat sidebar */}
       <aside className="viaje-sidebar">
-          <AsistentePanel viaje={viaje} />
+          <AsistentePanel 
+            viaje={viaje} 
+          />
       </aside>
 
   </div>

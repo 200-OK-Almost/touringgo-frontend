@@ -1,18 +1,12 @@
-import { useState } from "react"
-import type { ViajeDto } from "../types"
+import type { ParadaViewModel } from "../types"
 import DiaRecorrido from "./DiaRecorrido"
 import "./RecorridoPanel.css"
 
 interface RecorridoPanelProps {
-  viaje: ViajeDto
+  paradas: ParadaViewModel[]
 }
 
-function RecorridoPanel({viaje}: RecorridoPanelProps) {
-  const [diaActual, setDiaActual] = useState<number>(1)
-
-  function getItinerarioActual() {
-    return viaje.itinerarios.find(itinerario => itinerario.numeroDia == diaActual)
-  }
+function RecorridoPanel({paradas}: RecorridoPanelProps) {
 
   return (
     <>
@@ -21,7 +15,7 @@ function RecorridoPanel({viaje}: RecorridoPanelProps) {
     </div>
     <div className="recorrido-dia">
       <DiaRecorrido
-        itinerario={getItinerarioActual() ?? null}
+        paradasViewModel={paradas}
       />
     </div>
     </>

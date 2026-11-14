@@ -1,23 +1,23 @@
-import type { ItinerarioDto } from "../types"
+import type { ParadaViewModel } from "../types"
 import LugarRecorridoCard from "./LugarRecorridoCard"
 
 interface DiaRecorridoProps {
-  itinerario: ItinerarioDto | null
+  paradasViewModel: ParadaViewModel[] | null
 } 
 
 function DiaRecorrido({
-  itinerario
+  paradasViewModel
 }: DiaRecorridoProps) {
 
-  if (!itinerario)
+  if (!paradasViewModel)
     return <p>No se encontro el itinerario</p>
 
   return (
     <>
-    {itinerario.paradas.map(parada => 
+    {paradasViewModel.map(parada => 
       <LugarRecorridoCard
-        key={parada.id}
-        parada={parada}
+        key={parada.parada.id}
+        paradaViewModel={parada}
       />
     )}
     </>

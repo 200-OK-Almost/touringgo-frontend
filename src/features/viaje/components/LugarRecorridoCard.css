@@ -70,5 +70,6 @@
   word-break: break-word;
 }
 .lugar-recorrido-card__icon {
-  font-size: 1rem;
+  font-size: 18px;
+  color: var(--primary);
 }
