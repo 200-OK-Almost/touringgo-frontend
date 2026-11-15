@@ -81,7 +81,6 @@ function ViajePage() {
       itinerario,
       paradas: construirParadasViewModel(itinerario.paradas, lugares)
   }));
-  console.log(itinerariosViewModel)
 
   return (
     <>
