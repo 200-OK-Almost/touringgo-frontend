@@ -47,7 +47,7 @@ export type ParadaItinerarioDto = {
   lugarId: string
   turno: Turno
   ordenParada: number
-  horaInicio: Date
+  horaInicio: string
   duracionMinutos: number
   distanciaMetrosDesdeAnterior?: number
   cuadrasDesdeAnterior?: number
