@@ -1,5 +1,6 @@
 import HeroBadge from "./HeroBadge";
 import "./Hero.css";
+import { Link } from "react-router-dom";
 
 export default function Hero() {
   return (
@@ -7,13 +8,15 @@ export default function Hero() {
       <div className="hero__inner">
         <HeroBadge />
         <h1 className="hero__title">Tu salida por Buenos Aires, armada en un toque.</h1>
-        <button 
-          type="button" 
+        <Link 
+          // type="button" 
+          to="/planificacion"
           className="hero__cta"
-          onClick={() => navigation.navigate("/planificacion")}
+
+          // onClick={() => navigation.navigate("/planificacion")}
         >
           Planificar nueva salida
-        </button>
+        </Link>
       </div>
     </section>
   );

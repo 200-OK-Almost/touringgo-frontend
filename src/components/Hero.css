@@ -40,6 +40,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.55);
   transform: translateY(0);
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  text-decoration: none;
 }
 
 .hero__cta:hover {
