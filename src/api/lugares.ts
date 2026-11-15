@@ -46,3 +46,9 @@ export function getCuota(): Promise<ControlCuotaGoogleDto> {
 export function getCategorias(): Promise<CategoriaDto[]> {
   return http.get(`${LUGARES_BASE}/categorias`);
 }
+
+export function getLugaresDetalle(ids: string[]): Promise<LugarDetalleDto[]> {
+  return Promise.all(
+    ids.map(id => getLugar(id))
+  );
+}
