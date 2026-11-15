@@ -5,7 +5,7 @@
     gap: 0;
 
     width: 100%;
-    height: calc(100vh - 52.8px);
+    height: calc(100vh - 55px);
 
     overflow: hidden;
 }
@@ -13,15 +13,14 @@
 /* Left column */
 .viaje-content {
     display: flex;
-    flex-direction: column;
-    gap: .5rem;
+  flex-direction: column;
+  gap: .5rem;
 
-    min-width: 0;
-    min-height: 0;
-    padding: 1rem 0 1rem 1rem;
-
-    overflow-y: auto;
-    background-color: var(--bg);
+  min-width: 0;
+  min-height: 0;
+  padding: 1rem;
+  overflow-y: auto;
+  background-color: var(--bg);
 }
 
 /* Trip header */
@@ -30,8 +29,6 @@
   flex-direction: row;
   gap: 0.35rem;
   justify-content: space-between;
-  padding-right: 1rem;
-  padding-bottom: 1rem;
 }
 
 .viaje-header h1 {
@@ -54,16 +51,13 @@
 
 /* Map */
 .viaje-mapa {
-  flex: 1;
+  height: 380px;
+  flex-shrink: 0;
   min-height: 0;
 }
 
 /* Itinerary */
 .viaje-recorrido {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-
   display: flex;
   flex-direction: column;
   gap: .5rem;
@@ -87,41 +81,44 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding-right: 1rem;
 }
 
 .recorrido-dia {
   display: flex;
   flex-direction: column;
   gap: .25rem;
-  padding-right: .5rem;
 }
 
 /* scrollbar */
-.recorrido-dia {
-    overflow-y: auto;
-    overflow-x: hidden;
+.viaje-content,
+.viaje-sidebar {
+  overflow-y: auto;
+  overflow-x: hidden;
 
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
 
 /* Chrome, Edge, Safari */
-.recorrido-dia::-webkit-scrollbar {
-    width: 6px;
+.viaje-content::-webkit-scrollbar,
+.viaje-sidebar::-webkit-scrollbar {
+  width: 6px;
 }
 
-.recorrido-dia::-webkit-scrollbar-track {
-    background: transparent;
+.viaje-content::-webkit-scrollbar-track,
+.viaje-sidebar::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.recorrido-dia::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 10px;
+.viaje-content::-webkit-scrollbar-thumb,
+.viaje-sidebar::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
 }
 
-.recorrido-dia::-webkit-scrollbar-thumb:hover {
-    background: var(--text-muted);
+.viaje-content::-webkit-scrollbar-thumb:hover,
+.viaje-sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
 /* Responsive */

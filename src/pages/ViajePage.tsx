@@ -6,6 +6,7 @@ import type { ItinerarioDto, ItinerarioViewModel, ParadaItinerarioDto, ParadaVie
 import { generateViaje, getViaje } from "../features/viaje/api/viajes";
 import type { LugarDetalleDto } from "../api/types";
 import { getLugaresDetalle } from "../api/lugares";
+import { ViajeViewSkeleton } from "../features/viaje/components/ViajeViewSkeleton";
 
 
 function construirParadasViewModel(
@@ -65,7 +66,7 @@ function ViajePage() {
       const viajeData = await getViaje(id);
       if (controller.signal.aborted) return;
       setViaje(viajeData);
-      console.log(viajeData)
+
       // CASO 1: Ya está listo (Planificado o Finalizado)
       if (viajeData.estado === "Finalizado" || viajeData.estado === "Planificado") {
         await procesarItinerariosYParadas(viajeData.itinerarios);
@@ -114,8 +115,25 @@ function ViajePage() {
   };
 }, [id]);
 
-  if (loading) return <p>Cargando viaje...</p>;
-  if (error || !viaje) return <p>{error ?? "Viaje no encontrado."}</p>;
+  if (loading) {
+    const isGenerating = viaje?.estado === "Borrador" || viaje?.estado === "EnPlanificacion";
+    return (
+      <>
+        <Navbar />
+        <ViajeViewSkeleton 
+          isGenerating={isGenerating} 
+        />
+      </>
+    );
+  }
+  if (error || !viaje) {
+  return (
+    <>
+      <Navbar />
+      <p>{error ?? "Viaje no encontrado."}</p>
+    </>
+    );
+  }
 
   // Si hay itinerarios (viaje generado), armar ItinerarioViewModel, si no, marcar null
   const itinerariosViewModel: ItinerarioViewModel[] | null = 

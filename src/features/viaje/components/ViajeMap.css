@@ -2,8 +2,6 @@
 .viaje-map-placeholder {
   width: 100%;
   height: 100%;
-
-  padding-right: 1rem;
 }
 .viaje-map-placeholder {
   background-color: var(--bg-subtle);
