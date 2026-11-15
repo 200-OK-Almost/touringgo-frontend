@@ -37,8 +37,8 @@ export interface ItineraryFormData {
 type NavigationDirection = "forward" | "backward";
 function PlanificacionForm() {
   const [errors, setErrors] = useState<FormErrors>({});
-  
   const [currentStepCounter, setCurrentStepCounter] = useState(0);
+  const [submitLoading, setSubmitLoading] = useState(false)
 
   const [direction, setDirection] = useState<NavigationDirection>("forward");
 
@@ -79,6 +79,7 @@ function PlanificacionForm() {
   }
 
   async function handleSubmit() {
+    setSubmitLoading(true)
     // temporary solution to DTO mismatch
     const hoy = new Date();
     const fechaFin = new Date(hoy);
@@ -97,12 +98,13 @@ function PlanificacionForm() {
       categoriaCodigos: formData.categoriasPrioritarias.map(x => x.codigo),
       lugarPartidaId: formData.hospedajeLugarGuid!
     }
-    console.log(viajeCreateDto)
-
-    const viajeResponse = await createViaje(viajeCreateDto);
-    const viajeId = viajeResponse.id;
-    console.log(viajeResponse)
-    navigation.navigate(`/viajes/${viajeId}`)
+    try {
+      const viajeResponse = await createViaje(viajeCreateDto);
+      const viajeId = viajeResponse.id;
+      navigation.navigate(`/viajes/${viajeId}`)
+    } finally {
+      setSubmitLoading(false)
+    }
   }
 
   function handleBack() {
@@ -110,6 +112,7 @@ function PlanificacionForm() {
 
     if (currentStepCounter <= 0) {
       navigation.navigate("/")
+      return
     }
     
     setDirection("backward");
@@ -177,7 +180,15 @@ function PlanificacionForm() {
             categorias={categorias}
             modalidadViaje={formData.modalidadViaje}
             categoriasPrioritarias={formData.categoriasPrioritarias}
-            onChange={(changes) => updateFormData(changes)}
+            onChange={(changes) => {
+              if (changes.categoriasPrioritarias && changes.categoriasPrioritarias?.length >= 4) {
+                const prevErrors = errors
+                const validationErrors = validateStep({...formData, ...changes}, currentStepCounter)
+                setErrors({... prevErrors, categoriasPrioritarias: validationErrors.categoriasPrioritarias})
+              } 
+              updateFormData(changes)
+
+            }}
             errors={errors}
           />
         );
@@ -217,7 +228,8 @@ function PlanificacionForm() {
         onBack={handleBack}
         onNext={handleNext}
         isFirstStep={currentStepCounter === 0}
-        isLastStep={currentStepCounter === steps.length - 1}    
+        isLastStep={currentStepCounter === steps.length - 1}
+        isSubmitLoading={submitLoading}
       />
 
     </main>

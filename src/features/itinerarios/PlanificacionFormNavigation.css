@@ -6,6 +6,7 @@
 .form-navigation-button {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: .5rem;
 
   padding: .5rem 2rem;
@@ -43,11 +44,19 @@
 .form-confirm-button {
   color: var(--text);
   background-color: var(--secondary);
+  /* min-width para que no cambie de tamaño al cambiar de label */
+  min-width: 252px; 
 }
-.form-confirm-button:hover {
+.form-confirm-button:not(:disabled):hover {
   background-color: var(--secondary-hover);
 }
-.form-confirm-button:active {
+.form-confirm-button:not(:disabled):active {
   background-color: var(--bg);
   color: var(--text);
+}
+.form-confirm-button:disabled {
+  opacity: .5;
+}
+.form-confirm-button-loading {
+  cursor:progress;
 }
