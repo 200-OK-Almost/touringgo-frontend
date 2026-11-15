@@ -12,6 +12,9 @@ import type { DisponibilidadDiaria, ModalidadViaje, PuntoInicio } from "./types"
 import { getCategorias } from "../../api/lugares";
 import type { RitmoVisita, TipoTransporte } from "../profile/types";
 import { validateStep, type FormErrors } from "./PlanificationForm.validation";
+import type { NivelPresupuesto, ViajeCreateDto, ViajeDto } from "../viaje/types";
+import { createViaje } from "../viaje/api/viajes";
+import { toDateOnlyString } from "../../lib/format";
 
 export interface ItineraryFormData {
   barrio: BarrioCaba | null;
@@ -27,7 +30,7 @@ export interface ItineraryFormData {
   categoriasPrioritarias: CategoriaDto[];
 
   ritmoVisita: RitmoVisita | null;
-  presupuestoNivel: number | null;
+  presupuestoNivel: NivelPresupuesto | null;
   tipoTransporte: TipoTransporte | null;
 }
 
@@ -68,7 +71,40 @@ function PlanificacionForm() {
       if (prev >= steps.length-1) return prev
       return prev + 1
     })
+
+    // paso final = submit
+    if (currentStepCounter >= steps.length-1) {
+      handleSubmit();
+    }
   }
+
+  async function handleSubmit() {
+    // temporary solution to DTO mismatch
+    const hoy = new Date();
+    const fechaFin = new Date(hoy);
+    fechaFin.setDate(hoy.getDate() + Number(formData.cantidadDias! -1));
+
+    const viajeCreateDto: ViajeCreateDto = {
+      barrio: formData.barrio!,
+      tipoViaje: formData.modalidadViaje!,
+      titulo: "Temp title",
+      alcanceTemporal: formData.disponibilidadDiaria!,
+      fechaInicio: toDateOnlyString(hoy),
+      fechaFin: toDateOnlyString(fechaFin),
+      nivelPresupuesto: formData.presupuestoNivel!,
+      ritmoCaminata: formData.ritmoVisita!,
+      tipoPuntoPartida: formData.puntoInicio!,
+      categoriaCodigos: formData.categoriasPrioritarias.map(x => x.codigo),
+      lugarPartidaId: formData.hospedajeLugarGuid!
+    }
+    console.log(viajeCreateDto)
+
+    const viajeResponse = await createViaje(viajeCreateDto);
+    const viajeId = viajeResponse.id;
+    console.log(viajeResponse)
+    navigation.navigate(`/viajes/${viajeId}`)
+  }
+
   function handleBack() {
     setErrors({}) // clear errors
 

@@ -115,6 +115,26 @@
   }
 }
 
+/* 3. Grilla para 3 opciones (Punto de partida, Ritmo, Presupuesto, Transporte) */
+.selectable-card-group.grid-2 {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (max-width: 860px) {
+  .selectable-card-group.grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .selectable-card-group.grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* 4. Grilla auto-ajustable densa para muchas cards (Categorías de interés) */
 .selectable-card-group.grid-auto {
   display: grid;

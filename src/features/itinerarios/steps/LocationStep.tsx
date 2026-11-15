@@ -53,24 +53,24 @@ function LocationStep({
       title: "Ya tengo lugar",
       description: "Dirección de hotel",
       icon: <IoHomeOutline />,
-      value: "hospedajeDefinido",
+      value: "HospedajePropio",
     },
     {
       title: "Recomiéndenme hospedaje",
       description: "Cerca del recorrido",
       icon: <IoBusinessOutline />,
-      value: "recomendarHospedaje",
+      value: "HospedajeSugerido",
     },
     {
       title: "Estoy de paso",
       description: "Punto central del barrio",
       icon: <IoTrailSignOutline />,
-      value: "sinHospedaje",
+      value: "NodoUrbano",
     },
   ];
 
   const showHospedajeSection =
-    puntoInicio === "hospedajeDefinido" || puntoInicio === "recomendarHospedaje";
+    puntoInicio === "HospedajePropio" || puntoInicio === "HospedajeSugerido";
 
   return (
     <>
@@ -88,7 +88,7 @@ function LocationStep({
               const isDifferent = barrio !== b.value;
               onChange({
                 barrio: b.value,
-                ...(puntoInicio === "recomendarHospedaje" && isDifferent
+                ...(puntoInicio === "HospedajeSugerido" && isDifferent
                   ? { hospedajeLugarGuid: null, hospedajeBarrio: null }
                   : {}),
               });
@@ -116,8 +116,10 @@ function LocationStep({
             onClick={() =>
               onChange({
                 puntoInicio: a.value,
-                hospedajeLugarGuid: a.value === "sinHospedaje" ? null : hospedajeLugarGuid,
-                hospedajeBarrio: a.value === "sinHospedaje" ? null : hospedajeBarrio,
+                hospedajeLugarGuid: 
+                  a.value === "PrimeraParada" || a.value === "NodoUrbano" ? null : hospedajeLugarGuid,
+                hospedajeBarrio: 
+                  a.value === "PrimeraParada" || a.value === "NodoUrbano" ? null : hospedajeBarrio,
               })
             }
             variant="big"

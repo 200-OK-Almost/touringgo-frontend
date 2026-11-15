@@ -3,6 +3,7 @@ import { SelectableCard } from "../../../components/SelectableCard";
 import type { RitmoVisita, TipoTransporte } from "../../profile/types";
 import { BsGem, BsPiggyBank, BsWallet2 } from "react-icons/bs";
 import type { FormErrors } from "../PlanificationForm.validation";
+import type { NivelPresupuesto } from "../../viaje/types";
 
 type RitmoVisitaOption = {
   title: string, 
@@ -21,18 +22,18 @@ type TipoTransporteOption = {
 type PresupuestoOption = {
   title: string, 
   description: string,
-  value: number
+  value: NivelPresupuesto
   icon: React.ReactNode
 }
 
 interface TravelStyleStepProps {
   ritmoVisita: RitmoVisita | null, 
-  presupuestoNivel: number | null, 
+  presupuestoNivel: NivelPresupuesto | null, 
   tipoTransporte: TipoTransporte | null,
   onChange: (changes: {
     ritmoVisita?: RitmoVisita | null, 
     tipoTransporte?: TipoTransporte | null, 
-    presupuestoNivel?: number | null, 
+    presupuestoNivel?: NivelPresupuesto | null, 
   }) => void;
   errors: FormErrors
 
@@ -42,13 +43,13 @@ function TravelStyleStep({ritmoVisita, tipoTransporte, presupuestoNivel, onChang
 
   const ritmoVisitaOptions: RitmoVisitaOption[] = [
     { 
-      value: "Relajado", title: "Relajado", description: "Pausado y contemplativo, con pocas paradas y más tiempo libre.", 
+      value: "Tranquilo", title: "Relajado", description: "Pausado y contemplativo, con pocas paradas y más tiempo libre.", 
       icon: <IoCafeOutline /> 
     },
-    { 
-      value: "Moderado", title: "Moderado", description: "Equilibrado entre descanso y actividades programadas.", 
-      icon: <IoHourglassOutline /> 
-    },
+    // { 
+    //   value: "Moderado", title: "Moderado", description: "Equilibrado entre descanso y actividades programadas.", 
+    //   icon: <IoHourglassOutline /> 
+    // },
     { 
       value: "Activo", title: "Activo", description: "Días intensos aprovechando al máximo cada atracción.", 
       icon: <IoFlashOutline /> 
@@ -67,22 +68,21 @@ function TravelStyleStep({ritmoVisita, tipoTransporte, presupuestoNivel, onChang
     { 
       value: "VehiculoPersonal", title: "Vehículo personal", 
       description: "Considera desplazamientos en auto entre las distintas zonas", icon: <IoCarOutline />
-
     },
   ];
   
 
   const presupuestoOptions: PresupuestoOption[] = [
     { 
-      value: 1, title: "Económico", 
+      value: "Economico", title: "Económico", 
       description: "Prioriza actividades gratuitas o de bajo costo", icon: <BsPiggyBank /> 
     },
     { 
-      value: 2, title: "Equilibrado", 
+      value: "Equilibrado", title: "Equilibrado", 
       description: "Combina opciones gratuitas y de bajo costo con algunas experiencias pagas", icon: <BsWallet2 /> 
     },
     { 
-      value: 3, title: "Flexible", 
+      value: "SinRestricciones", title: "Flexible", 
       description: "Considera una mayor variedad de actividades y experiencias", icon: <BsGem /> 
     },
   ]
@@ -92,7 +92,7 @@ function TravelStyleStep({ritmoVisita, tipoTransporte, presupuestoNivel, onChang
     <div className="planificacion-form-header">
       <h2>Ritmo</h2>
     </div>
-    <div className="selectable-card-group grid-3">
+    <div className="selectable-card-group grid-2">
       {ritmoVisitaOptions.map(r => 
         <SelectableCard 
           key={r.value}
@@ -137,7 +137,7 @@ function TravelStyleStep({ritmoVisita, tipoTransporte, presupuestoNivel, onChang
           title={p.title}
           icon={p.icon}
           description={p.description}
-          selected={presupuestoNivel === p.value}
+          selected={presupuestoNivel == p.value}
           onClick={() => onChange({presupuestoNivel: p.value})}
           variant="big"
         />

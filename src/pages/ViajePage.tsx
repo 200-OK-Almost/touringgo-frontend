@@ -2,8 +2,8 @@ import { useParams } from "react-router-dom";
 import Navbar from "../components/layout/Navbar"
 import ViajeView from "../features/viaje/components/ViajeView";
 import { useState, useEffect } from "react";
-import type { ItinerarioViewModel, ParadaItinerarioDto, ParadaViewModel, ViajeDto } from "../features/viaje/types";
-import { getViaje } from "../features/viaje/api/viajes";
+import type { ItinerarioDto, ItinerarioViewModel, ParadaItinerarioDto, ParadaViewModel, ViajeDto } from "../features/viaje/types";
+import { generateViaje, getViaje } from "../features/viaje/api/viajes";
 import type { LugarDetalleDto } from "../api/types";
 import { getLugaresDetalle } from "../api/lugares";
 
@@ -32,55 +32,99 @@ function ViajePage() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-      
       const controller = new AbortController();
-      
-      async function cargarViaje() {
-        if (!id) return;
-          try {
-              setLoading(true);
-              setError(null);
+      let pollTimeout: NodeJS.Timeout;
 
-              const viajeData = await getViaje(id);
-              setViaje(viajeData);
+      // Función helper para procesar las paradas y cargar detalles de lugares
+      async function procesarItinerariosYParadas(itinerarios: ItinerarioDto[]) {
+        if (!itinerarios || itinerarios.length === 0) return;
 
-              // Obtener IDs únicos de todas las paradas
-              const lugarIds = [
-                  ...new Set(
-                      viajeData.itinerarios.flatMap(itinerario =>
-                          itinerario.paradas.map(parada => parada.lugarId)
-                      )
-                  )
-              ];
+        const lugarIds = [
+          ...new Set(
+            itinerarios.flatMap((itinerario) =>
+              itinerario.paradas.map((parada: any) => parada.lugarId)
+            )
+          ),
+        ];
 
-              const lugaresData = await getLugaresDetalle(lugarIds);
-
-              setLugares(lugaresData);
-
-          } catch (err) {
-              if (controller.signal.aborted) return;
-
-              console.error(err);
-              setError("No se pudo cargar el viaje.");
-          } finally {
-              if (!controller.signal.aborted) {
-                  setLoading(false);
-              }
+        if (lugarIds.length > 0) {
+          const lugaresData = await getLugaresDetalle(lugarIds);
+          if (!controller.signal.aborted) {
+            setLugares(lugaresData);
           }
+        }
       }
 
-      cargarViaje();
+  async function cargarViaje() {
+    if (!id) return;
+    try {
+      setLoading(true);
+      setError(null);
 
-      return () => controller.abort();
-    }, [id]);
+      // 1. Consultar estado actual del viaje
+      const viajeData = await getViaje(id);
+      if (controller.signal.aborted) return;
+      setViaje(viajeData);
+      console.log(viajeData)
+      // CASO 1: Ya está listo (Planificado o Finalizado)
+      if (viajeData.estado === "Finalizado" || viajeData.estado === "Planificado") {
+        await procesarItinerariosYParadas(viajeData.itinerarios);
+        if (!controller.signal.aborted) setLoading(false);
+      } 
+      
+      // CASO 2: Está en Borrador -> Iniciamos la generación
+      else if (viajeData.estado === "Borrador") {
+        // generateViaje (POST /api/viajes/{id}/itinerario) devuelve los itinerarios generados
+        const nuevosItinerarios = await generateViaje(id);
+        if (controller.signal.aborted) return;
+
+        // Actualizamos el estado del viaje a Planificado y le asociamos los itinerarios
+        setViaje((prev: any) => ({
+          ...prev,
+          estado: "Planificado",
+          itinerarios: nuevosItinerarios,
+        }));
+
+        await procesarItinerariosYParadas(nuevosItinerarios);
+        if (!controller.signal.aborted) setLoading(false);
+      } 
+      
+      // CASO 3: Ya se está generando (EnPlanificacion) -> Polling hasta terminar
+      else if (viajeData.estado === "EnPlanificacion") {
+        // Mantenemos loading en true y reintentamos en 2 segundos
+        pollTimeout = setTimeout(() => {
+          if (!controller.signal.aborted) {
+            cargarViaje();
+          }
+        }, 2000);
+      }
+    } catch (err: any) {
+      if (controller.signal.aborted) return;
+      console.error(err);
+      setError("No se pudo cargar o generar el viaje.");
+      setLoading(false);
+    }
+  }
+
+  cargarViaje();
+  // Limpieza al desmontar el componente o cambiar de viaje
+  return () => {
+    controller.abort();
+    if (pollTimeout) clearTimeout(pollTimeout);
+  };
+}, [id]);
 
   if (loading) return <p>Cargando viaje...</p>;
   if (error || !viaje) return <p>{error ?? "Viaje no encontrado."}</p>;
 
-  const itinerariosViewModel: ItinerarioViewModel[] = viaje.itinerarios.map(itinerario => ({
-      itinerario,
-      paradas: construirParadasViewModel(itinerario.paradas, lugares)
-  }));
+  // Si hay itinerarios (viaje generado), armar ItinerarioViewModel, si no, marcar null
+  const itinerariosViewModel: ItinerarioViewModel[] | null = 
+    viaje.itinerarios ?
+      viaje.itinerarios.map(itinerario => ({
+        itinerario,
+        paradas: construirParadasViewModel(itinerario.paradas, lugares)
+      }))
+      : null
 
   return (
     <>

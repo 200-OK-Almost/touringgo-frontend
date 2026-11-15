@@ -28,7 +28,7 @@ function LugarRecorridoCard({
           </p>
           <p className="lugar-recorrido-card__tiempo">
             <IoCalendarOutline className="lugar-recorrido-card__icon"/>
-            {getHourAndMinutes(paradaViewModel.parada.horaInicio)}
+            {getHourAndMinutes(new Date(paradaViewModel.parada.horaInicio))}
             <span>·</span>
             <IoTimeOutline className="lugar-recorrido-card__icon"/>
             {`${paradaViewModel.parada.duracionMinutos.toString()}m`} 
