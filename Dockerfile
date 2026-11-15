@@ -8,7 +8,7 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
-RUN npm run build
+RUN npx vite build
 
 # Stage 2: Serve the compiled application
 FROM nginx:alpine
