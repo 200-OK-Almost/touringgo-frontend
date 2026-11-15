@@ -90,8 +90,11 @@ function TravelCompanionsAndInterestsStep({ categorias, modalidadViaje, categori
 
       <div className="planificacion-form-header">
         <h2>Categorías de interés</h2>
-        <p className="planificacion-form-description">Elegí las categorías que más te interesan para esta salida. Las vamos a priorizar, pero también tendremos en cuenta tus preferencias habituales y podremos incluir otras actividades que complementen el recorrido.</p>
-        <p className="planificacion-form-description text-muted">Podés dejar todas las categorías sin seleccionar para usar tus preferencias habituales.</p>
+        <p className="planificacion-form-description text-muted">
+          Elegí entre 2 y 4 categorías · {categoriasPrioritarias.length} Seleccionadas
+        </p>
+        {/* <p className="planificacion-form-description">Elegí las categorías que más te interesan para esta salida. Las vamos a priorizar, pero también tendremos en cuenta tus preferencias habituales y podremos incluir otras actividades que complementen el recorrido.</p>
+        <p className="planificacion-form-description text-muted">Podés dejar todas las categorías sin seleccionar para usar tus preferencias habituales.</p> */}
       </div>
       <div className="selectable-card-group grid-auto">
         {categoriaOptions.map(c =>
@@ -111,8 +114,11 @@ function TravelCompanionsAndInterestsStep({ categorias, modalidadViaje, categori
             }}
           />
         )}
-
       </div>
+      {errors.categoriasPrioritarias && <div className="planificacion-field-error">
+        <p>{errors.categoriasPrioritarias}</p>
+      </div>
+      }
     </>
   )
 }
