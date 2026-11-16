@@ -5,10 +5,12 @@ import { UserMenu } from "../../features/auth/components/UserMenu";
 import { ProfileModal } from "../../features/profile/components/ProfileModal";
 import Logo from "../Logo";
 import "./Navbar.css";
+import MisViajesModal from "../../features/profile/components/MisViajesModal";
 
 export default function Navbar() {
   const { isAuthenticated, isLoading } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isMisViajesOpen, setIsMisViajesOpen] = useState(false);
 
   return (
     <>
@@ -25,7 +27,14 @@ export default function Navbar() {
               <span className="nav-loading-text">Cargando...</span>
             </div>
           ) : isAuthenticated ? (
+            <>
+            <button
+              onClick={() => setIsMisViajesOpen(true)}
+            >
+              <p>Mis viajes</p>
+            </button>
             <UserMenu onOpenProfile={() => setIsProfileOpen(true)} />
+            </>
           ) : (
             <div className="nav-profile-container">
               <button
@@ -36,14 +45,21 @@ export default function Navbar() {
               </button>
             </div>
           )}
+            
         </div>
       </nav>
 
       {isAuthenticated && (
+        <>
+        <MisViajesModal 
+          isOpen={isMisViajesOpen}
+          onClose={() => setIsMisViajesOpen(false)}
+        />
         <ProfileModal
           isOpen={isProfileOpen}
           onClose={() => setIsProfileOpen(false)}
         />
+        </>
       )}
     </>
   );
