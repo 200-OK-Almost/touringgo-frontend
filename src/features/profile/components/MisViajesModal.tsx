@@ -1,8 +1,8 @@
 import { useEffect, useState, type FormEvent, type KeyboardEvent } from "react";
-import { IoPencilOutline } from "react-icons/io5";
+import { IoPencilOutline, IoTrashOutline } from "react-icons/io5";
 import { Modal } from "../../../components/Modal"
 import type { ViajeDto } from "../../viaje/types";
-import { actualizarViaje, construirViajeUpdateDto, getMisViajes } from "../../viaje/api/viajes";
+import { actualizarViaje, construirViajeUpdateDto, eliminarViaje, getMisViajes } from "../../viaje/api/viajes";
 import { Link } from "react-router-dom";
 import "./MisViajesModal.css"
 import { capitalize } from "../../../lib/format";
@@ -24,12 +24,16 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [tituloDraft, setTituloDraft] = useState("");
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
 
   const handleClose = () => {
     setEditingId(null);
     setTituloDraft("");
     setSavingId(null);
+    setConfirmDeleteId(null);
+    setDeletingId(null);
     setActionError(null);
     onClose();
     setTimeout(() => {}, 300); // Espera a la animación de cierre
@@ -38,6 +42,7 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
   function handleIniciarEdicion(viaje: ViajeDto) {
     setEditingId(viaje.id);
     setTituloDraft(viaje.titulo ?? "");
+    setConfirmDeleteId(null);
     setActionError(null);
   }
 
@@ -46,6 +51,36 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
     setEditingId(null);
     setTituloDraft("");
     setActionError(null);
+  }
+
+  function handleSolicitarEliminacion(viaje: ViajeDto) {
+    setEditingId(null);
+    setTituloDraft("");
+    setConfirmDeleteId(viaje.id);
+    setActionError(null);
+  }
+
+  function handleCancelarEliminacion() {
+    if (deletingId) return;
+    setConfirmDeleteId(null);
+    setActionError(null);
+  }
+
+  async function handleEliminarViaje(viaje: ViajeDto) {
+    setDeletingId(viaje.id);
+    setActionError(null);
+
+    try {
+      await eliminarViaje(viaje.id);
+      setViajes((prev) => prev.filter((item) => item.id !== viaje.id));
+      setConfirmDeleteId(null);
+    } catch (err) {
+      setActionError(
+        err instanceof Error ? err.message : "No se pudo eliminar el viaje."
+      );
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   async function handleGuardarTitulo(event: FormEvent<HTMLFormElement>, viaje: ViajeDto) {
@@ -188,6 +223,35 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
                       </p>
                     )}
                   </form>
+                ) : confirmDeleteId === viaje.id ? (
+                  <div className="viaje-delete-confirm">
+                    <p className="viaje-delete-confirm__text">
+                      ¿Eliminar <strong>“{tituloViaje}”</strong>? Esta acción no se puede deshacer.
+                    </p>
+                    <div className="viaje-delete-confirm__actions">
+                      <button
+                        type="button"
+                        className="viaje-action-btn viaje-action-btn--danger"
+                        onClick={() => void handleEliminarViaje(viaje)}
+                        disabled={deletingId === viaje.id}
+                      >
+                        {deletingId === viaje.id ? "Eliminando..." : "Eliminar"}
+                      </button>
+                      <button
+                        type="button"
+                        className="viaje-action-btn viaje-action-btn--secondary"
+                        onClick={handleCancelarEliminacion}
+                        disabled={deletingId === viaje.id}
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                    {actionError && (
+                      <p className="viaje-action-error" role="alert">
+                        {actionError}
+                      </p>
+                    )}
+                  </div>
                 ) : (
                   <>
                     <Link
@@ -218,8 +282,19 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
                         onClick={() => handleIniciarEdicion(viaje)}
                         aria-label={`Editar título de ${tituloViaje}`}
                         title="Editar título"
+                        disabled={savingId !== null || deletingId !== null}
                       >
                         <IoPencilOutline aria-hidden="true" />
+                      </button>
+                      <button
+                        type="button"
+                        className="viaje-action-btn-icon viaje-action-btn-icon--danger"
+                        onClick={() => handleSolicitarEliminacion(viaje)}
+                        aria-label={`Eliminar ${tituloViaje}`}
+                        title="Eliminar viaje"
+                        disabled={savingId !== null || deletingId !== null}
+                      >
+                        <IoTrashOutline aria-hidden="true" />
                       </button>
                     </div>
                   </>
