@@ -1,10 +1,5 @@
-import { IoPaperPlane, IoPaperPlaneOutline, IoSparkles, IoSparklesOutline } from "react-icons/io5"
-import type { ViajeDto } from "../types"
+import { IoPaperPlane, IoSparkles } from "react-icons/io5"
 import "./AsistentePanel.css"
-
-interface AsistentePanelProps { 
-  viaje: ViajeDto
-}
 
 export const SidebarCollapseIcon = (props?: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
@@ -18,7 +13,7 @@ export const SidebarExpandIcon = (props?: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-function AsistentePanel({viaje}: AsistentePanelProps) {
+function AsistentePanel() {
   return (
     <>
     <div className="asistente-header">

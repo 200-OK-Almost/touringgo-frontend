@@ -1,4 +1,4 @@
-import { IoBeerOutline, IoCafeOutline, IoColorPaletteOutline, IoHeartOutline, IoLeafOutline, IoLibraryOutline, IoPeople, IoPeopleOutline, IoPersonOutline, IoPizzaOutline, IoWineOutline } from "react-icons/io5";
+import { IoBeerOutline, IoCafeOutline, IoColorPaletteOutline, IoLeafOutline, IoLibraryOutline, IoPeople, IoPeopleOutline, IoPersonOutline, IoPizzaOutline, IoWineOutline } from "react-icons/io5";
 import { SelectableCard } from "../../../components/SelectableCard";
 import type { ModalidadViaje } from "../types"
 import type { CategoriaDto } from "../../../api/types";
@@ -34,7 +34,7 @@ function TravelCompanionsAndInterestsStep({ categorias, modalidadViaje, categori
       icon: <IoPersonOutline />
     },
     {
-      title: "Con Grupo", value: "Grupo", description: "Propuestas para disfrutar en grupo",
+      title: "Con Grupo", value: "Amigos", description: "Propuestas para disfrutar en grupo",
       icon: <IoPeopleOutline />
     },
     {
@@ -102,15 +102,22 @@ function TravelCompanionsAndInterestsStep({ categorias, modalidadViaje, categori
             key={c.value.id ?? c.title}
             title={c.title}
             icon={c.icon}
-            selected={categoriasPrioritarias.includes(c.value)}
+            selected={categoriasPrioritarias.some(
+              seleccionada => seleccionada.id === c.value.id
+            )}
             variant="big"
             selectionIndicator="checkbox"
             onClick={() => {
-              const index = categoriasPrioritarias.indexOf(c.value)
-              index != -1 ?
-                categoriasPrioritarias.splice(index, 1) : categoriasPrioritarias.push(c.value)
+              const yaSeleccionada = categoriasPrioritarias.some(
+                seleccionada => seleccionada.id === c.value.id
+              )
+              const nuevasCategorias = yaSeleccionada
+                ? categoriasPrioritarias.filter(
+                    seleccionada => seleccionada.id !== c.value.id
+                  )
+                : [...categoriasPrioritarias, c.value]
 
-              onChange({ categoriasPrioritarias: categoriasPrioritarias })
+              onChange({ categoriasPrioritarias: nuevasCategorias })
             }}
           />
         )}

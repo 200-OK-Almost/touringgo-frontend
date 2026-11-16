@@ -88,6 +88,7 @@ export function HospedajeSelector({
   }, [puntoInicio, selectedBarrio, appliedSearch]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- carga inicial y al cambiar filtros
     fetchLugares();
   }, [fetchLugares]);
 

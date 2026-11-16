@@ -26,6 +26,7 @@ export function useProfileManager(isOpen: boolean) {
   // Fetch data when modal opens
   useEffect(() => {
     if (isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- carga al abrir el modal
       void loadPerfil();
       setSaveStatus("idle");
       setFeedbackMessage(null);

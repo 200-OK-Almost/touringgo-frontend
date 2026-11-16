@@ -60,15 +60,37 @@
 }
 
 .mis-viajes-btn {
-  color: var(--text-muted);
-  border-bottom: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid transparent;
+  border-radius: var(--border-radius);
+  color: var(--primary);
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
   transition: all 0.15s ease;
-  height: 100%;
+}
+
+.mis-viajes-btn svg {
+  font-size: 1.05rem;
 }
 
 .mis-viajes-btn:hover {
-  color: var(--text);
-  border-color: var(--primary)
+  background: var(--emerald-100);
+}
+
+@media (max-width: 640px) {
+  .mis-viajes-btn {
+    padding: 0.4rem;
+  }
+
+  .mis-viajes-btn__label {
+    display: none;
+  }
 }
 
 .login-btn {

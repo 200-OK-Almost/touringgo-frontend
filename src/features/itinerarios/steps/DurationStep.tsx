@@ -1,31 +1,34 @@
 import { SelectableCard } from "../../../components/SelectableCard";
+import { RangoFechasSelector } from "../components/RangoFechasSelector";
 import type { FormErrors } from "../PlanificationForm.validation";
-import type { DisponibilidadDiaria } from "../types"
+import type { DisponibilidadDiaria } from "../types";
 
 type DayAvailabilityOption = {
-  title: string, 
-  description: string,
-  icon: React.ReactNode
-  value: DisponibilidadDiaria
-}
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  value: DisponibilidadDiaria;
+};
 
 interface DurationStepProps {
-  cantidadDias: number | null, 
-  disponibilidadDiaria: DisponibilidadDiaria | null, 
-    onChange: (changes: {
-      cantidadDias?: number | null
-      disponibilidadDiaria?: DisponibilidadDiaria
-    }) => void;
-  errors: FormErrors
+  fechaInicio: string | null;
+  fechaFin: string | null;
+  disponibilidadDiaria: DisponibilidadDiaria | null;
+  onChange: (changes: {
+    fechaInicio?: string | null;
+    fechaFin?: string | null;
+    disponibilidadDiaria?: DisponibilidadDiaria;
+  }) => void;
+  errors: FormErrors;
 }
 
-type DuracionOption = {
-  title: string, 
-  description: string,
-  value: number
-}
-
-function DurationStep({cantidadDias, disponibilidadDiaria, onChange, errors}: DurationStepProps) {
+function DurationStep({
+  fechaInicio,
+  fechaFin,
+  disponibilidadDiaria,
+  onChange,
+  errors,
+}: DurationStepProps) {
   const disponiblidadDiariaOptions: DayAvailabilityOption[] = [
     {
       title: "Dia completo", value: "DiaCompleto", description: "Mañana y tarde",
@@ -39,62 +42,47 @@ function DurationStep({cantidadDias, disponibilidadDiaria, onChange, errors}: Du
       title: "Tarde", value: "TardeNoche", description: "Desde el mediodía hasta la noche",
       icon: <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-d-component="icon"><path d="M12 10V2"></path><path d="m4.93 10.93 1.41 1.41"></path><path d="M2 18h2"></path><path d="M20 18h2"></path><path d="m19.07 10.93-1.41 1.41"></path><path d="M22 22H2"></path><path d="m16 6-4 4-4-4"></path><path d="M16 18a4 4 0 0 0-8 0"></path></svg>
     },
-    // deshabilitar hasta implementar en back
-    // {
-    //   title: "Noche", value: "noche", description: "Actividades nocturnas",
-    //   icon: <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" data-d-component="icon" ><path d="M12.7836 2.47048C12.9676 2.76512 12.9855 3.13415 12.8309 3.44525C12.2994 4.51497 12 5.7211 12 7.00001C12 11.4183 15.5817 15 20 15L20.0575 14.9998C20.4049 14.9974 20.7287 15.1754 20.9127 15.47C21.0968 15.7647 21.1147 16.1337 20.9601 16.4448C19.325 19.7352 15.9279 22 12 22C6.47715 22 2 17.5229 2 12C2 6.50107 6.43841 2.03886 11.9284 2.00027C12.2758 1.99783 12.5995 2.17584 12.7836 2.47048ZM10.4099 4.15803C6.75344 4.8954 4 8.12619 4 12C4 16.4183 7.58172 20 12 20C14.587 20 16.8886 18.7721 18.3516 16.8648C13.6131 16.0789 10 11.9614 10 7.00001C10 6.01361 10.1431 5.05953 10.4099 4.15803Z" fill="currentColor"></path></svg>
-    // },
-  ]
-
-  const cantidadDiasOptions: DuracionOption[] = [
-    {title: "1 Día", description: "", value: 1},
-    {title: "3 Días", description: "", value: 4},
-    {title: "5 Días", description: "", value: 5},
-    {title: "7 Días", description: "", value: 7},
-  ]
+  ];
 
   return (
     <>
-    <div className="planificacion-form-header">
-      <h2>Duración de la salida</h2>
-    </div>
-    <div className="selectable-card-group grid-4">
-      {cantidadDiasOptions.map(c => 
-        <SelectableCard 
-          key={c.value}
-          title={c.title}
-          selected={cantidadDias === c.value}
-          description={c.description}
-          onClick={() => onChange({cantidadDias: c.value})}
-          variant="big"
-        />
+      <div className="planificacion-form-header">
+        <h2>Fechas del viaje</h2>
+        <p className="planificacion-form-description text-muted">
+          Elegí la fecha de inicio y de fin. El viaje puede durar entre 1 y 7 días.
+        </p>
+      </div>
+
+      <RangoFechasSelector
+        fechaInicio={fechaInicio}
+        fechaFin={fechaFin}
+        onChange={(changes) => onChange(changes)}
+        error={errors.fechaInicio ?? errors.fechaFin}
+      />
+
+      <div className="planificacion-form-header">
+        <h2>¿Cuanto tiempo querés dedicar a recorrer cada día?</h2>
+      </div>
+      <div className="selectable-card-group grid-3">
+        {disponiblidadDiariaOptions.map((d) => (
+          <SelectableCard
+            key={d.value}
+            title={d.title}
+            icon={d.icon}
+            description={d.description}
+            selected={disponibilidadDiaria === d.value}
+            onClick={() => onChange({ disponibilidadDiaria: d.value })}
+            variant="big"
+          />
+        ))}
+      </div>
+      {errors.disponibilidadDiaria && (
+        <div className="planificacion-field-error" role="alert">
+          <p>{errors.disponibilidadDiaria}</p>
+        </div>
       )}
-    </div>
-    {errors.cantidadDias && <div className="planificacion-field-error">
-      <p>{errors.cantidadDias}</p>
-    </div>
-    }
-    <div className="planificacion-form-header">
-      <h2>¿Cuanto tiempo querés dedicar a recorrer cada día?</h2>
-    </div>
-    <div className="selectable-card-group grid-3">
-      {disponiblidadDiariaOptions.map(d => 
-        <SelectableCard 
-          key={d.value}
-          title={d.title}
-          icon={d.icon}
-          description={d.description}
-          selected={disponibilidadDiaria === d.value}
-          onClick={() => onChange({disponibilidadDiaria: d.value})}
-          variant="big"
-        />
-      )}
-    </div>
-    {errors.disponibilidadDiaria && <div className="planificacion-field-error">
-      <p>{errors.disponibilidadDiaria}</p>
-    </div>
-    }
     </>
-  )
+  );
 }
-export default DurationStep
+
+export default DurationStep;

@@ -37,13 +37,13 @@ function ViajePage() {
       let pollTimeout: NodeJS.Timeout;
 
       // Función helper para procesar las paradas y cargar detalles de lugares
-      async function procesarItinerariosYParadas(itinerarios: ItinerarioDto[]) {
+      async function procesarItinerariosYParadas(itinerarios: ItinerarioDto[] | null | undefined) {
         if (!itinerarios || itinerarios.length === 0) return;
 
         const lugarIds = [
           ...new Set(
             itinerarios.flatMap((itinerario) =>
-              itinerario.paradas.map((parada: any) => parada.lugarId)
+              itinerario.paradas.map((parada) => parada.lugarId)
             )
           ),
         ];
@@ -80,11 +80,15 @@ function ViajePage() {
         if (controller.signal.aborted) return;
 
         // Actualizamos el estado del viaje a Planificado y le asociamos los itinerarios
-        setViaje((prev: any) => ({
-          ...prev,
-          estado: "Planificado",
-          itinerarios: nuevosItinerarios,
-        }));
+        setViaje((prev) =>
+          prev
+            ? {
+                ...prev,
+                estado: "Planificado",
+                itinerarios: nuevosItinerarios,
+              }
+            : prev
+        );
 
         await procesarItinerariosYParadas(nuevosItinerarios);
         if (!controller.signal.aborted) setLoading(false);
@@ -99,7 +103,7 @@ function ViajePage() {
           }
         }, 2000);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (controller.signal.aborted) return;
       console.error(err);
       setError("No se pudo cargar o generar el viaje.");
