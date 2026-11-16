@@ -6,13 +6,15 @@ import ViajeMap from "./ViajeMap"
 import "./ViajeView.css"
 import DiaRecorrido from "./DiaRecorrido"
 import DiaSelector from "./DiaSelector"
+import type { LugarDetalleDto } from "../../../api/types"
 import { construirDiasViaje } from "../lib/diasViaje"
 export interface ViajeViewProps {
   viaje: ViajeDto
   itinerariosViewModel: ItinerarioViewModel[] | null
+  lugarPartida: LugarDetalleDto | null
 }
 
-function ViajeView({viaje, itinerariosViewModel}: ViajeViewProps) {
+function ViajeView({viaje, itinerariosViewModel, lugarPartida}: ViajeViewProps) {
   const [diaActual, setDiaActual] = useState(1);
 
   const { dias, warning } = construirDiasViaje(
@@ -67,6 +69,7 @@ function ViajeView({viaje, itinerariosViewModel}: ViajeViewProps) {
             <div className="recorrido-dia">
               <DiaRecorrido
                 paradasViewModel={itinerarioActual?.paradas ?? null}
+                lugarPartida={lugarPartida}
               />
             </div>
           </section>

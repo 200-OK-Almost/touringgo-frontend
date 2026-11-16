@@ -39,7 +39,7 @@ export function HospedajeSelector({
 
   const prevPuntoInicioRef = useRef(puntoInicio);
   const prevbarrioRef = useRef(barrio);
-
+  
   // Sincronización cuando cambia el tipo de puntoInicio o el barrio seleccionado arriba
   useEffect(() => {
     const puntoInicioChanged = prevPuntoInicioRef.current !== puntoInicio;

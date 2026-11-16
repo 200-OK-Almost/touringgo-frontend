@@ -130,10 +130,10 @@ function PlanificacionForm() {
       nivelPresupuesto: formData.presupuestoNivel!,
       ritmoCaminata: formData.ritmoVisita!,
       tipoPuntoPartida: formData.puntoInicio!,
-      categoriaCodigos: formData.categoriasPrioritarias.map((x) => x.codigo),
-      lugarPartidaId: formData.hospedajeLugarGuid!,
-    };
-
+      categoriaCodigos: formData.categoriasPrioritarias.map(x => x.codigo),
+      lugarPartidaId: formData.hospedajeLugarGuid!
+    }
+    
     try {
       const viajeResponse = await createViaje(viajeCreateDto);
       clearDraft();

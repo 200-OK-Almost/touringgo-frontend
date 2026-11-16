@@ -1,0 +1,18 @@
+.custom-marker {
+    background: transparent;
+    border: none;
+}
+
+.marker-content {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2563eb;
+    color: white;
+    border: 3px solid white;
+    border-radius: 50%;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
