@@ -18,6 +18,7 @@ import {
   type ItineraryFormData,
 } from "./planificacionFormData";
 import { usePlanificacionDraft } from "./hooks/usePlanificacionDraft";
+import { barrioLabel } from "../../lib/format";
 
 const PASOS = [
   { label: "Barrio y punto de partida" },
@@ -119,11 +120,12 @@ function PlanificacionForm() {
 
   async function handleSubmit() {
     setSubmitLoading(true);
+    const titulo = `Salida por ${barrioLabel(formData.barrio!)}`
 
     const viajeCreateDto: ViajeCreateDto = {
       barrio: formData.barrio!,
       tipoViaje: formData.modalidadViaje!,
-      titulo: "Temp title",
+      titulo: titulo,
       alcanceTemporal: formData.disponibilidadDiaria!,
       fechaInicio: formData.fechaInicio!,
       fechaFin: formData.fechaFin!,

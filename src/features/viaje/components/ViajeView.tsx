@@ -38,7 +38,7 @@ function ViajeView({viaje, itinerariosViewModel, lugarPartida}: ViajeViewProps) 
           {/* Trip header */}
           <header className="viaje-header">
             <div className="viaje-header-info">
-              <h1>Salida por {viaje.barrio}</h1>
+              <h1>{viaje.titulo}</h1>
               <p>
                 {capitalize(viaje.tipoViaje)}
                 <span>·</span>
