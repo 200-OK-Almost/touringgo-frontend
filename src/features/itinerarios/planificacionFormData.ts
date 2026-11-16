@@ -14,7 +14,8 @@ export interface ItineraryFormData {
   hospedajeLugarGuid: string | null;
   hospedajeBarrio: BarrioCaba | null;
 
-  cantidadDias: number | null;
+  fechaInicio: string | null;
+  fechaFin: string | null;
   disponibilidadDiaria: DisponibilidadDiaria | null;
 
   modalidadViaje: ModalidadViaje | null;
@@ -33,7 +34,8 @@ export function crearItineraryFormDataInicial(): ItineraryFormData {
     hospedajeLugarGuid: null,
     hospedajeBarrio: null,
 
-    cantidadDias: null,
+    fechaInicio: null,
+    fechaFin: null,
     disponibilidadDiaria: null,
     modalidadViaje: null,
     categoriasPrioritarias: [],

@@ -13,7 +13,6 @@ import { getCategorias } from "../../api/lugares";
 import { validateStep, type FormErrors } from "./PlanificationForm.validation";
 import type { ViajeCreateDto } from "../viaje/types";
 import { createViaje } from "../viaje/api/viajes";
-import { toDateOnlyString } from "../../lib/format";
 import {
   crearItineraryFormDataInicial,
   type ItineraryFormData,
@@ -121,18 +120,13 @@ function PlanificacionForm() {
   async function handleSubmit() {
     setSubmitLoading(true);
 
-    // temporary solution to DTO mismatch
-    const hoy = new Date();
-    const fechaFin = new Date(hoy);
-    fechaFin.setDate(hoy.getDate() + Number(formData.cantidadDias! - 1));
-
     const viajeCreateDto: ViajeCreateDto = {
       barrio: formData.barrio!,
       tipoViaje: formData.modalidadViaje!,
       titulo: "Temp title",
       alcanceTemporal: formData.disponibilidadDiaria!,
-      fechaInicio: toDateOnlyString(hoy),
-      fechaFin: toDateOnlyString(fechaFin),
+      fechaInicio: formData.fechaInicio!,
+      fechaFin: formData.fechaFin!,
       nivelPresupuesto: formData.presupuestoNivel!,
       ritmoCaminata: formData.ritmoVisita!,
       tipoPuntoPartida: formData.puntoInicio!,
@@ -182,7 +176,8 @@ function PlanificacionForm() {
       case 1:
         return (
           <DurationStep
-            cantidadDias={formData.cantidadDias}
+            fechaInicio={formData.fechaInicio}
+            fechaFin={formData.fechaFin}
             disponibilidadDiaria={formData.disponibilidadDiaria}
             onChange={(changes) => updateFormData(changes)}
             errors={errors}

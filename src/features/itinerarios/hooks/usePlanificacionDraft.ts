@@ -101,7 +101,8 @@ export function esBorradorConDatos(
       formData.puntoInicio ||
       formData.hospedajeLugarGuid ||
       formData.hospedajeBarrio ||
-      formData.cantidadDias ||
+      formData.fechaInicio ||
+      formData.fechaFin ||
       formData.disponibilidadDiaria ||
       formData.modalidadViaje ||
       formData.ritmoVisita ||
