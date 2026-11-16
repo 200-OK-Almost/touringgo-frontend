@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StepIndicator from "./StepIndicator";
 import DurationStep from "./steps/DurationStep";
 import LocationStep from "./steps/LocationStep";
@@ -39,8 +39,13 @@ function PlanificacionForm() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [currentStepCounter, setCurrentStepCounter] = useState(0);
   const [submitLoading, setSubmitLoading] = useState(false)
+  const formRef = useRef<HTMLElement | null>(null)
 
   const [direction, setDirection] = useState<NavigationDirection>("forward");
+
+  function scrollToFormTop() {
+    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
 
   const steps = [
     { label: "Barrio y punto de partida" },
@@ -60,6 +65,8 @@ function PlanificacionForm() {
   }
 
   function handleNext() {
+    scrollToFormTop()
+
     const validationErrors = validateStep(formData, currentStepCounter)
     setErrors(validationErrors)
 
@@ -114,7 +121,8 @@ function PlanificacionForm() {
       navigation.navigate("/")
       return
     }
-    
+
+    scrollToFormTop()
     setDirection("backward");
     setCurrentStepCounter(prev => {
       if (prev <= 0) return prev
@@ -210,7 +218,7 @@ function PlanificacionForm() {
     }
   return (
     <>
-    <main className="planificacion-form-main">
+    <main className="planificacion-form-main" ref={formRef}>
       <StepIndicator 
         currentStep={currentStepCounter}
         stepLabel={currentStep.label}

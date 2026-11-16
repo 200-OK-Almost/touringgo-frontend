@@ -8,6 +8,7 @@
   flex-direction: column;
   gap: 1.25rem;
   flex: 1;
+  scroll-margin-top: 1rem;
 }
 
 .planificacion-step-content {
