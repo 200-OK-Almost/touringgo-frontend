@@ -8,6 +8,7 @@
   --border: #e5e4e7;
   --primary: #0f766e;
   --primary-hover: #0b5f58;
+  --primary-active: #084742;
   --secondary: rgb(245, 158, 11);
   --secondary-hover: #e08e00;
 
@@ -147,4 +148,57 @@ main {
   100% {
     transform: translateX(100%);
   }
+}
+
+.page-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  margin: auto auto;
+  padding: 1rem;
+  gap: 1rem;
+
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  background-color: var(--surface);
+}
+.page-error-btns {
+  display: flex;
+  gap: 1rem;
+}
+
+.page-error-reload-btn,
+.page-error-home-btn {
+  padding: .75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  transition: all .15s ease;
+  border: 1px solid var(--primary);
+}
+.page-error-reload-btn {
+  background-color: var(--primary);
+  color: white;
+}
+.page-error-reload-btn:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+.page-error-reload-btn:active {
+  background-color: var(--primary-active);
+  border-color: var(--primary-active);
+}
+
+.page-error-home-btn {
+  color: var(--text-muted);
+  background-color: transparent;
+  border-color: var(--border)
+}
+.page-error-home-btn:hover {
+  background-color: var(--bg-subtle);
+}
+.page-error-home-btn:active {
+  background-color: #e7e7e7;
 }

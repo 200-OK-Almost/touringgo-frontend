@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Navbar from "../components/layout/Navbar"
 import ViajeView from "../features/viaje/components/ViajeView";
 import { useState, useEffect } from "react";
@@ -149,7 +149,21 @@ function ViajePage() {
   return (
     <>
       <Navbar />
-      <p>{error ?? "Viaje no encontrado."}</p>
+      <div className="page-error">
+        <h2>{error ?? "Viaje no encontrado."}</h2>
+        <div className="page-error-btns">
+          <Link className="page-error-home-btn"
+            to="/"
+          >
+            Volver al inicio
+          </Link>
+          <button className="page-error-reload-btn"
+            onClick={() => window.location.reload()}
+          >
+            Reintentar
+          </button>
+        </div>
+      </div>
     </>
     );
   }
