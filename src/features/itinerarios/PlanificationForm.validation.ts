@@ -1,4 +1,4 @@
-import type { ItineraryFormData } from "./PlanificacionForm";
+import type { ItineraryFormData } from "./planificacionFormData";
 import { barrioLabel } from "../../lib/format";
 
 export type FormErrors = Partial<
