@@ -26,7 +26,7 @@ export function validateStep(formData: ItineraryFormData, step: number): FormErr
       ) {
         errors.hospedajeLugarGuid = "Seleccioná un lugar de alojamiento de la lista.";
       } else if (
-        formData.puntoInicio === "HospedajeSugerido" &&
+        (formData.puntoInicio === "HospedajeSugerido" || formData.puntoInicio === "HospedajePropio") &&
         formData.hospedajeLugarGuid != null &&
         formData.barrio != null &&
         formData.hospedajeBarrio != null &&
