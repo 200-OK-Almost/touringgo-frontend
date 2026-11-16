@@ -148,9 +148,11 @@ function ViajePage() {
       }))
       : null
 
+  const itinerarioGenerado = (viaje.itinerarios?.length ?? 0) > 0;
+
   return (
     <>
-    <Navbar />
+    <Navbar showNuevoViaje={itinerarioGenerado} />
     <ViajeView
       viaje={viaje}
       itinerariosViewModel={itinerariosViewModel}
