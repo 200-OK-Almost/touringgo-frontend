@@ -3,6 +3,7 @@ import type { LatLngExpression } from "leaflet";
 import type { ItinerarioViewModel } from "../types";
 import "./ViajeMap.css"
 import MapBounds from "./MapBounds";
+import CustomMarker from "./CustomMarker";
 interface ViajeMapProps {
     itinerarioViewModel: ItinerarioViewModel | null;
 }
@@ -18,7 +19,6 @@ function ViajeMap({ itinerarioViewModel }: ViajeMapProps) {
     const paradas = itinerarioViewModel.paradas
 
     const centro: LatLngExpression = [-34.6037, -58.3816];
-
     
     const paradasPosiciones: LatLngExpression[] = paradas.map(parada => [
       parada.lugar.latitud,
@@ -26,16 +26,18 @@ function ViajeMap({ itinerarioViewModel }: ViajeMapProps) {
     ]);
     let posiciones: LatLngExpression[] = paradasPosiciones
 
+    console.log(itinerarioViewModel.itinerario)
     if (itinerarioViewModel.itinerario.origenLatitud && itinerarioViewModel.itinerario.origenLongitud) {
       const origenPosicion: LatLngExpression = [
         itinerarioViewModel.itinerario.origenLatitud,
         itinerarioViewModel.itinerario.origenLongitud
       ]
       posiciones = [
-        ... posiciones,
-        origenPosicion
+        origenPosicion,
+        ... posiciones
       ]
     }
+    console.log(posiciones)
     
     return (
       <div className="viaje-map-wrapper">
@@ -53,31 +55,45 @@ function ViajeMap({ itinerarioViewModel }: ViajeMapProps) {
           <MapBounds positions={posiciones} />
           
           {/* punto de partida */}
-          {
-            itinerarioViewModel.itinerario.origenLatitud && 
-            itinerarioViewModel.itinerario.origenLongitud &&
-              
-            <Marker
-              position={[itinerarioViewModel.itinerario.origenLatitud, itinerarioViewModel.itinerario.origenLongitud]}
-            >
-              <Popup>
-                <strong>Punto de partida</strong>
-                <br />
-                {itinerarioViewModel.itinerario.origenDescripcion}
-              </Popup>
-            </Marker>
-          }
+          {itinerarioViewModel.itinerario.origenLatitud != null &&
+            itinerarioViewModel.itinerario.origenLongitud != null && (
+              <Marker
+                key={`origen-${itinerarioViewModel.itinerario.origenLatitud}-${itinerarioViewModel.itinerario.origenLongitud}`}
+                position={[
+                  Number(itinerarioViewModel.itinerario.origenLatitud),
+                  Number(itinerarioViewModel.itinerario.origenLongitud),
+                ]}
+              >
+                <Popup>
+                  <strong>Punto de partida</strong>
+                  <br />
+                  {itinerarioViewModel.itinerario.origenDescripcion}
+                </Popup>
+              </Marker>
+            )}
           {paradas.map((parada, index) => (
-            <Marker
+            // <Marker
+            //   key={parada.lugar.id}
+            //   position={[parada.lugar.latitud, parada.lugar.longitud]}
+            // >
+            //   <Popup>
+            //     <strong>{index + 1}. {parada.lugar.nombre}</strong>
+            //     <br />
+            //     {parada.lugar.direccion}
+            //   </Popup>
+            // </Marker>
+            <CustomMarker
               key={parada.lugar.id}
-              position={[parada.lugar.latitud, parada.lugar.longitud]}
+              position={[
+                  parada.lugar.latitud,
+                  parada.lugar.longitud
+              ]}
+              number={index + 1}
             >
-              <Popup>
-                <strong>{index + 1}. {parada.lugar.nombre}</strong>
-                <br />
-                {parada.lugar.direccion}
-              </Popup>
-            </Marker>
+              <strong>{index + 1}. {parada.lugar.nombre}</strong>
+              <br />
+              {parada.lugar.direccion}
+            </CustomMarker>
           ))}
 
           <Polyline

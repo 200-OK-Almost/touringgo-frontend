@@ -29,7 +29,7 @@ function ViajeView({viaje, itinerariosViewModel}: ViajeViewProps) {
       fecha: itinerario.fecha
     }
   }) ?? null
-
+  console.log(viaje)
   return (
     <div className="viaje-layout">
       {/* Main content */}
