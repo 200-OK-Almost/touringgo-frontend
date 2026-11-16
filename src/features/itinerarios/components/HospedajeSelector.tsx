@@ -9,7 +9,7 @@ import { IoInformationCircleOutline, IoSearchOutline } from "react-icons/io5";
 import "./HospedajeSelector.css";
 
 export interface HospedajeSelectorProps {
-  puntoInicio: "hospedajeDefinido" | "recomendarHospedaje";
+  puntoInicio: "HospedajePropio" | "HospedajeSugerido";
   barrio: BarrioCaba | null;
   selectedLugarId: string | null;
   onSelectLugar: (id: string | null, lugar?: LugarResumenDto | null) => void;
@@ -25,7 +25,7 @@ export function HospedajeSelector({
 }: HospedajeSelectorProps) {
   // Barrio activo para el filtro de la sección
   const [selectedBarrio, setSelectedBarrio] = useState<BarrioCaba | null>(() => {
-    return puntoInicio === "recomendarHospedaje" ? barrio : null;
+    return puntoInicio === "HospedajeSugerido" ? barrio : null;
   });
 
   // Estado del input de búsqueda y búsqueda confirmada
@@ -45,12 +45,12 @@ export function HospedajeSelector({
     const puntoInicioChanged = prevPuntoInicioRef.current !== puntoInicio;
     const barrioChanged = prevbarrioRef.current !== barrio;
 
-    if (puntoInicio === "recomendarHospedaje") {
+    if (puntoInicio === "HospedajeSugerido") {
       // Si cambió a recomendar hospedaje o cambió el barrio de inicio, sincronizar
       if (puntoInicioChanged || barrioChanged) {
         setSelectedBarrio(barrio);
       }
-    } else if (puntoInicio === "hospedajeDefinido" && puntoInicioChanged) {
+    } else if (puntoInicio === "HospedajePropio" && puntoInicioChanged) {
       // Si cambió a "Ya tengo lugar", mostrar sin filtro de barrio pre-aplicado
       setSelectedBarrio(null);
     }
@@ -61,7 +61,7 @@ export function HospedajeSelector({
 
   // Consulta a la API
   const fetchLugares = useCallback(async () => {
-    if (puntoInicio === "recomendarHospedaje" && !selectedBarrio) {
+    if (puntoInicio === "HospedajeSugerido" && !selectedBarrio) {
       setLugares([]);
       setIsLoading(false);
       return;
@@ -103,7 +103,7 @@ export function HospedajeSelector({
   };
 
   // Si es recomendación y aún no seleccionó barrio arriba, pedir que seleccione uno
-  if (puntoInicio === "recomendarHospedaje" && !barrio) {
+  if (puntoInicio === "HospedajeSugerido" && !barrio) {
     return (
       <section className="hospedaje-selector" aria-label="Búsqueda de hospedaje">
         <div className="hospedaje-selector__aviso">
@@ -120,7 +120,7 @@ export function HospedajeSelector({
   }
 
   const tituloSeccion =
-    puntoInicio === "recomendarHospedaje"
+    puntoInicio === "HospedajeSugerido"
       ? selectedBarrio
         ? `Hoteles recomendados en ${barrioLabel(selectedBarrio)}`
         : "Hoteles recomendados"
@@ -131,7 +131,7 @@ export function HospedajeSelector({
       <div className="hospedaje-selector__header">
         <h3 className="hospedaje-selector__title">{tituloSeccion}</h3>
         <p className="hospedaje-selector__subtitle">
-          {puntoInicio === "recomendarHospedaje"
+          {puntoInicio === "HospedajeSugerido"
             ? "Seleccioná el hotel donde te vas a alojar cerca de tu recorrido."
             : "Buscá por nombre de hotel o dirección para definir tu punto de partida."}
         </p>
@@ -177,12 +177,12 @@ export function HospedajeSelector({
           value={selectedBarrio}
           onChange={(b) => setSelectedBarrio(b)}
           isOptionDisabled={
-            puntoInicio === "recomendarHospedaje" && barrio
+            puntoInicio === "HospedajeSugerido" && barrio
               ? (val) => val !== barrio
               : undefined
           }
           disabledTooltip={
-            puntoInicio === "recomendarHospedaje"
+            puntoInicio === "HospedajeSugerido"
               ? `Solo se muestran hospedajes del barrio seleccionado${barrio ? ` (${barrioLabel(barrio)})` : ""}`
               : undefined
           }
@@ -196,7 +196,7 @@ export function HospedajeSelector({
         </div>
       )}
 
-      {/* Contador de resultados y estado */}
+      {/* Contador de resultados y estado */} 
       <div className="hospedaje-selector__status-bar">
         <span className="hospedaje-selector__count">
           {isLoading

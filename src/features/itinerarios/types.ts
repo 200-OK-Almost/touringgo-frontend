@@ -1,17 +1,23 @@
 // Temporal hasta definir
-export type PuntoInicio = 
-  "recomendarHospedaje"
-  | "sinHospedaje" // "de paso"
-  | "hospedajeDefinido"
+export type PuntoInicio =
+  | "HospedajeSugerido"
+  | "NodoUrbano" // "de paso"
+  | "HospedajePropio"
+  | "PrimeraParada"
 
-export type DisponibilidadDiaria = 
-  "diaCompleto"
-  | "mañana"
-  | "tarde"
-  | "noche"
+// export type DisponibilidadDiaria =
+//   "diaCompleto"
+//   | "mañana"
+//   | "tarde"
+//   | "noche"
 
-export type ModalidadViaje = 
-  "solo"
-  | "grupo"
-  | "pareja"
-  | "familia"
+export type DisponibilidadDiaria =
+  "DiaCompleto"
+  | "TardeNoche"
+  | "MananaAlmuerzo"
+
+export type ModalidadViaje =
+  "Solo"
+  | "Grupo"
+  | "Pareja"
+  | "Familia"

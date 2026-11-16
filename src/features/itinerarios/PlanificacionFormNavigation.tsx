@@ -6,10 +6,11 @@ export interface PlanificacionFormNavigationProps {
   onNext: () => void
   isFirstStep: boolean
   isLastStep: boolean
+  isSubmitLoading: boolean
 }
 
 function PlanificacionFormNavigation(
-  {onBack, onNext, isFirstStep, isLastStep}: PlanificacionFormNavigationProps
+  {onBack, onNext, isFirstStep, isLastStep, isSubmitLoading}: PlanificacionFormNavigationProps
 ) {
   return (
     <div className="form-navigation">
@@ -22,11 +23,21 @@ function PlanificacionFormNavigation(
       </button>
 
       <button
-        className={`form-navigation-button ${isLastStep ? "form-confirm-button" : "form-next-button"}`}
+        className={
+          `form-navigation-button 
+          ${isLastStep ? "form-confirm-button" : "form-next-button"}
+          ${isSubmitLoading && "form-confirm-button-loading"}`
+        }
         onClick={onNext}
+        disabled={isLastStep && isSubmitLoading}
       >
-        <p>{isLastStep ? "Armar itinerario con IA" : "Siguiente"}</p>
         {isLastStep ? <IoSparkles /> : <IoArrowForwardOutline />} 
+        <p>
+          {isLastStep ? 
+            isSubmitLoading ? "Generando..." : "Armar itinerario con IA"
+            : "Siguiente"}
+        </p>
+        
       </button>
     </div>
   )

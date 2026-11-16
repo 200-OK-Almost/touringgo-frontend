@@ -47,7 +47,7 @@ export type ParadaItinerarioDto = {
   lugarId: string
   turno: Turno
   ordenParada: number
-  horaInicio: Date
+  horaInicio: string
   duracionMinutos: number
   distanciaMetrosDesdeAnterior?: number
   cuadrasDesdeAnterior?: number
@@ -85,6 +85,7 @@ export type EstadoViaje =
   | "Borrador"
   | "Planificado"
   | "Finalizado"
+  | "EnPlanificacion"
 
 export type Turno = 
   | "Manana"
@@ -96,3 +97,24 @@ export type OrigenParada =
   | "Refinamiento"
   | "SugerenciaHueco"
   | "Manua"
+
+
+export type ViajeCreateDto = {
+  titulo: string
+  tipoViaje: ModalidadViaje
+  barrio: BarrioCaba
+  alcanceTemporal: DisponibilidadDiaria
+  fechaInicio: string
+  fechaFin: string
+  nivelPresupuesto: NivelPresupuesto
+  ritmoCaminata: RitmoVisita
+  limiteCuadrasEntreParadas?: number
+  tipoPuntoPartida: PuntoInicio
+  lugarPartidaId?: string
+  nombrePuntoPartida?: string
+  direccionPartida?: string
+  latitudPartida?: number
+  categoriaCodigos: string[]
+  parametrosFamilia?: ParametrosFamiliaDto
+}
+

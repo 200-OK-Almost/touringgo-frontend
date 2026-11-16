@@ -16,12 +16,12 @@ export function validateStep(formData: ItineraryFormData, step: number): FormErr
       if (formData.puntoInicio == null) {
         errors.puntoInicio = "Seleccioná un punto de partida.";
       } else if (
-        (formData.puntoInicio === "hospedajeDefinido" || formData.puntoInicio === "recomendarHospedaje") &&
+        (formData.puntoInicio === "HospedajePropio" || formData.puntoInicio === "HospedajeSugerido") &&
         formData.hospedajeLugarGuid == null
       ) {
         errors.hospedajeLugarGuid = "Seleccioná un lugar de alojamiento de la lista.";
       } else if (
-        formData.puntoInicio === "recomendarHospedaje" &&
+        formData.puntoInicio === "HospedajeSugerido" &&
         formData.hospedajeLugarGuid != null &&
         formData.barrio != null &&
         formData.hospedajeBarrio != null &&
@@ -44,6 +44,10 @@ export function validateStep(formData: ItineraryFormData, step: number): FormErr
     case 2: 
       if (formData.modalidadViaje == null) {
         errors.modalidadViaje = "Seleccioná una modalidad de viaje.";
+      }
+
+      if (formData.categoriasPrioritarias.length < 2 || formData.categoriasPrioritarias.length > 4) {
+        errors.categoriasPrioritarias = "Seleccioná entre 2 y 4 categorías.";
       }
 
       break;

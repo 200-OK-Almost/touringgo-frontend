@@ -1,11 +1,10 @@
-import { getDayAndMonth } from "../../../lib/format";
 import "./DiaSelector.css"
 
 interface DiaSelectorProps {
   dias: {
     numeroDia: number;
     fecha: Date;
-  }[];
+  }[] | null;
   diaActual: number;
   onDiaChange: (dia: number) => void;
 };
@@ -17,7 +16,7 @@ function DiaSelector({dias, diaActual, onDiaChange}: DiaSelectorProps) {
         DÍAS
       </p>
       <div className="dia-selector">
-        {dias.map(dia => 
+        {dias && dias.map(dia => 
           <button
             key={dia.numeroDia}
             className={`dia-selector__item ${

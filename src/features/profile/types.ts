@@ -7,7 +7,7 @@ export interface UsuarioDTO {
   ultimoAcceso: string;
 }
 
-export type RitmoVisita = "Relajado" | "Moderado" | "Activo";
+export type RitmoVisita = "Tranquilo" | "Moderado" | "Activo";
 
 export type TipoTransporte =
   | "Caminando"

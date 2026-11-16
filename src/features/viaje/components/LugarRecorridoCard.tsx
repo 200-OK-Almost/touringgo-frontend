@@ -9,9 +9,14 @@ export interface LugarRecorridoCardProps {
   paradaViewModel: ParadaViewModel;
 }
 
+
 function LugarRecorridoCard({
   paradaViewModel,
 } : LugarRecorridoCardProps) {
+  const [hours, minutes, seconds] = paradaViewModel.parada.horaInicio.split(':').map(Number);
+  const horaInicio = new Date()
+  horaInicio.setHours(hours, minutes, seconds)
+  
   return (
     <div className="lugar-recorrido-card">
 
@@ -28,7 +33,7 @@ function LugarRecorridoCard({
           </p>
           <p className="lugar-recorrido-card__tiempo">
             <IoCalendarOutline className="lugar-recorrido-card__icon"/>
-            {getHourAndMinutes(paradaViewModel.parada.horaInicio)}
+            {getHourAndMinutes(horaInicio)}
             <span>·</span>
             <IoTimeOutline className="lugar-recorrido-card__icon"/>
             {`${paradaViewModel.parada.duracionMinutos.toString()}m`} 

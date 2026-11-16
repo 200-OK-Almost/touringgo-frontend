@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StepIndicator from "./StepIndicator";
 import DurationStep from "./steps/DurationStep";
 import LocationStep from "./steps/LocationStep";
@@ -12,6 +12,9 @@ import type { DisponibilidadDiaria, ModalidadViaje, PuntoInicio } from "./types"
 import { getCategorias } from "../../api/lugares";
 import type { RitmoVisita, TipoTransporte } from "../profile/types";
 import { validateStep, type FormErrors } from "./PlanificationForm.validation";
+import type { NivelPresupuesto, ViajeCreateDto, ViajeDto } from "../viaje/types";
+import { createViaje } from "../viaje/api/viajes";
+import { toDateOnlyString } from "../../lib/format";
 
 export interface ItineraryFormData {
   barrio: BarrioCaba | null;
@@ -27,17 +30,22 @@ export interface ItineraryFormData {
   categoriasPrioritarias: CategoriaDto[];
 
   ritmoVisita: RitmoVisita | null;
-  presupuestoNivel: number | null;
+  presupuestoNivel: NivelPresupuesto | null;
   tipoTransporte: TipoTransporte | null;
 }
 
 type NavigationDirection = "forward" | "backward";
 function PlanificacionForm() {
   const [errors, setErrors] = useState<FormErrors>({});
-  
   const [currentStepCounter, setCurrentStepCounter] = useState(0);
+  const [submitLoading, setSubmitLoading] = useState(false)
+  const formRef = useRef<HTMLElement | null>(null)
 
   const [direction, setDirection] = useState<NavigationDirection>("forward");
+
+  function scrollToFormTop() {
+    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
 
   const steps = [
     { label: "Barrio y punto de partida" },
@@ -57,6 +65,8 @@ function PlanificacionForm() {
   }
 
   function handleNext() {
+    scrollToFormTop()
+
     const validationErrors = validateStep(formData, currentStepCounter)
     setErrors(validationErrors)
 
@@ -68,14 +78,51 @@ function PlanificacionForm() {
       if (prev >= steps.length-1) return prev
       return prev + 1
     })
+
+    // paso final = submit
+    if (currentStepCounter >= steps.length-1) {
+      handleSubmit();
+    }
   }
+
+  async function handleSubmit() {
+    setSubmitLoading(true)
+    // temporary solution to DTO mismatch
+    const hoy = new Date();
+    const fechaFin = new Date(hoy);
+    fechaFin.setDate(hoy.getDate() + Number(formData.cantidadDias! -1));
+
+    const viajeCreateDto: ViajeCreateDto = {
+      barrio: formData.barrio!,
+      tipoViaje: formData.modalidadViaje!,
+      titulo: "Temp title",
+      alcanceTemporal: formData.disponibilidadDiaria!,
+      fechaInicio: toDateOnlyString(hoy),
+      fechaFin: toDateOnlyString(fechaFin),
+      nivelPresupuesto: formData.presupuestoNivel!,
+      ritmoCaminata: formData.ritmoVisita!,
+      tipoPuntoPartida: formData.puntoInicio!,
+      categoriaCodigos: formData.categoriasPrioritarias.map(x => x.codigo),
+      lugarPartidaId: formData.hospedajeLugarGuid!
+    }
+    try {
+      const viajeResponse = await createViaje(viajeCreateDto);
+      const viajeId = viajeResponse.id;
+      navigation.navigate(`/viajes/${viajeId}`)
+    } finally {
+      setSubmitLoading(false)
+    }
+  }
+
   function handleBack() {
     setErrors({}) // clear errors
 
     if (currentStepCounter <= 0) {
       navigation.navigate("/")
+      return
     }
-    
+
+    scrollToFormTop()
     setDirection("backward");
     setCurrentStepCounter(prev => {
       if (prev <= 0) return prev
@@ -141,7 +188,15 @@ function PlanificacionForm() {
             categorias={categorias}
             modalidadViaje={formData.modalidadViaje}
             categoriasPrioritarias={formData.categoriasPrioritarias}
-            onChange={(changes) => updateFormData(changes)}
+            onChange={(changes) => {
+              if (changes.categoriasPrioritarias && changes.categoriasPrioritarias?.length >= 4) {
+                const prevErrors = errors
+                const validationErrors = validateStep({...formData, ...changes}, currentStepCounter)
+                setErrors({... prevErrors, categoriasPrioritarias: validationErrors.categoriasPrioritarias})
+              } 
+              updateFormData(changes)
+
+            }}
             errors={errors}
           />
         );
@@ -163,7 +218,7 @@ function PlanificacionForm() {
     }
   return (
     <>
-    <main className="planificacion-form-main">
+    <main className="planificacion-form-main" ref={formRef}>
       <StepIndicator 
         currentStep={currentStepCounter}
         stepLabel={currentStep.label}
@@ -181,7 +236,8 @@ function PlanificacionForm() {
         onBack={handleBack}
         onNext={handleNext}
         isFirstStep={currentStepCounter === 0}
-        isLastStep={currentStepCounter === steps.length - 1}    
+        isLastStep={currentStepCounter === steps.length - 1}
+        isSubmitLoading={submitLoading}
       />
 
     </main>
