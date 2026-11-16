@@ -1,4 +1,4 @@
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../auth-context";
 import { Avatar } from "../../../components/Avatar";
 import {
   Dropdown,

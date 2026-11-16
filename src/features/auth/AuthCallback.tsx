@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "./auth-context";
 
 export default function AuthCallback() {
   const [error, setError] = useState<string | null>(null);

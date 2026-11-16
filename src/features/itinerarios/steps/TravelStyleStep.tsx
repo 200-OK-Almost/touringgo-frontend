@@ -1,6 +1,7 @@
-import { IoCafeOutline, IoWalkOutline, IoFlashOutline, IoBusOutline, IoCarOutline, IoHourglassOutline } from "react-icons/io5";
+import { IoCafeOutline, IoWalkOutline, IoFlashOutline, IoBusOutline, IoCarOutline } from "react-icons/io5";
 import { SelectableCard } from "../../../components/SelectableCard";
-import type { RitmoVisita, TipoTransporte } from "../../profile/types";
+import type { TipoTransporte } from "../../profile/types";
+import type { RitmoCaminata } from "../types";
 import { BsGem, BsPiggyBank, BsWallet2 } from "react-icons/bs";
 import type { FormErrors } from "../PlanificationForm.validation";
 import type { NivelPresupuesto } from "../../viaje/types";
@@ -9,7 +10,7 @@ type RitmoVisitaOption = {
   title: string, 
   description: string,
   icon: React.ReactNode
-  value: RitmoVisita
+  value: RitmoCaminata
 }
 
 type TipoTransporteOption = {
@@ -27,11 +28,11 @@ type PresupuestoOption = {
 }
 
 interface TravelStyleStepProps {
-  ritmoVisita: RitmoVisita | null, 
+  ritmoVisita: RitmoCaminata | null, 
   presupuestoNivel: NivelPresupuesto | null, 
   tipoTransporte: TipoTransporte | null,
   onChange: (changes: {
-    ritmoVisita?: RitmoVisita | null, 
+    ritmoVisita?: RitmoCaminata | null, 
     tipoTransporte?: TipoTransporte | null, 
     presupuestoNivel?: NivelPresupuesto | null, 
   }) => void;

@@ -1,6 +1,5 @@
 import type { BarrioCaba, LugarDetalleDto } from "../../api/types"
-import type { DisponibilidadDiaria, ModalidadViaje, PuntoInicio } from "../itinerarios/types"
-import type { RitmoVisita } from "../profile/types"
+import type { DisponibilidadDiaria, ModalidadViaje, PuntoInicio, RitmoCaminata } from "../itinerarios/types"
 
 export type ViajeDto = {
   id: string
@@ -12,7 +11,7 @@ export type ViajeDto = {
   fechaInicio: Date
   fechaFin: Date
   nivelPresupuesto: NivelPresupuesto
-  ritmoCaminata: RitmoVisita
+  ritmoCaminata: RitmoCaminata
   limiteCuadrasEntreParadas: number
   tipoPuntoPartida: PuntoInicio
   lugarPartidaId?: string
@@ -107,7 +106,7 @@ export type ViajeCreateDto = {
   fechaInicio: string
   fechaFin: string
   nivelPresupuesto: NivelPresupuesto
-  ritmoCaminata: RitmoVisita
+  ritmoCaminata: RitmoCaminata
   limiteCuadrasEntreParadas?: number
   tipoPuntoPartida: PuntoInicio
   lugarPartidaId?: string

@@ -4,7 +4,7 @@ import type { ViajeDto } from "../../viaje/types";
 import { getMisViajes } from "../../viaje/api/viajes";
 import { Link } from "react-router-dom";
 import "./MisViajesModal.css"
-import { capitalize, getDayAndMonth, toDateOnlyString } from "../../../lib/format";
+import { capitalize, toDateOnlyString } from "../../../lib/format";
 export interface MisViajesModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -33,7 +33,7 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
         if (isMounted) {
           setViajes(Array.isArray(viajesData.items) ? viajesData.items : []);
         }
-      } catch (err) {
+      } catch {
         if (isMounted) {
           setError("No se pudieron cargar tus viajes.");
           setViajes([]);
@@ -61,7 +61,7 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
         {loading ? (
           <>
           {/* <p className="text-muted">Cargando tus viajes...</p> */}
-          {Array.from({ length: 8 }, (_) => 
+          {Array.from({ length: 8 }, () => 
             <div className="skeleton" style={{ height: "57px", width: "100%", borderRadius: "4px" }} />
           )}
           </>

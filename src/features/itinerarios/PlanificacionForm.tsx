@@ -8,11 +8,11 @@ import PlanificacionFormNavigation from "./PlanificacionFormNavigation";
 
 import "./PlanificacionForm.css"
 import type { BarrioCaba, CategoriaDto } from "../../api/types";
-import type { DisponibilidadDiaria, ModalidadViaje, PuntoInicio } from "./types";
+import type { DisponibilidadDiaria, ModalidadViaje, PuntoInicio, RitmoCaminata } from "./types";
 import { getCategorias } from "../../api/lugares";
-import type { RitmoVisita, TipoTransporte } from "../profile/types";
+import type { TipoTransporte } from "../profile/types";
 import { validateStep, type FormErrors } from "./PlanificationForm.validation";
-import type { NivelPresupuesto, ViajeCreateDto, ViajeDto } from "../viaje/types";
+import type { NivelPresupuesto, ViajeCreateDto } from "../viaje/types";
 import { createViaje } from "../viaje/api/viajes";
 import { toDateOnlyString } from "../../lib/format";
 
@@ -29,7 +29,7 @@ export interface ItineraryFormData {
 
   categoriasPrioritarias: CategoriaDto[];
 
-  ritmoVisita: RitmoVisita | null;
+  ritmoVisita: RitmoCaminata | null;
   presupuestoNivel: NivelPresupuesto | null;
   tipoTransporte: TipoTransporte | null;
 }

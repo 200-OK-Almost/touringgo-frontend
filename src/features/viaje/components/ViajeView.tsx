@@ -13,7 +13,6 @@ export interface ViajeViewProps {
 
 function ViajeView({viaje, itinerariosViewModel}: ViajeViewProps) {
   const [diaActual, setDiaActual] = useState(1);
-  const [paradaSeleccionadaId, setParadaSeleccionadaId] = useState<string | null>(null);
 
   const itinerarioActual = itinerariosViewModel?.find(
     i => i.itinerario.numeroDia === diaActual
@@ -70,9 +69,7 @@ function ViajeView({viaje, itinerariosViewModel}: ViajeViewProps) {
 
       {/* Chat sidebar */}
       <aside className="viaje-sidebar">
-          <AsistentePanel 
-            viaje={viaje} 
-          />
+          <AsistentePanel />
       </aside>
 
   </div>

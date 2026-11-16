@@ -21,3 +21,8 @@ export type ModalidadViaje =
   | "Grupo"
   | "Pareja"
   | "Familia"
+
+export type RitmoCaminata =
+  "Tranquilo"
+  | "Moderado"
+  | "Activo"

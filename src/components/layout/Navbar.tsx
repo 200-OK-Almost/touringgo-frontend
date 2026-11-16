@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../features/auth/AuthContext";
+import { useAuth } from "../../features/auth/auth-context";
 import { UserMenu } from "../../features/auth/components/UserMenu";
 import { ProfileModal } from "../../features/profile/components/ProfileModal";
 import Logo from "../Logo";
