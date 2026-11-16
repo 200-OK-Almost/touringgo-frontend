@@ -97,6 +97,27 @@ export type OrigenParada =
   | "Manual"
 
 
+export type ViajeUpdateDto = {
+  titulo: string
+  tipoViaje: ModalidadViaje
+  estado: EstadoViaje
+  barrio: BarrioCaba
+  alcanceTemporal: DisponibilidadDiaria
+  fechaInicio: string | null
+  fechaFin: string | null
+  nivelPresupuesto: NivelPresupuesto
+  ritmoCaminata: RitmoCaminata
+  limiteCuadrasEntreParadas: number | null
+  tipoPuntoPartida: PuntoInicio
+  lugarPartidaId?: string
+  nombrePuntoPartida?: string
+  direccionPartida?: string
+  latitudPartida?: number
+  longitudPartida?: number
+  categoriaCodigos: string[]
+  parametrosFamilia?: ParametrosFamiliaDto
+}
+
 export type ViajeCreateDto = {
   titulo: string
   tipoViaje: ModalidadViaje
