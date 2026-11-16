@@ -39,9 +39,9 @@ function ViajeView({viaje, itinerariosViewModel}: ViajeViewProps) {
             <div className="viaje-header-info">
               <h1>Salida por {viaje.barrio}</h1>
               <p>
-                  {capitalize(viaje.tipoViaje)}
-                  <span>·</span>
-                  {viaje.ritmoCaminata}
+                {capitalize(viaje.tipoViaje)}
+                <span>·</span>
+                {viaje.ritmoCaminata}
               </p>
             </div>
             <DiaSelector 

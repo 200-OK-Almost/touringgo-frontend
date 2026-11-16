@@ -22,7 +22,7 @@ function LugarRecorridoCard({
 
       <div className="lugar-recorrido-card__body">
         <div className="lugar-recorrido-card__thumb">
-          <SmartImage src={paradaViewModel.lugar.fotos[0].url} alt={paradaViewModel.lugar.nombre} />
+          <SmartImage src={paradaViewModel.lugar?.fotos?.[0]?.url} alt={paradaViewModel.lugar.nombre} />
         </div>
 
         <div className="lugar-recorrido-card__info">

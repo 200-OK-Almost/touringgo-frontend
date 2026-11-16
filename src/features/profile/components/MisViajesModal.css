@@ -1,0 +1,43 @@
+.mis-viajes {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  padding: 1rem;
+  overflow-y: auto;
+  background-color: var(--bg-subtle);
+  
+  height: 540px;
+}
+
+.viaje-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  color: var(--text);
+  text-decoration: none;
+  padding: .5rem;
+
+  transition: all 0.15s ease;
+  background-color: var(--surface);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border);
+}
+.viaje-link:hover {
+  background-color: var(--bg-subtle);
+  border-color: var(--primary);
+}
+
+.viaje-link-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+.viaje-link-info,
+.viaje-link-date {
+  font-size: .90rem;
+  color: var(--text-muted);
+
+  display: flex;
+  gap: .25rem
+}
