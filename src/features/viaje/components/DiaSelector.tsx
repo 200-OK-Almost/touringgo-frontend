@@ -3,7 +3,7 @@ import "./DiaSelector.css"
 interface DiaSelectorProps {
   dias: {
     numeroDia: number;
-    fecha: Date;
+    fecha: string | null;
   }[] | null;
   diaActual: number;
   onDiaChange: (dia: number) => void;

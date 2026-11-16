@@ -3,20 +3,28 @@ import SmartImage from "../../../components/SmartImage"
 import type { ParadaViewModel } from "../types";
 import "./LugarRecorridoCard.css"
 import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5";
-import { getHourAndMinutes } from "../../../lib/format";
 
 export interface LugarRecorridoCardProps {
   paradaViewModel: ParadaViewModel;
 }
 
+function formatearHora(hora: string | null): string {
+  if (!hora) return "—";
+
+  const [horas, minutos] = hora.split(":");
+
+  if (!horas || !minutos) return "—";
+
+  return `${horas.padStart(2, "0")}:${minutos}`;
+}
+
+function formatearDuracion(duracion: number | null): string {
+  return duracion == null ? "—" : `${duracion}m`;
+}
 
 function LugarRecorridoCard({
   paradaViewModel,
 } : LugarRecorridoCardProps) {
-  const [hours, minutes, seconds] = paradaViewModel.parada.horaInicio.split(':').map(Number);
-  const horaInicio = new Date()
-  horaInicio.setHours(hours, minutes, seconds)
-  
   return (
     <div className="lugar-recorrido-card">
 
@@ -33,10 +41,10 @@ function LugarRecorridoCard({
           </p>
           <p className="lugar-recorrido-card__tiempo">
             <IoCalendarOutline className="lugar-recorrido-card__icon"/>
-            {getHourAndMinutes(horaInicio)}
+            {formatearHora(paradaViewModel.parada.horaInicio)}
             <span>·</span>
             <IoTimeOutline className="lugar-recorrido-card__icon"/>
-            {`${paradaViewModel.parada.duracionMinutos.toString()}m`} 
+            {formatearDuracion(paradaViewModel.parada.duracionMinutos)}
           </p>
         </div>
       </div>

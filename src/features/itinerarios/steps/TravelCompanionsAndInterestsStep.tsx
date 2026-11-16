@@ -34,7 +34,7 @@ function TravelCompanionsAndInterestsStep({ categorias, modalidadViaje, categori
       icon: <IoPersonOutline />
     },
     {
-      title: "Con Grupo", value: "Grupo", description: "Propuestas para disfrutar en grupo",
+      title: "Con Grupo", value: "Amigos", description: "Propuestas para disfrutar en grupo",
       icon: <IoPeopleOutline />
     },
     {

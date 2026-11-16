@@ -37,7 +37,7 @@ function ViajePage() {
       let pollTimeout: NodeJS.Timeout;
 
       // Función helper para procesar las paradas y cargar detalles de lugares
-      async function procesarItinerariosYParadas(itinerarios: ItinerarioDto[]) {
+      async function procesarItinerariosYParadas(itinerarios: ItinerarioDto[] | null | undefined) {
         if (!itinerarios || itinerarios.length === 0) return;
 
         const lugarIds = [

@@ -18,7 +18,7 @@ export type DisponibilidadDiaria =
 
 export type ModalidadViaje =
   "Solo"
-  | "Grupo"
+  | "Amigos"
   | "Pareja"
   | "Familia"
 
