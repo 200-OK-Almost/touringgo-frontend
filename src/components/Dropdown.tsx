@@ -20,7 +20,7 @@ interface DropdownContextValue {
 
 const DropdownContext = createContext<DropdownContextValue | undefined>(undefined);
 
-export function useDropdown(): DropdownContextValue {
+function useDropdown(): DropdownContextValue {
   const context = useContext(DropdownContext);
   if (!context) {
     throw new Error("useDropdown must be used within a Dropdown component");

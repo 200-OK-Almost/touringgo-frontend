@@ -1,23 +1,6 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import type { UsuarioDTO } from "../profile/types";
-
-interface AuthContextValue {
-  user: UsuarioDTO | null;
-  auth: { usuario: UsuarioDTO } | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  logout: () => Promise<void>;
-  checkAuth: () => Promise<void>;
-}
-
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+import { AuthContext } from "./auth-context";
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -47,6 +30,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- carga inicial de la sesión
     void checkAuth();
   }, [checkAuth]);
 
@@ -68,7 +52,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     <AuthContext.Provider
       value={{
         user,
-        auth: user ? { usuario: user } : null,
         isAuthenticated: user !== null,
         isLoading,
         logout,
@@ -78,14 +61,4 @@ export function AuthProvider({ children }: AuthProviderProps) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth(): AuthContextValue {
-  const context = useContext(AuthContext);
-
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-
-  return context;
 }

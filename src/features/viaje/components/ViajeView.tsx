@@ -7,6 +7,7 @@ import "./ViajeView.css"
 import DiaRecorrido from "./DiaRecorrido"
 import DiaSelector from "./DiaSelector"
 import type { LugarDetalleDto } from "../../../api/types"
+import { construirDiasViaje } from "../lib/diasViaje"
 export interface ViajeViewProps {
   viaje: ViajeDto
   itinerariosViewModel: ItinerarioViewModel[] | null
@@ -15,22 +16,21 @@ export interface ViajeViewProps {
 
 function ViajeView({viaje, itinerariosViewModel, lugarPartida}: ViajeViewProps) {
   const [diaActual, setDiaActual] = useState(1);
-  const [paradaSeleccionadaId, setParadaSeleccionadaId] = useState<string | null>(null);
+
+  const { dias, warning } = construirDiasViaje(
+    viaje.fechaInicio,
+    viaje.fechaFin,
+    viaje.itinerarios
+  );
+
+  const diaSeleccionado = dias.some((dia) => dia.numeroDia === diaActual)
+    ? diaActual
+    : dias[0]?.numeroDia ?? 1;
 
   const itinerarioActual = itinerariosViewModel?.find(
-    i => i.itinerario.numeroDia === diaActual
+    i => i.itinerario.numeroDia === diaSeleccionado
   ) ?? null
 
-  // if (!itinerarioActual) {
-  //     return <p>No hay itinerario disponible para este día.</p>;
-  // }
-
-  const dias = itinerariosViewModel?.map(({itinerario}) => {
-    return {
-      numeroDia: itinerario.numeroDia,
-      fecha: itinerario.fecha
-    }
-  }) ?? null
   return (
     <div className="viaje-layout">
       {/* Main content */}
@@ -47,10 +47,15 @@ function ViajeView({viaje, itinerariosViewModel, lugarPartida}: ViajeViewProps) 
             </div>
             <DiaSelector 
               dias={dias}
-              diaActual={diaActual}
+              diaActual={diaSeleccionado}
               onDiaChange={setDiaActual}
             />
           </header>
+          {warning && (
+            <p className="viaje-dias-warning" role="status">
+              {warning}
+            </p>
+          )}
           <div className="recorrido-header">
             <h2>Recorrido</h2>
           </div>
@@ -72,9 +77,7 @@ function ViajeView({viaje, itinerariosViewModel, lugarPartida}: ViajeViewProps) 
 
       {/* Chat sidebar */}
       <aside className="viaje-sidebar">
-          <AsistentePanel 
-            viaje={viaje} 
-          />
+          <AsistentePanel />
       </aside>
 
   </div>

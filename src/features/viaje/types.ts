@@ -1,6 +1,5 @@
 import type { BarrioCaba, LugarDetalleDto } from "../../api/types"
-import type { DisponibilidadDiaria, ModalidadViaje, PuntoInicio } from "../itinerarios/types"
-import type { RitmoVisita } from "../profile/types"
+import type { DisponibilidadDiaria, ModalidadViaje, PuntoInicio, RitmoCaminata } from "../itinerarios/types"
 
 export type ViajeDto = {
   id: string
@@ -9,11 +8,11 @@ export type ViajeDto = {
   estado: EstadoViaje  
   barrio: BarrioCaba  
   alcanceTemporal: DisponibilidadDiaria
-  fechaInicio: Date
-  fechaFin: Date
+  fechaInicio: string | null
+  fechaFin: string | null
   nivelPresupuesto: NivelPresupuesto
-  ritmoCaminata: RitmoVisita
-  limiteCuadrasEntreParadas: number
+  ritmoCaminata: RitmoCaminata
+  limiteCuadrasEntreParadas: number | null
   tipoPuntoPartida: PuntoInicio
   lugarPartidaId?: string
   nombrePuntoPartida?: string
@@ -22,33 +21,32 @@ export type ViajeDto = {
   longitudPartida?: number
   codigoInvitacion: string
   creadoPorUsuarioId: string
-  fechaCreacion: Date
-  fechaActualizacion: Date
+  fechaCreacion: string
+  fechaActualizacion: string
   categoriaCodigos: string[]
   parametrosFamilia?: ParametrosFamiliaDto
-  itinerarios: ItinerarioDto[]
+  itinerarios: ItinerarioDto[] | null
 }
 
 export type ItinerarioDto = {
   id: string
   viajeId: string
   numeroDia: number
-  fecha: Date
-  tipoPuntoInicio: PuntoInicio
-  origenDescripcion: string
-  origenLatitud: number
-  origenLongitud: number
+  fecha: string | null
+  origenTipo: PuntoInicio
+  origenDescripcion: string | null
+  origenLatitud: number | null
+  origenLongitud: number | null
   paradas: ParadaItinerarioDto[]
 }
 
 export type ParadaItinerarioDto = {
   id: string
-  viajeId: string
   lugarId: string
   turno: Turno
   ordenParada: number
-  horaInicio: string
-  duracionMinutos: number
+  horaInicio: string | null
+  duracionMinutos: number | null
   distanciaMetrosDesdeAnterior?: number
   cuadrasDesdeAnterior?: number
   minutosAPieDesdeAnterior?: number
@@ -96,8 +94,29 @@ export type OrigenParada =
   | "Ia"
   | "Refinamiento"
   | "SugerenciaHueco"
-  | "Manua"
+  | "Manual"
 
+
+export type ViajeUpdateDto = {
+  titulo: string
+  tipoViaje: ModalidadViaje
+  estado: EstadoViaje
+  barrio: BarrioCaba
+  alcanceTemporal: DisponibilidadDiaria
+  fechaInicio: string | null
+  fechaFin: string | null
+  nivelPresupuesto: NivelPresupuesto
+  ritmoCaminata: RitmoCaminata
+  limiteCuadrasEntreParadas: number | null
+  tipoPuntoPartida: PuntoInicio
+  lugarPartidaId?: string
+  nombrePuntoPartida?: string
+  direccionPartida?: string
+  latitudPartida?: number
+  longitudPartida?: number
+  categoriaCodigos: string[]
+  parametrosFamilia?: ParametrosFamiliaDto
+}
 
 export type ViajeCreateDto = {
   titulo: string
@@ -107,7 +126,7 @@ export type ViajeCreateDto = {
   fechaInicio: string
   fechaFin: string
   nivelPresupuesto: NivelPresupuesto
-  ritmoCaminata: RitmoVisita
+  ritmoCaminata: RitmoCaminata
   limiteCuadrasEntreParadas?: number
   tipoPuntoPartida: PuntoInicio
   lugarPartidaId?: string

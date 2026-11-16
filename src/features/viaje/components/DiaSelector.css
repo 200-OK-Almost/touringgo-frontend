@@ -1,6 +1,9 @@
 .dia-selector-container {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: .5rem;
+  min-width: 0;
 }
 .dia-selector-label {
   color: var(--text-soft)
@@ -11,32 +14,50 @@
   align-items: center;
   gap: 0.25rem;
   overflow-x: auto;
+  max-width: 100%;
   padding: 0.25rem;
   background-color: var(--bg-subtle);
   border: 1px solid var(--border);
   border-radius: 10px;
+  scrollbar-width: thin;
+}
+
+.dia-selector__single {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
 }
 
 .dia-selector__item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
+  justify-content: center;
+  gap: 0.1rem;
 
-  padding: .5rem 1rem;
-  /* border: 1px solid var(--border); */
-  border-radius: 10px;
-  /* background: var(--surface); */
+  padding: 0.45rem 0.8rem;
+  border: 1px solid transparent;
+  border-radius: var(--border-radius);
+  color: var(--text-muted);
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 600;
 
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.2s, border-color 0.2s;
-}
-.dia-selector__item:hover {
-  background: var(--bg-subtle);
-  border-color: var(--primary);
+  transition: all 0.15s ease;
 }
 
+.dia-selector__item:hover {
+  background: var(--emerald-100);
+  color: var(--primary);
+}
 
 .dia-selector__item.active {
   background: var(--primary);
@@ -49,6 +70,11 @@
 }
 
 .dia-selector__fecha {
-  font-size: 0.8rem;
-  opacity: 0.75;
+  font-size: 0.7rem;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.dia-selector__item.active .dia-selector__fecha {
+  opacity: 0.9;
 }

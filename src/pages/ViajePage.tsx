@@ -38,13 +38,13 @@ function ViajePage() {
       let pollTimeout: NodeJS.Timeout;
 
       // Función helper para procesar las paradas y cargar detalles de lugares
-      async function procesarItinerariosYParadas(itinerarios: ItinerarioDto[]) {
+      async function procesarItinerariosYParadas(itinerarios: ItinerarioDto[] | null | undefined) {
         if (!itinerarios || itinerarios.length === 0) return;
 
         const lugarIds = [
           ...new Set(
             itinerarios.flatMap((itinerario) =>
-              itinerario.paradas.map((parada: any) => parada.lugarId)
+              itinerario.paradas.map((parada) => parada.lugarId)
             )
           ),
         ];
@@ -86,6 +86,16 @@ function ViajePage() {
           // generateViaje (POST /api/viajes/{id}/itinerario) devuelve los itinerarios generados
           const nuevosItinerarios = await generateViaje(id);
           if (controller.signal.aborted) return;
+        // Actualizamos el estado del viaje a Planificado y le asociamos los itinerarios
+        setViaje((prev) =>
+          prev
+            ? {
+                ...prev,
+                estado: "Planificado",
+                itinerarios: nuevosItinerarios,
+              }
+            : prev
+        );
 
           // Actualizamos el estado del viaje a Planificado y le asociamos los itinerarios
           setViaje((prev: any) => ({
