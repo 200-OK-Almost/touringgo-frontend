@@ -126,6 +126,11 @@
   background: #fef3c7;
 }
 
+.attr-chip--categoria {
+  color: var(--primary);
+  background: #38877f35;
+}
+
 .place-card__link {
   margin-top: auto;
   align-self: flex-end;

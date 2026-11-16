@@ -58,6 +58,20 @@ function LugarRecorridoCard({
               </>
             }
           </p>
+          {paradaViewModel &&
+            <div className="place-card__chips">
+            {lugar?.categorias && 
+              lugar.categorias.map(x => 
+                <span className="attr-chip attr-chip--categoria">{x.nombre}</span>
+              )
+            }
+            {lugar?.aptoNinos && <span className="attr-chip attr-chip--ninos">Niños</span>}
+            {lugar?.accesibleMovilidadReducida && (
+              <span className="attr-chip attr-chip--accesible">Accesible</span>
+            )}
+            {lugar?.esBajoTecho && <span className="attr-chip attr-chip--bajotecho">Bajo techo</span>}
+            </div>
+          }
         </div>
       </div>
     </div>
