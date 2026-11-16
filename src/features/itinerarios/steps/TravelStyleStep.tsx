@@ -56,21 +56,21 @@ function TravelStyleStep({ritmoVisita, tipoTransporte, presupuestoNivel, onChang
       icon: <IoFlashOutline /> 
     },
   ]
-  const transporteOptions: TipoTransporteOption[] = [
-    { 
-      value: "Caminando", title: "Caminando (A pie)", 
-      description: "Prioriza lugares cercanos y recorridos a pie", icon: <IoWalkOutline /> 
-    },
-    { 
-      value: "TransportePublico", title: "Transporte público", 
-      description: "Combina caminatas con colectivos, subtes y trenes.", icon: <IoBusOutline />
+  // const transporteOptions: TipoTransporteOption[] = [
+  //   { 
+  //     value: "Caminando", title: "Caminando (A pie)", 
+  //     description: "Prioriza lugares cercanos y recorridos a pie", icon: <IoWalkOutline /> 
+  //   },
+  //   { 
+  //     value: "TransportePublico", title: "Transporte público", 
+  //     description: "Combina caminatas con colectivos, subtes y trenes.", icon: <IoBusOutline />
 
-    },
-    { 
-      value: "VehiculoPersonal", title: "Vehículo personal", 
-      description: "Considera desplazamientos en auto entre las distintas zonas", icon: <IoCarOutline />
-    },
-  ];
+  //   },
+  //   { 
+  //     value: "VehiculoPersonal", title: "Vehículo personal", 
+  //     description: "Considera desplazamientos en auto entre las distintas zonas", icon: <IoCarOutline />
+  //   },
+  // ];
   
 
   const presupuestoOptions: PresupuestoOption[] = [
@@ -110,7 +110,7 @@ function TravelStyleStep({ritmoVisita, tipoTransporte, presupuestoNivel, onChang
       <p>{errors.ritmoVisita}</p>
     </div>
     }
-    <div className="planificacion-form-header">
+    {/* <div className="planificacion-form-header">
       <h2>Medio de transporte</h2>
     </div>
     <div className="selectable-card-group grid-3">
@@ -125,11 +125,12 @@ function TravelStyleStep({ritmoVisita, tipoTransporte, presupuestoNivel, onChang
           variant="big"
         />
       )}
-    </div>
+    </div> 
     {errors.tipoTransporte && <div className="planificacion-field-error">
       <p>{errors.tipoTransporte}</p>
     </div>
     }
+    */}
     <h2>Presupuesto</h2>
     <div className="selectable-card-group grid-3">
       {presupuestoOptions.map(p => 
