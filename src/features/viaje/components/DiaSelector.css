@@ -1,6 +1,9 @@
 .dia-selector-container {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: .5rem;
+  min-width: 0;
 }
 .dia-selector-label {
   color: var(--text-soft)
@@ -11,10 +14,24 @@
   align-items: center;
   gap: 0.25rem;
   overflow-x: auto;
+  max-width: 100%;
   padding: 0.25rem;
   background-color: var(--bg-subtle);
   border: 1px solid var(--border);
   border-radius: 10px;
+  scrollbar-width: thin;
+}
+
+.dia-selector__single {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
 }
 
 .dia-selector__item {
@@ -53,6 +70,11 @@
 }
 
 .dia-selector__fecha {
-  font-size: 0.8rem;
-  opacity: 0.75;
+  font-size: 0.7rem;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.dia-selector__item.active .dia-selector__fecha {
+  opacity: 0.9;
 }

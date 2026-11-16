@@ -1,3 +1,4 @@
+import { formatearFechaConDia } from "../../itinerarios/lib/fechas";
 import type { DiaViaje } from "../lib/diasViaje";
 import "./DiaSelector.css"
 
@@ -8,29 +9,52 @@ interface DiaSelectorProps {
 };
 
 function DiaSelector({dias, diaActual, onDiaChange}: DiaSelectorProps) {
+  if (!dias || dias.length === 0) {
+    return null;
+  }
+
+  if (dias.length === 1) {
+    return (
+      <div className="dia-selector-container">
+        <p className="dia-selector-label">DÍA</p>
+        <span className="dia-selector__single">1 día</span>
+      </div>
+    );
+  }
+
   return (
-    <div className="dia-selector-container">
+    <div className="dia-selector-container" aria-label="Días del viaje">
       <p className="dia-selector-label">
         DÍAS
       </p>
       <div className="dia-selector">
-        {dias && dias.map(dia => 
-          <button
-            key={dia.numeroDia}
-            className={`dia-selector__item ${
-              dia.numeroDia === diaActual ? "active" : ""
-            }`}
-            onClick={() => onDiaChange(dia.numeroDia)}
-          >
-            <span className="dia-selector__numero">
-              {dia.numeroDia}
-            </span>
+        {dias.map(dia => {
+          const fecha = dia.fecha ? formatearFechaConDia(dia.fecha) : null;
+          const etiqueta = `Día ${dia.numeroDia}${fecha ? ` · ${fecha}` : ""}`;
+          const activo = dia.numeroDia === diaActual;
 
-            {/* <span className="dia-selector__fecha">
-              {getDayAndMonth(dia.fecha)}
-            </span> */}
-          </button>
-        )}
+          return (
+            <button
+              key={dia.numeroDia}
+              type="button"
+              className={`dia-selector__item ${activo ? "active" : ""}`}
+              aria-label={etiqueta}
+              aria-pressed={activo}
+              title={etiqueta}
+              onClick={() => onDiaChange(dia.numeroDia)}
+            >
+              <span className="dia-selector__numero">
+                {dia.numeroDia}
+              </span>
+
+              {fecha && (
+                <span className="dia-selector__fecha">
+                  {fecha}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
     </div>
   )
