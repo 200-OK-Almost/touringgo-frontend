@@ -16,10 +16,6 @@ export function generateViaje(id: string) : Promise<ItinerarioDto[]> {
   return http.post(`${VIAJES_BASE}/${id}/itinerario`)
 }
 
-// export function getMisViajes() : Promise<ViajeDto[]> {
-//   return http.get(`${VIAJES_BASE}/${id}/itinerario`)
-// }
-
-export function getAllViajes() : Promise<ResultadoPaginadoDto<ViajeDto>> {
+export function getMisViajes() : Promise<ResultadoPaginadoDto<ViajeDto>> {
   return http.get(`${VIAJES_BASE}`)
 }

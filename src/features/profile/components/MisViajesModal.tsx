@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Modal } from "../../../components/Modal"
 import type { ViajeDto } from "../../viaje/types";
-import { getAllViajes } from "../../viaje/api/viajes";
+import { getMisViajes } from "../../viaje/api/viajes";
 import { Link } from "react-router-dom";
 import "./MisViajesModal.css"
 import { capitalize, getDayAndMonth, toDateOnlyString } from "../../../lib/format";
@@ -29,7 +29,7 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
       setLoading(true);
       setError(null);
       try {
-        const viajesData = await getAllViajes();
+        const viajesData = await getMisViajes();
         if (isMounted) {
           setViajes(Array.isArray(viajesData.items) ? viajesData.items : []);
         }
@@ -49,7 +49,6 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
       isMounted = false;
     };
   }, [isOpen]);
-
   return (
     <Modal 
       isOpen={isOpen} 
@@ -93,7 +92,7 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
                 </p>
               </div>
               <div className="viaje-link-right">
-                <p>{toDateOnlyString(new Date(viaje.fechaCreacion))}</p>
+                <p className="viaje-link-date">{toDateOnlyString(new Date(viaje.fechaCreacion))}</p>
               </div>
             </Link>
           ))

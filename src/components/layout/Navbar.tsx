@@ -29,10 +29,12 @@ export default function Navbar() {
           ) : isAuthenticated ? (
             <>
             <button
+              className="mis-viajes-btn"
               onClick={() => setIsMisViajesOpen(true)}
             >
               <p>Mis viajes</p>
             </button>
+            <div className="nav-divider"/>
             <UserMenu onOpenProfile={() => setIsProfileOpen(true)} />
             </>
           ) : (
