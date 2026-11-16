@@ -6,6 +6,7 @@ import { ProfileModal } from "../../features/profile/components/ProfileModal";
 import Logo from "../Logo";
 import "./Navbar.css";
 import MisViajesModal from "../../features/profile/components/MisViajesModal";
+import { NuevoViajeButton } from "../../features/itinerarios/components/NuevoViajeButton";
 
 export default function Navbar() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -29,11 +30,13 @@ export default function Navbar() {
           ) : isAuthenticated ? (
             <>
             <button
+              type="button"
               className="mis-viajes-btn"
               onClick={() => setIsMisViajesOpen(true)}
             >
               <p>Mis viajes</p>
             </button>
+            <NuevoViajeButton variant="nav" />
             <div className="nav-divider"/>
             <UserMenu onOpenProfile={() => setIsProfileOpen(true)} />
             </>

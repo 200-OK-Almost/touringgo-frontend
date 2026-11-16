@@ -9,6 +9,16 @@
   height: 540px;
 }
 
+.mis-viajes__actions {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: .25rem;
+  background-color: var(--bg-subtle);
+}
+
 .viaje-link {
   display: flex;
   justify-content: space-between;

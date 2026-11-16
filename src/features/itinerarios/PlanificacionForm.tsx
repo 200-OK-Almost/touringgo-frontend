@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import StepIndicator from "./StepIndicator";
 import DurationStep from "./steps/DurationStep";
@@ -52,14 +52,23 @@ function PlanificacionForm() {
 
   const currentStep = PASOS[currentStepCounter] ?? PASOS[0];
 
+  const reiniciarWizard = useCallback(() => {
+    setFormData(crearItineraryFormDataInicial());
+    setCurrentStepCounter(0);
+    setErrors({});
+    setDirection("forward");
+  }, []);
+
   useEffect(() => {
     if (!reiniciar) {
       return;
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reinicio explícito desde Nuevo viaje
+    reiniciarWizard();
     clearDraft();
     setSearchParams(new URLSearchParams(), { replace: true });
-  }, [reiniciar, clearDraft, setSearchParams]);
+  }, [reiniciar, clearDraft, setSearchParams, reiniciarWizard]);
 
   useEffect(() => {
     saveDraft(formData, currentStepCounter);
