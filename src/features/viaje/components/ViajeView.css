@@ -49,6 +49,15 @@
   color: var(--text-muted);
 }
 
+.viaje-dias-warning {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--warning-border-subtle);
+  border-radius: var(--border-radius);
+  background: var(--warning-bg-subtle);
+  color: var(--warning-text);
+  font-size: 0.85rem;
+}
+
 /* Map */
 .viaje-mapa {
   height: 380px;

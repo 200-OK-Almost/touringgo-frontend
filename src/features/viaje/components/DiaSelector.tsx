@@ -1,10 +1,8 @@
+import type { DiaViaje } from "../lib/diasViaje";
 import "./DiaSelector.css"
 
 interface DiaSelectorProps {
-  dias: {
-    numeroDia: number;
-    fecha: string | null;
-  }[] | null;
+  dias: DiaViaje[] | null;
   diaActual: number;
   onDiaChange: (dia: number) => void;
 };

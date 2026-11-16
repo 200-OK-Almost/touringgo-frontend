@@ -10,7 +10,7 @@ function DiaRecorrido({
 }: DiaRecorridoProps) {
 
   if (!paradasViewModel)
-    return <p>No se encontro el itinerario</p>
+    return <p>No hay paradas para este día.</p>
 
   return (
     <>
