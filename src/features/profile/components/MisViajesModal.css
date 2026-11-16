@@ -60,10 +60,19 @@
 
   transition: all 0.15s ease;
 }
-.viaje-action-btn-icon:hover {
+.viaje-action-btn-icon:hover:not(:disabled) {
   color: var(--primary);
   background-color: var(--surface);
   border-color: var(--primary);
+}
+.viaje-action-btn-icon:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+.viaje-action-btn-icon--danger:hover:not(:disabled) {
+  color: #b91c1c;
+  background-color: #fef2f2;
+  border-color: #fecaca;
 }
 
 .viaje-edit-form {
@@ -133,6 +142,41 @@
   background-color: var(--bg-subtle);
 }
 
+.viaje-action-btn--danger {
+  color: white;
+  background-color: #dc2626;
+  border: 1px solid #dc2626;
+}
+.viaje-action-btn--danger:hover:not(:disabled) {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+}
+
+.viaje-delete-confirm {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem;
+  min-width: 0;
+}
+
+.viaje-delete-confirm__text {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+
+  color: var(--text);
+  font-size: .9rem;
+  line-height: 1.4;
+}
+
+.viaje-delete-confirm__actions {
+  display: flex;
+  gap: .35rem;
+  flex-shrink: 0;
+}
+
 .viaje-action-error {
   flex-basis: 100%;
   margin: 0;
@@ -146,11 +190,13 @@
 }
 
 @media (max-width: 520px) {
-  .viaje-edit-input {
+  .viaje-edit-input,
+  .viaje-delete-confirm__text {
     flex-basis: 100%;
   }
 
-  .viaje-edit-actions {
+  .viaje-edit-actions,
+  .viaje-delete-confirm__actions {
     width: 100%;
     justify-content: flex-end;
   }

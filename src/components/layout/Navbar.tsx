@@ -9,7 +9,11 @@ import "./Navbar.css";
 import MisViajesModal from "../../features/profile/components/MisViajesModal";
 import { NuevoViajeButton } from "../../features/itinerarios/components/NuevoViajeButton";
 
-export default function Navbar() {
+export interface NavbarProps {
+  showNuevoViaje?: boolean;
+}
+
+export default function Navbar({ showNuevoViaje = false }: NavbarProps) {
   const { isAuthenticated, isLoading } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMisViajesOpen, setIsMisViajesOpen] = useState(false);
@@ -39,7 +43,7 @@ export default function Navbar() {
               <IoBriefcaseOutline aria-hidden="true" />
               <span className="mis-viajes-btn__label">Mis viajes</span>
             </button>
-            <NuevoViajeButton variant="nav" />
+            {showNuevoViaje && <NuevoViajeButton variant="nav" />}
             <div className="nav-divider"/>
             <UserMenu onOpenProfile={() => setIsProfileOpen(true)} />
             </>
