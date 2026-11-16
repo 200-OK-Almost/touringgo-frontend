@@ -4,39 +4,54 @@ import type { ParadaViewModel } from "../types";
 import "./LugarRecorridoCard.css"
 import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5";
 import { getHourAndMinutes } from "../../../lib/format";
+import type { LugarDetalleDto } from "../../../api/types";
 
 export interface LugarRecorridoCardProps {
-  paradaViewModel: ParadaViewModel;
+  paradaViewModel?: ParadaViewModel;
+  lugarPartida?: LugarDetalleDto | null
 }
 
 
 function LugarRecorridoCard({
   paradaViewModel,
+  lugarPartida = null
 } : LugarRecorridoCardProps) {
-  const [hours, minutes, seconds] = paradaViewModel.parada.horaInicio.split(':').map(Number);
-  const horaInicio = new Date()
-  horaInicio.setHours(hours, minutes, seconds)
   
+  const lugar = lugarPartida ? lugarPartida : paradaViewModel?.lugar
+
+  const getHoraInicioParada = (paradaViewModel: ParadaViewModel) => {
+    const [hours, minutes, seconds] = paradaViewModel.parada.horaInicio.split(':').map(Number);
+    const horaInicio = new Date()
+    horaInicio.setHours(hours, minutes, seconds)
+    return getHourAndMinutes(horaInicio)
+  }
+
   return (
     <div className="lugar-recorrido-card">
 
       <div className="lugar-recorrido-card__body">
         <div className="lugar-recorrido-card__thumb">
-          <SmartImage src={paradaViewModel.lugar?.fotos?.[0]?.url} alt={paradaViewModel.lugar.nombre} />
+          <SmartImage src={lugar?.fotos?.[0]?.url} alt={lugar?.nombre ?? ""} />
         </div>
 
         <div className="lugar-recorrido-card__info">
-          <h4 className="lugar-recorrido-card__nombre">{paradaViewModel.lugar.nombre}</h4>
+          <h4 className="lugar-recorrido-card__nombre">
+            {lugarPartida && "Punto de partida - "}{lugar?.nombre}
+          </h4>
           <p className="lugar-recorrido-card__direccion">
             <PinIcon />
-            <span>{paradaViewModel.lugar.direccion}</span>
+            <span>{lugar?.direccion}</span>
           </p>
           <p className="lugar-recorrido-card__tiempo">
-            <IoCalendarOutline className="lugar-recorrido-card__icon"/>
-            {getHourAndMinutes(horaInicio)}
-            <span>·</span>
-            <IoTimeOutline className="lugar-recorrido-card__icon"/>
-            {`${paradaViewModel.parada.duracionMinutos.toString()}m`} 
+            {paradaViewModel &&
+              <>
+              <IoCalendarOutline className="lugar-recorrido-card__icon"/>
+              {getHoraInicioParada(paradaViewModel)}
+              <span>·</span>
+              <IoTimeOutline className="lugar-recorrido-card__icon"/>
+              {`${paradaViewModel.parada.duracionMinutos.toString()}m`} 
+              </>
+            }
           </p>
         </div>
       </div>

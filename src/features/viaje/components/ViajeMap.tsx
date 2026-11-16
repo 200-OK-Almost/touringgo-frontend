@@ -26,7 +26,6 @@ function ViajeMap({ itinerarioViewModel }: ViajeMapProps) {
     ]);
     let posiciones: LatLngExpression[] = paradasPosiciones
 
-    console.log(itinerarioViewModel.itinerario)
     if (itinerarioViewModel.itinerario.origenLatitud && itinerarioViewModel.itinerario.origenLongitud) {
       const origenPosicion: LatLngExpression = [
         itinerarioViewModel.itinerario.origenLatitud,
@@ -37,7 +36,6 @@ function ViajeMap({ itinerarioViewModel }: ViajeMapProps) {
         ... posiciones
       ]
     }
-    console.log(posiciones)
     
     return (
       <div className="viaje-map-wrapper">
@@ -72,16 +70,6 @@ function ViajeMap({ itinerarioViewModel }: ViajeMapProps) {
               </Marker>
             )}
           {paradas.map((parada, index) => (
-            // <Marker
-            //   key={parada.lugar.id}
-            //   position={[parada.lugar.latitud, parada.lugar.longitud]}
-            // >
-            //   <Popup>
-            //     <strong>{index + 1}. {parada.lugar.nombre}</strong>
-            //     <br />
-            //     {parada.lugar.direccion}
-            //   </Popup>
-            // </Marker>
             <CustomMarker
               key={parada.lugar.id}
               position={[

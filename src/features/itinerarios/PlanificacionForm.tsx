@@ -105,7 +105,6 @@ function PlanificacionForm() {
       categoriaCodigos: formData.categoriasPrioritarias.map(x => x.codigo),
       lugarPartidaId: formData.hospedajeLugarGuid!
     }
-    console.log(viajeCreateDto)
     try {
       const viajeResponse = await createViaje(viajeCreateDto);
       const viajeId = viajeResponse.id;
