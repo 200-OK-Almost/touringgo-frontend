@@ -6,7 +6,6 @@ import ViajeMap from "./ViajeMap"
 import "./ViajeView.css"
 import DiaRecorrido from "./DiaRecorrido"
 import DiaSelector from "./DiaSelector"
-import { NuevoViajeButton } from "../../itinerarios/components/NuevoViajeButton"
 export interface ViajeViewProps {
   viaje: ViajeDto
   itinerariosViewModel: ItinerarioViewModel[] | null
@@ -44,14 +43,11 @@ function ViajeView({viaje, itinerariosViewModel}: ViajeViewProps) {
                 {viaje.ritmoCaminata}
               </p>
             </div>
-            <div className="viaje-header-actions">
-              <NuevoViajeButton variant="ghost" />
-              <DiaSelector 
-                dias={dias}
-                diaActual={diaActual}
-                onDiaChange={setDiaActual}
-              />
-            </div>
+            <DiaSelector 
+              dias={dias}
+              diaActual={diaActual}
+              onDiaChange={setDiaActual}
+            />
           </header>
           <div className="recorrido-header">
             <h2>Recorrido</h2>

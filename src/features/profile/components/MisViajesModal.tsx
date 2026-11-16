@@ -5,7 +5,6 @@ import { getMisViajes } from "../../viaje/api/viajes";
 import { Link } from "react-router-dom";
 import "./MisViajesModal.css"
 import { capitalize, toDateOnlyString } from "../../../lib/format";
-import { NuevoViajeButton } from "../../itinerarios/components/NuevoViajeButton";
 export interface MisViajesModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -59,9 +58,6 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
       className="profile-modal mis-viajes-modal"
     >
       <div className="mis-viajes">
-        <div className="mis-viajes__actions">
-          <NuevoViajeButton variant="primary" onBeforeNavigate={onClose} />
-        </div>
         {loading ? (
           <>
           {/* <p className="text-muted">Cargando tus viajes...</p> */}
