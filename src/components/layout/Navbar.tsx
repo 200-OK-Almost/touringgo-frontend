@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { IoBriefcaseOutline } from "react-icons/io5";
 import { useAuth } from "../../features/auth/auth-context";
 import { UserMenu } from "../../features/auth/components/UserMenu";
 import { ProfileModal } from "../../features/profile/components/ProfileModal";
@@ -33,8 +34,10 @@ export default function Navbar() {
               type="button"
               className="mis-viajes-btn"
               onClick={() => setIsMisViajesOpen(true)}
+              aria-label="Mis viajes"
             >
-              <p>Mis viajes</p>
+              <IoBriefcaseOutline aria-hidden="true" />
+              <span className="mis-viajes-btn__label">Mis viajes</span>
             </button>
             <NuevoViajeButton variant="nav" />
             <div className="nav-divider"/>
