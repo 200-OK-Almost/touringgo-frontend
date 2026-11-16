@@ -60,7 +60,6 @@ export function ViajeViewSkeleton({ isGenerating = false }: ViajeViewSkeletonPro
           <div className="recorrido-dia">
             <LugarRecorridoCardSkeleton />
             <LugarRecorridoCardSkeleton />
-            <LugarRecorridoCardSkeleton />
           </div>
         </section>
       </main>
