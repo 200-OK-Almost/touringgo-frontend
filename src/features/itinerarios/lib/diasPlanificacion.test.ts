@@ -84,4 +84,15 @@ describe("diasPlanificacion", () => {
     expect(diaEstaCompleto(dias[1])).toBe(false);
     expect(diasFaltantes(dias)).toEqual(["Día 2"]);
   });
+
+  it("considera incompleto un hospedaje de otro barrio", () => {
+    const diaConHospedaje: DiaPlanificacion = {
+      ...dia("2026-11-18", 1, "Palermo"),
+      puntoInicio: "HospedajePropio",
+      hospedajeLugarGuid: "hotel-1",
+      hospedajeBarrio: "Recoleta",
+    };
+
+    expect(diaEstaCompleto(diaConHospedaje)).toBe(false);
+  });
 });

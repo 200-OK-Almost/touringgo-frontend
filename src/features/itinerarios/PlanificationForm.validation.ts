@@ -5,6 +5,7 @@ import {
   MAX_DIAS_VIAJE,
   MENSAJE_RANGO_INVALIDO,
 } from "./lib/fechas";
+import { diaEstaCompleto } from "./lib/diasPlanificacion";
 
 export type FormErrors = Partial<
   Record<keyof ItineraryFormData, string>
@@ -39,30 +40,47 @@ export function validateStep(formData: ItineraryFormData, step: number): FormErr
       break;
 
     case 1: {
-      const dia = formData.dias[0];
-      const barrio = dia?.barrio ?? null;
-      const puntoInicio = dia?.puntoInicio ?? null;
-      const hospedajeLugarGuid = dia?.hospedajeLugarGuid ?? null;
-      const hospedajeBarrio = dia?.hospedajeBarrio ?? null;
+      if (formData.dias.length === 0) {
+        errors.dias = "Elegí las fechas del viaje para definir los días.";
+        break;
+      }
 
-      if (barrio == null)
-        errors.barrio = "Seleccioná un barrio.";
+      if (formData.dias.length === 1) {
+        const dia = formData.dias[0];
+        const barrio = dia.barrio;
+        const puntoInicio = dia.puntoInicio;
+        const hospedajeLugarGuid = dia.hospedajeLugarGuid;
+        const hospedajeBarrio = dia.hospedajeBarrio;
 
-      if (puntoInicio == null) {
-        errors.puntoInicio = "Seleccioná un punto de partida.";
-      } else if (
-        (puntoInicio === "HospedajePropio" || puntoInicio === "HospedajeSugerido") &&
-        hospedajeLugarGuid == null
-      ) {
-        errors.hospedajeLugarGuid = "Seleccioná un lugar de alojamiento de la lista.";
-      } else if (
-        (puntoInicio === "HospedajeSugerido" || puntoInicio === "HospedajePropio") &&
-        hospedajeLugarGuid != null &&
-        barrio != null &&
-        hospedajeBarrio != null &&
-        hospedajeBarrio !== barrio
-      ) {
-        errors.hospedajeLugarGuid = `El alojamiento recomendado debe pertenecer al barrio seleccionado (${barrioLabel(barrio)}).`;
+        if (barrio == null)
+          errors.barrio = "Seleccioná un barrio.";
+
+        if (puntoInicio == null) {
+          errors.puntoInicio = "Seleccioná un punto de partida.";
+        } else if (
+          (puntoInicio === "HospedajePropio" || puntoInicio === "HospedajeSugerido") &&
+          hospedajeLugarGuid == null
+        ) {
+          errors.hospedajeLugarGuid = "Seleccioná un lugar de alojamiento de la lista.";
+        } else if (
+          (puntoInicio === "HospedajeSugerido" || puntoInicio === "HospedajePropio") &&
+          hospedajeLugarGuid != null &&
+          barrio != null &&
+          hospedajeBarrio != null &&
+          hospedajeBarrio !== barrio
+        ) {
+          errors.hospedajeLugarGuid = `El alojamiento recomendado debe pertenecer al barrio seleccionado (${barrioLabel(barrio)}).`;
+        }
+
+        break;
+      }
+
+      const diasFaltantes = formData.dias
+        .filter((dia) => !diaEstaCompleto(dia))
+        .map((dia) => `Día ${dia.dia}`);
+
+      if (diasFaltantes.length > 0) {
+        errors.dias = `Faltan completar: ${diasFaltantes.join(", ")}.`;
       }
 
       break;

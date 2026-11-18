@@ -60,7 +60,14 @@ export function diaEstaCompleto(dia: DiaPlanificacion): boolean {
     dia.puntoInicio === "HospedajePropio" ||
     dia.puntoInicio === "HospedajeSugerido"
   ) {
-    return Boolean(dia.hospedajeLugarGuid);
+    if (!dia.hospedajeLugarGuid) {
+      return false;
+    }
+
+    return !(
+      dia.hospedajeBarrio != null &&
+      dia.hospedajeBarrio !== dia.barrio
+    );
   }
 
   return true;

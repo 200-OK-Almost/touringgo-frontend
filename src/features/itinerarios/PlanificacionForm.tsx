@@ -203,11 +203,8 @@ function PlanificacionForm() {
       case 1:
         return (
           <LocationStep
-            barrio={formData.dias[0]?.barrio ?? null}
-            puntoInicio={formData.dias[0]?.puntoInicio ?? null}
-            hospedajeLugarGuid={formData.dias[0]?.hospedajeLugarGuid ?? null}
-            hospedajeBarrio={formData.dias[0]?.hospedajeBarrio ?? null}
-            onChange={(changes) => updateDia(1, changes)}
+            dias={formData.dias}
+            onChangeDia={updateDia}
             errors={errors}
           />
         );
