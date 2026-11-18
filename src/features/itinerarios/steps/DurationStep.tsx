@@ -60,7 +60,7 @@ function DurationStep({
         error={errors.fechaInicio ?? errors.fechaFin}
       />
 
-      <div className="planificacion-form-header">
+      <div className="planificacion-form-header duration-step__availability-header">
         <h2>¿Cuanto tiempo querés dedicar a recorrer cada día?</h2>
       </div>
       <div className="selectable-card-group grid-3">
