@@ -5,6 +5,7 @@ export interface DayCellProps {
   date: Date;
   selected?: boolean;
   inRange?: boolean;
+  outside?: boolean;
   disabled?: boolean;
   hasEvent?: boolean;
   tabIndex?: number;
@@ -20,6 +21,7 @@ export function DayCell({
   date,
   selected = false,
   inRange = false,
+  outside = false,
   disabled = false,
   hasEvent = false,
   tabIndex,
@@ -31,6 +33,7 @@ export function DayCell({
     "date-widget__day",
     selected ? "date-widget__day--selected" : "",
     inRange ? "date-widget__day--in-range" : "",
+    outside ? "date-widget__day--outside" : "",
     disabled ? "date-widget__day--disabled" : "",
   ]
     .filter(Boolean)

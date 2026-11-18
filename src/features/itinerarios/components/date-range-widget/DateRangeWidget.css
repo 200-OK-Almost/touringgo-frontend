@@ -2,6 +2,22 @@
    DateRangeWidget
    ========================================================= */
 
+.date-widget {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  padding: 0.75rem;
+  border-radius: 32px;
+  background: var(--emerald-700, #047857);
+}
+
+.date-widget__card {
+  padding: 1rem;
+  border-radius: 28px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+}
+
 .date-widget__day {
   position: relative;
   display: flex;
@@ -41,11 +57,16 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
+.date-widget__day--outside {
+  opacity: 0.35;
+}
+
 .date-widget__day--selected,
 .date-widget__day--selected:not(:disabled):hover {
   background: #fff;
   color: #17141c;
   font-weight: 700;
+  opacity: 1;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
@@ -181,11 +202,156 @@
   color: #17141c;
 }
 
+.date-widget__header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.date-widget__month {
+  overflow: hidden;
+  font-size: 1.55rem;
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.date-widget__selected-day {
+  justify-self: end;
+  margin-right: 0.15rem;
+  font-size: 1.55rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.date-widget__nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    opacity 180ms ease;
+}
+
+.date-widget__nav:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.date-widget__nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.date-widget__nav:focus-visible,
+.date-widget__footer-button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.date-widget__calendar {
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.date-widget__view {
+  animation: date-widget-view-in 180ms ease;
+}
+
+.date-widget__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  margin-bottom: 0.35rem;
+}
+
+.date-widget__weekday {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.date-widget__week,
+.date-widget__month {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.date-widget__day-slot {
+  display: flex;
+  min-width: 0;
+}
+
+.date-widget__status {
+  min-height: 1.2em;
+  margin-top: 0.75rem;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+.date-widget__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+
+.date-widget__footer-button {
+  padding: 0.25rem 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 180ms ease;
+}
+
+.date-widget__footer-button:hover {
+  color: #fff;
+}
+
+@keyframes date-widget-view-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .date-widget__day,
   .date-widget__toggle-button,
   .date-widget__settings,
-  .date-widget__chip {
+  .date-widget__chip,
+  .date-widget__nav,
+  .date-widget__footer-button {
     transition: none;
+  }
+
+  .date-widget__view {
+    animation: none;
   }
 }
