@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { capitalize } from "../../../lib/format"
+import { barrioLabel, capitalize } from "../../../lib/format"
 import type { ItinerarioViewModel, ViajeDto } from "../types"
 import AsistentePanel from "./AsistentePanel"
 import ViajeMap from "./ViajeMap"
@@ -7,7 +7,8 @@ import "./ViajeView.css"
 import DiaRecorrido from "./DiaRecorrido"
 import DiaSelector from "./DiaSelector"
 import type { LugarDetalleDto } from "../../../api/types"
-import { construirDiasViaje } from "../lib/diasViaje"
+import { construirDiasViaje, obtenerBarriosPorDia } from "../lib/diasViaje"
+import { TITULO_VIAJE_POR_DEFECTO } from "../lib/viajeTitulo"
 export interface ViajeViewProps {
   viaje: ViajeDto
   itinerariosViewModel: ItinerarioViewModel[] | null
@@ -31,6 +32,12 @@ function ViajeView({viaje, itinerariosViewModel, lugarPartida}: ViajeViewProps) 
     i => i.itinerario.numeroDia === diaSeleccionado
   ) ?? null
 
+  const titulo = viaje.titulo || TITULO_VIAJE_POR_DEFECTO;
+  const barriosPorDia = obtenerBarriosPorDia(viaje.barrio, viaje.dias);
+  const barrioDiaActual =
+    barriosPorDia.find((dia) => dia.numeroDia === diaSeleccionado) ??
+    barriosPorDia[0];
+
   return (
     <div className="viaje-layout">
       {/* Main content */}
@@ -38,7 +45,13 @@ function ViajeView({viaje, itinerariosViewModel, lugarPartida}: ViajeViewProps) 
           {/* Trip header */}
           <header className="viaje-header">
             <div className="viaje-header-info">
-              <h1>{viaje.titulo}</h1>
+              <h1>{titulo}</h1>
+              <p className="viaje-header-barrios">
+                {barriosPorDia.length > 1
+                  ? `Día ${barrioDiaActual.numeroDia} · `
+                  : ""}
+                Salida por {barrioLabel(barrioDiaActual.barrio)}
+              </p>
               <p>
                 {capitalize(viaje.tipoViaje)}
                 <span>·</span>

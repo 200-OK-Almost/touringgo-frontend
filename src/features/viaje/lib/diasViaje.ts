@@ -1,3 +1,4 @@
+import type { BarrioCaba } from "../../../api/types";
 import { toDateOnlyString } from "../../../lib/format";
 import {
   duracionDiasInclusiva,
@@ -18,9 +19,32 @@ export interface DiasViajeResultado {
   warning: string | null;
 }
 
+export interface BarrioPorDia {
+  numeroDia: number;
+  barrio: BarrioCaba;
+}
+
 interface ItinerarioDia {
   numeroDia: number;
   fecha: string | null;
+}
+
+interface DiaConBarrio {
+  numeroDia: number;
+  barrio: BarrioCaba;
+}
+
+export function obtenerBarriosPorDia(
+  barrio: BarrioCaba,
+  dias: DiaConBarrio[] | null | undefined
+): BarrioPorDia[] {
+  if (dias && dias.length > 0) {
+    return [...dias]
+      .sort((a, b) => a.numeroDia - b.numeroDia)
+      .map((dia) => ({ numeroDia: dia.numeroDia, barrio: dia.barrio }));
+  }
+
+  return [{ numeroDia: 1, barrio }];
 }
 
 export function construirDiasViaje(

@@ -1,5 +1,5 @@
-import { barrioLabel } from "../../../lib/format";
 import type { ViajeCreateDto, ViajeDiaCreateDto } from "../../viaje/types";
+import { TITULO_VIAJE_POR_DEFECTO } from "../../viaje/lib/viajeTitulo";
 import type { DiaPlanificacion, ItineraryFormData } from "../planificacionFormData";
 
 function construirDia(dia: DiaPlanificacion): ViajeDiaCreateDto {
@@ -26,7 +26,7 @@ export function construirViajeCreateDto(
   }
 
   return {
-    titulo: `Salida por ${barrioLabel(primerDia.barrio)}`,
+    titulo: TITULO_VIAJE_POR_DEFECTO,
     tipoViaje: formData.modalidadViaje!,
     barrio: primerDia.barrio,
     alcanceTemporal: formData.disponibilidadDiaria!,

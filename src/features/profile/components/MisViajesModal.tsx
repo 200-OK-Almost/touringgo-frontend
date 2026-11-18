@@ -1,12 +1,21 @@
 import { useEffect, useState, type FormEvent, type KeyboardEvent } from "react";
 import { IoPencilOutline, IoTrashOutline } from "react-icons/io5";
-import { Modal } from "../../../components/Modal"
+import { Modal } from "../../../components/Modal";
 import type { ViajeDto } from "../../viaje/types";
-import { actualizarViaje, construirViajeUpdateDto, eliminarViaje, getMisViajes } from "../../viaje/api/viajes";
+import {
+  actualizarViaje,
+  construirViajeUpdateDto,
+  eliminarViaje,
+  getMisViajes,
+} from "../../viaje/api/viajes";
 import { Link } from "react-router-dom";
-import "./MisViajesModal.css"
-import { capitalize } from "../../../lib/format";
-import { construirDiasViaje } from "../../viaje/lib/diasViaje";
+import "./MisViajesModal.css";
+import { barrioLabel, capitalize } from "../../../lib/format";
+import {
+  construirDiasViaje,
+  obtenerBarriosPorDia,
+} from "../../viaje/lib/diasViaje";
+import { TITULO_VIAJE_POR_DEFECTO } from "../../viaje/lib/viajeTitulo";
 
 function formatearFechaCreacion(fecha: string): string {
   const [soloFecha] = fecha.split("T");
@@ -17,7 +26,7 @@ export interface MisViajesModalProps {
   onClose: () => void;
 }
 
-function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
+function MisViajesModal({ isOpen, onClose }: MisViajesModalProps) {
   const [viajes, setViajes] = useState<ViajeDto[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -76,14 +85,17 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
       setConfirmDeleteId(null);
     } catch (err) {
       setActionError(
-        err instanceof Error ? err.message : "No se pudo eliminar el viaje."
+        err instanceof Error ? err.message : "No se pudo eliminar el viaje.",
       );
     } finally {
       setDeletingId(null);
     }
   }
 
-  async function handleGuardarTitulo(event: FormEvent<HTMLFormElement>, viaje: ViajeDto) {
+  async function handleGuardarTitulo(
+    event: FormEvent<HTMLFormElement>,
+    viaje: ViajeDto,
+  ) {
     event.preventDefault();
 
     const titulo = tituloDraft.trim();
@@ -98,14 +110,16 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
     try {
       const actualizado = await actualizarViaje(
         viaje.id,
-        construirViajeUpdateDto(viaje, titulo)
+        construirViajeUpdateDto(viaje, titulo),
       );
-      setViajes((prev) => prev.map((item) => (item.id === viaje.id ? actualizado : item)));
+      setViajes((prev) =>
+        prev.map((item) => (item.id === viaje.id ? actualizado : item)),
+      );
       setEditingId(null);
       setTituloDraft("");
     } catch (err) {
       setActionError(
-        err instanceof Error ? err.message : "No se pudo actualizar el título."
+        err instanceof Error ? err.message : "No se pudo actualizar el título.",
       );
     } finally {
       setSavingId(null);
@@ -149,20 +163,23 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
     };
   }, [isOpen]);
   return (
-    <Modal 
-      isOpen={isOpen} 
-      onClose={handleClose} 
-      title="Mis viajes" 
+    <Modal
+      isOpen={isOpen}
+      onClose={handleClose}
+      title={TITULO_VIAJE_POR_DEFECTO} 
       size="md" 
       className="profile-modal mis-viajes-modal"
     >
       <div className="mis-viajes">
         {loading ? (
           <>
-          {/* <p className="text-muted">Cargando tus viajes...</p> */}
-          {Array.from({ length: 8 }, () => 
-            <div className="skeleton" style={{ height: "57px", width: "100%", borderRadius: "4px" }} />
-          )}
+            {/* <p className="text-muted">Cargando tus viajes...</p> */}
+            {Array.from({ length: 8 }, () => (
+              <div
+                className="skeleton"
+                style={{ height: "57px", width: "100%", borderRadius: "4px" }}
+              />
+            ))}
           </>
         ) : error ? (
           <p className="text-muted">{error}</p>
@@ -173,10 +190,15 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
             const cantidadDias = construirDiasViaje(
               viaje.fechaInicio,
               viaje.fechaFin,
-              viaje.itinerarios
+              viaje.itinerarios,
             ).dias.length;
-            const textoDias = cantidadDias === 1 ? "1 Día" : `${cantidadDias} Días`;
-            const tituloViaje = viaje.titulo || `Salida por ${viaje.barrio}`;
+            const textoDias =
+              cantidadDias === 1 ? "1 Día" : `${cantidadDias} Días`;
+            const tituloViaje = viaje.titulo || TITULO_VIAJE_POR_DEFECTO;
+            const barriosPorDia = obtenerBarriosPorDia(
+              viaje.barrio,
+              viaje.dias
+            );
 
             return (
               <div key={viaje.id} className="viaje-item">
@@ -226,7 +248,8 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
                 ) : confirmDeleteId === viaje.id ? (
                   <div className="viaje-delete-confirm">
                     <p className="viaje-delete-confirm__text">
-                      ¿Eliminar <strong>“{tituloViaje}”</strong>? Esta acción no se puede deshacer.
+                      ¿Eliminar <strong>“{tituloViaje}”</strong>? Esta acción no
+                      se puede deshacer.
                     </p>
                     <div className="viaje-delete-confirm__actions">
                       <button
@@ -261,9 +284,17 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
                     >
                       <div className="viaje-link-left">
                         <p className="viaje-link-title">{tituloViaje}</p>
+                        <p className="viaje-link-dias">
+                          {barriosPorDia.map((dia) => (
+                            <span key={dia.numeroDia}>
+                              {barriosPorDia.length > 1
+                                ? `Día ${dia.numeroDia}: `
+                                : ""}
+                              Salida por {barrioLabel(dia.barrio)}
+                            </span>
+                          ))}
+                        </p>
                         <p className="viaje-link-info">
-                          {capitalize(viaje.barrio)}
-                          <span>·</span>
                           {capitalize(viaje.tipoViaje)}
                           <span>·</span>
                           {viaje.ritmoCaminata}
@@ -272,7 +303,9 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
                         </p>
                       </div>
                       <div className="viaje-link-right">
-                        <p className="viaje-link-date">{formatearFechaCreacion(viaje.fechaCreacion)}</p>
+                        <p className="viaje-link-date">
+                          {formatearFechaCreacion(viaje.fechaCreacion)}
+                        </p>
                       </div>
                     </Link>
                     <div className="viaje-actions">
@@ -305,6 +338,6 @@ function MisViajesModal({isOpen, onClose}: MisViajesModalProps) {
         )}
       </div>
     </Modal>
-  )
+  );
 }
-export default MisViajesModal
+export default MisViajesModal;

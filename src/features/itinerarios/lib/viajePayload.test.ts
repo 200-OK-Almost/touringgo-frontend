@@ -65,7 +65,7 @@ describe("construirViajeCreateDto", () => {
   it("usa los datos del primer día para los campos legacy", () => {
     const dto = construirViajeCreateDto(crearFormData());
 
-    expect(dto.titulo).toBe("Salida por Palermo");
+    expect(dto.titulo).toBe("Salida por Buenos Aires");
     expect(dto.lugarPartidaId).toBeUndefined();
     expect(dto.categoriaCodigos).toEqual([
       "cafe_especialidad",
