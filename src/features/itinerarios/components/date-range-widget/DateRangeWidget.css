@@ -74,8 +74,118 @@
   background: #17141c;
 }
 
+.date-widget__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.date-widget__toggle {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.date-widget__toggle-button {
+  padding: 0.4rem 0.85rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.date-widget__toggle-button:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.date-widget__toggle-button--active,
+.date-widget__toggle-button--active:hover {
+  background: #fff;
+  color: #17141c;
+}
+
+.date-widget__toggle-button:focus-visible,
+.date-widget__settings:focus-visible,
+.date-widget__chip:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.date-widget__settings {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.date-widget__settings:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.date-widget__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.date-widget__chip {
+  padding: 0.35rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.date-widget__chip:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.date-widget__chip--active,
+.date-widget__chip--active:hover {
+  border-color: #fff;
+  background: #fff;
+  color: #17141c;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .date-widget__day {
+  .date-widget__day,
+  .date-widget__toggle-button,
+  .date-widget__settings,
+  .date-widget__chip {
     transition: none;
   }
 }
