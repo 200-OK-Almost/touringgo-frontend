@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { DateRangeWidget } from "./DateRangeWidget";
-import { formatFullDate, isSameDay } from "./dateUtils";
+import { addDays, formatFullDate, isSameDay } from "./dateUtils";
 
 const MIN_DATE = new Date(2026, 10, 18);
 const NOV_18 = new Date(2026, 10, 18);
@@ -111,6 +111,28 @@ describe("DateRangeWidget", () => {
 
     expect(isSameDay(start, NOV_18)).toBe(true);
     expect(isSameDay(end, NOV_22)).toBe(true);
+  });
+
+  it("ofrece y aplica cualquier duración entre 1 y 7 días", () => {
+    const onChange = vi.fn();
+    render(<Harness onChange={onChange} />);
+
+    for (let days = 1; days <= 7; days += 1) {
+      const label = days === 1 ? "1 día" : `${days} días`;
+
+      expect(screen.getByRole("button", { name: label })).toBeInTheDocument();
+    }
+
+    fireEvent.click(dayButton(NOV_18));
+
+    for (const days of [2, 4, 6]) {
+      fireEvent.click(screen.getByRole("button", { name: `${days} días` }));
+
+      const [start, end] = onChange.mock.calls.at(-1) as [Date, Date];
+
+      expect(isSameDay(start, NOV_18)).toBe(true);
+      expect(isSameDay(end, addDays(NOV_18, days - 1))).toBe(true);
+    }
   });
 
   it("restaura la duración inicial del draft", () => {

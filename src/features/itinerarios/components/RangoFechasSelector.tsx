@@ -10,7 +10,7 @@ import { DateRangeWidget } from "./date-range-widget/DateRangeWidget";
 import { startOfDay } from "./date-range-widget/dateUtils";
 import "./RangoFechasSelector.css";
 
-const ATAJOS = [1, 3, 5, 7];
+const DURACIONES = [1, 2, 3, 4, 5, 6, 7];
 
 export interface RangoFechasSelectorProps {
   fechaInicio: string | null;
@@ -53,7 +53,7 @@ export function RangoFechasSelector({
       <DateRangeWidget
         value={fechaInicioDate}
         minDate={hoy}
-        durations={ATAJOS}
+        durations={DURACIONES}
         initialDuration={initialDuration}
         onChange={(start, end) =>
           onChange({

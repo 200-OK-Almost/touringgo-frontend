@@ -18,7 +18,7 @@ import {
 import "./DateRangeWidget.css";
 import type { CalendarView } from "./ViewToggle";
 
-const DEFAULT_DURATIONS = [1, 3, 5, 7];
+const DEFAULT_DURATIONS = [1, 2, 3, 4, 5, 6, 7];
 const EMPTY_EVENT_DATES: Date[] = [];
 const SWIPE_THRESHOLD = 40;
 
