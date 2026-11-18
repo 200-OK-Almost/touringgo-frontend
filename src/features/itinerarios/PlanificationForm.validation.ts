@@ -8,7 +8,11 @@ import {
 
 export type FormErrors = Partial<
   Record<keyof ItineraryFormData, string>
->;
+> & {
+  barrio?: string;
+  puntoInicio?: string;
+  hospedajeLugarGuid?: string;
+};
 
 export function validateStep(formData: ItineraryFormData, step: number): FormErrors {
   const errors: FormErrors = {};
@@ -34,28 +38,35 @@ export function validateStep(formData: ItineraryFormData, step: number): FormErr
       }
       break;
 
-    case 1: 
-      if (formData.barrio == null) 
+    case 1: {
+      const dia = formData.dias[0];
+      const barrio = dia?.barrio ?? null;
+      const puntoInicio = dia?.puntoInicio ?? null;
+      const hospedajeLugarGuid = dia?.hospedajeLugarGuid ?? null;
+      const hospedajeBarrio = dia?.hospedajeBarrio ?? null;
+
+      if (barrio == null)
         errors.barrio = "Seleccioná un barrio.";
-      
-      if (formData.puntoInicio == null) {
+
+      if (puntoInicio == null) {
         errors.puntoInicio = "Seleccioná un punto de partida.";
       } else if (
-        (formData.puntoInicio === "HospedajePropio" || formData.puntoInicio === "HospedajeSugerido") &&
-        formData.hospedajeLugarGuid == null
+        (puntoInicio === "HospedajePropio" || puntoInicio === "HospedajeSugerido") &&
+        hospedajeLugarGuid == null
       ) {
         errors.hospedajeLugarGuid = "Seleccioná un lugar de alojamiento de la lista.";
       } else if (
-        (formData.puntoInicio === "HospedajeSugerido" || formData.puntoInicio === "HospedajePropio") &&
-        formData.hospedajeLugarGuid != null &&
-        formData.barrio != null &&
-        formData.hospedajeBarrio != null &&
-        formData.hospedajeBarrio !== formData.barrio
+        (puntoInicio === "HospedajeSugerido" || puntoInicio === "HospedajePropio") &&
+        hospedajeLugarGuid != null &&
+        barrio != null &&
+        hospedajeBarrio != null &&
+        hospedajeBarrio !== barrio
       ) {
-        errors.hospedajeLugarGuid = `El alojamiento recomendado debe pertenecer al barrio seleccionado (${barrioLabel(formData.barrio)}).`;
+        errors.hospedajeLugarGuid = `El alojamiento recomendado debe pertenecer al barrio seleccionado (${barrioLabel(barrio)}).`;
       }
 
       break;
+    }
 
     case 2: 
       if (formData.modalidadViaje == null) {

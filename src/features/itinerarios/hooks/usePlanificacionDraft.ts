@@ -1,16 +1,69 @@
+import type { BarrioCaba } from "../../../api/types";
 import {
   crearItineraryFormDataInicial,
   type ItineraryFormData,
 } from "../planificacionFormData";
+import type { PuntoInicio } from "../types";
+import { construirDias } from "../lib/diasPlanificacion";
 
 const STORAGE_KEY = "touringgo:planificacion-draft:v1";
-const VERSION = 1;
+const VERSION = 2;
+const VERSION_LEGACY = 1;
 
 export interface PlanificacionDraft {
   version: number;
   formData: ItineraryFormData;
   currentStepCounter: number;
   updatedAt: string;
+}
+
+interface LegacyFormData {
+  barrio?: BarrioCaba | null;
+  puntoInicio?: PuntoInicio | null;
+  hospedajeLugarGuid?: string | null;
+  hospedajeBarrio?: BarrioCaba | null;
+  fechaInicio?: string | null;
+  fechaFin?: string | null;
+  [key: string]: unknown;
+}
+
+function normalizarFormData(
+  raw: Partial<ItineraryFormData> | LegacyFormData
+): ItineraryFormData {
+  const {
+    barrio,
+    puntoInicio,
+    hospedajeLugarGuid,
+    hospedajeBarrio,
+    ...resto
+  } = raw as LegacyFormData;
+
+  const base = {
+    ...crearItineraryFormDataInicial(),
+    ...(resto as Partial<ItineraryFormData>),
+  };
+
+  const diasPrevios = Array.isArray(base.dias) ? base.dias : [];
+  const dias = construirDias(base.fechaInicio, base.fechaFin, diasPrevios);
+
+  if (dias.length > 0 && barrio != null) {
+    dias[0] = {
+      ...dias[0],
+      barrio,
+      puntoInicio: puntoInicio ?? null,
+      hospedajeLugarGuid: hospedajeLugarGuid ?? null,
+      hospedajeBarrio: hospedajeBarrio ?? null,
+    };
+  }
+
+  return {
+    ...base,
+    dias,
+    duracion: dias.length,
+    categoriasPrioritarias: Array.isArray(base.categoriasPrioritarias)
+      ? base.categoriasPrioritarias
+      : [],
+  };
 }
 
 export function leerPlanificacionDraft(): PlanificacionDraft | null {
@@ -25,7 +78,7 @@ export function leerPlanificacionDraft(): PlanificacionDraft | null {
 
     if (
       !parsed ||
-      parsed.version !== VERSION ||
+      (parsed.version !== VERSION && parsed.version !== VERSION_LEGACY) ||
       typeof parsed.currentStepCounter !== "number" ||
       !parsed.formData ||
       typeof parsed.formData !== "object"
@@ -34,18 +87,15 @@ export function leerPlanificacionDraft(): PlanificacionDraft | null {
       return null;
     }
 
-    const formData = {
-      ...crearItineraryFormDataInicial(),
-      ...parsed.formData,
-      categoriasPrioritarias: Array.isArray(parsed.formData.categoriasPrioritarias)
-        ? parsed.formData.categoriasPrioritarias
-        : [],
-    };
+    const formData = normalizarFormData(
+      parsed.formData as Partial<ItineraryFormData> | LegacyFormData
+    );
 
     return {
       version: VERSION,
       formData,
-      currentStepCounter: parsed.currentStepCounter,
+      currentStepCounter:
+        parsed.version === VERSION_LEGACY ? 0 : parsed.currentStepCounter,
       updatedAt:
         typeof parsed.updatedAt === "string"
           ? parsed.updatedAt
@@ -97,10 +147,13 @@ export function esBorradorConDatos(
   }
 
   return Boolean(
-    formData.barrio ||
-      formData.puntoInicio ||
-      formData.hospedajeLugarGuid ||
-      formData.hospedajeBarrio ||
+    formData.dias.some(
+      (dia) =>
+        dia.barrio ||
+        dia.puntoInicio ||
+        dia.hospedajeLugarGuid ||
+        dia.hospedajeBarrio
+    ) ||
       formData.fechaInicio ||
       formData.fechaFin ||
       formData.disponibilidadDiaria ||

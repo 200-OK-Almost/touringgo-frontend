@@ -1,0 +1,73 @@
+import { capitalize, toDateOnlyString } from "../../../lib/format";
+import type { DiaPlanificacion } from "../planificacionFormData";
+import {
+  duracionDiasInclusiva,
+  formatearFechaConDia,
+  MAX_DIAS_VIAJE,
+  parseFechaLocal,
+} from "./fechas";
+
+export function construirDias(
+  fechaInicio: string | null,
+  fechaFin: string | null,
+  previos: DiaPlanificacion[] = []
+): DiaPlanificacion[] {
+  const inicio = parseFechaLocal(fechaInicio);
+  const fin = parseFechaLocal(fechaFin);
+
+  if (!inicio || !fin || fin < inicio) {
+    return [];
+  }
+
+  const cantidad = duracionDiasInclusiva(fechaInicio, fechaFin);
+
+  if (cantidad === null || cantidad < 1 || cantidad > MAX_DIAS_VIAJE) {
+    return [];
+  }
+
+  const previosPorFecha = new Map(previos.map((dia) => [dia.fecha, dia]));
+
+  return Array.from({ length: cantidad }, (_, indice) => {
+    const fecha = new Date(
+      inicio.getFullYear(),
+      inicio.getMonth(),
+      inicio.getDate() + indice
+    );
+    const fechaString = toDateOnlyString(fecha);
+    const previo = previosPorFecha.get(fechaString);
+
+    return {
+      fecha: fechaString,
+      dia: indice + 1,
+      barrio: previo?.barrio ?? null,
+      puntoInicio: previo?.puntoInicio ?? null,
+      hospedajeLugarGuid: previo?.hospedajeLugarGuid ?? null,
+      hospedajeBarrio: previo?.hospedajeBarrio ?? null,
+    };
+  });
+}
+
+export function formatearDiaPlanificacion(dia: DiaPlanificacion): string {
+  return `Día ${dia.dia} · ${capitalize(formatearFechaConDia(dia.fecha))}`;
+}
+
+export function diaEstaCompleto(dia: DiaPlanificacion): boolean {
+  if (!dia.barrio || !dia.puntoInicio) {
+    return false;
+  }
+
+  if (
+    dia.puntoInicio === "HospedajePropio" ||
+    dia.puntoInicio === "HospedajeSugerido"
+  ) {
+    return Boolean(dia.hospedajeLugarGuid);
+  }
+
+  return true;
+}
+
+export function diasFaltantes(dias: DiaPlanificacion[]): string[] {
+  return dias
+    .filter((dia) => !diaEstaCompleto(dia))
+    .map((dia) => `Día ${dia.dia}`);
+}

@@ -15,10 +15,12 @@ import type { ViajeCreateDto } from "../viaje/types";
 import { createViaje } from "../viaje/api/viajes";
 import {
   crearItineraryFormDataInicial,
+  type DiaPlanificacion,
   type ItineraryFormData,
 } from "./planificacionFormData";
 import { usePlanificacionDraft } from "./hooks/usePlanificacionDraft";
 import { barrioLabel } from "../../lib/format";
+import { construirDias } from "./lib/diasPlanificacion";
 
 const PASOS = [
   { label: "Duración y disponibilidad diaria" },
@@ -91,9 +93,32 @@ function PlanificacionForm() {
   }
 
   function updateFormData(changes: Partial<ItineraryFormData>) {
+    setFormData((prev) => {
+      const next = {
+        ...prev,
+        ...changes,
+      };
+
+      if ("fechaInicio" in changes || "fechaFin" in changes) {
+        const dias = construirDias(next.fechaInicio, next.fechaFin, prev.dias);
+
+        return {
+          ...next,
+          dias,
+          duracion: dias.length,
+        };
+      }
+
+      return next;
+    });
+  }
+
+  function updateDia(diaNumero: number, changes: Partial<DiaPlanificacion>) {
     setFormData((prev) => ({
       ...prev,
-      ...changes,
+      dias: prev.dias.map((dia) =>
+        dia.dia === diaNumero ? { ...dia, ...changes } : dia
+      ),
     }));
   }
 
@@ -120,10 +145,11 @@ function PlanificacionForm() {
 
   async function handleSubmit() {
     setSubmitLoading(true);
-    const titulo = `Salida por ${barrioLabel(formData.barrio!)}`
+    const primerDia = formData.dias[0];
+    const titulo = `Salida por ${barrioLabel(primerDia.barrio!)}`
 
     const viajeCreateDto: ViajeCreateDto = {
-      barrio: formData.barrio!,
+      barrio: primerDia.barrio!,
       tipoViaje: formData.modalidadViaje!,
       titulo: titulo,
       alcanceTemporal: formData.disponibilidadDiaria!,
@@ -131,9 +157,9 @@ function PlanificacionForm() {
       fechaFin: formData.fechaFin!,
       nivelPresupuesto: formData.presupuestoNivel!,
       ritmoCaminata: formData.ritmoVisita!,
-      tipoPuntoPartida: formData.puntoInicio!,
+      tipoPuntoPartida: primerDia.puntoInicio!,
       categoriaCodigos: formData.categoriasPrioritarias.map(x => x.codigo),
-      lugarPartidaId: formData.hospedajeLugarGuid!
+      lugarPartidaId: primerDia.hospedajeLugarGuid ?? undefined
     }
     
     try {
@@ -177,11 +203,11 @@ function PlanificacionForm() {
       case 1:
         return (
           <LocationStep
-            barrio={formData.barrio}
-            puntoInicio={formData.puntoInicio}
-            hospedajeLugarGuid={formData.hospedajeLugarGuid}
-            hospedajeBarrio={formData.hospedajeBarrio}
-            onChange={(changes) => updateFormData(changes)}
+            barrio={formData.dias[0]?.barrio ?? null}
+            puntoInicio={formData.dias[0]?.puntoInicio ?? null}
+            hospedajeLugarGuid={formData.dias[0]?.hospedajeLugarGuid ?? null}
+            hospedajeBarrio={formData.dias[0]?.hospedajeBarrio ?? null}
+            onChange={(changes) => updateDia(1, changes)}
             errors={errors}
           />
         );
