@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
-  padding: .5rem;
+  padding: .75rem;
   box-sizing: border-box;
   width: 100%;
 
@@ -14,10 +14,11 @@
   transition: all 0.15s ease;
   position: relative;
   flex: 1;
+
+  box-shadow: var(--shadow-sm);
 }
 
 .lugar-recorrido-card:hover {
-  border-color: var(--primary, #0f766e);
   background-color: var(--bg-subtle, #f8f7fa);
 }
 
@@ -28,8 +29,8 @@
 }
 
 .lugar-recorrido-card__thumb {
-  width: 80px;
-  height: 80px;
+  width: 50px;
+  height: 50px;
   border-radius: 8px;
   overflow: hidden;
   flex-shrink: 0;
@@ -68,6 +69,12 @@
   color: var(--text-muted, #6b6375);
   margin: 0;
   word-break: break-word;
+  min-width: 0;
+}
+.lugar-recorrido-card__direccion p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .lugar-recorrido-card__icon {
   font-size: 18px;

@@ -17,12 +17,12 @@ function DiaRecorrido({
 
   return (
     <>
-    {lugarPartida &&
+    {/* {lugarPartida &&
       <LugarRecorridoCard
         key={lugarPartida.id}
         lugarPartida={lugarPartida}
       />
-    }
+    } */}
 
     {paradasViewModel.map(parada => 
       <LugarRecorridoCard

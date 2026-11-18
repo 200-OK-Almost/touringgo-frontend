@@ -5,7 +5,6 @@
 }
 .viaje-map-placeholder {
   background-color: var(--bg-subtle);
-  border-radius: var(--border-radius);
 }
 
 .viaje-map-container {
@@ -13,6 +12,38 @@
   height: 100%;
   min-height: 0;
 
-  border-radius: 12px;
   overflow: hidden;
+}
+
+.leaflet-control-attribution {
+  display: none;
+}
+
+.map-zoom-btn-container {
+  display: flex;
+  flex-direction: row;
+  gap: .5rem;
+  background-color: white;
+  border: 1px solid var(--border) !important; /* to override leaflet's native border */
+  border-radius: 20px !important;
+  padding: .5rem;
+  justify-content: space-between;
+  align-items: center;
+  width: 150px;
+
+  font-family: var(--font-sans);
+  font-size: .975rem;
+}
+
+.map-zoom-btn {
+  font-size: 1.15rem;
+  border-radius: 50%;
+  padding: .25rem;
+  transition: all .15s ease;
+}
+.map-zoom-btn:hover {
+  background-color: var(--white-hover);
+}
+.map-zoom-btn:active {
+  background-color: var(--white-active);
 }

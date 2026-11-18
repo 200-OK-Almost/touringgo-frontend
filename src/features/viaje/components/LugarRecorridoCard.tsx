@@ -36,7 +36,10 @@ function LugarRecorridoCard({
 
       <div className="lugar-recorrido-card__body">
         <div className="lugar-recorrido-card__thumb">
-          <SmartImage src={lugar?.fotos?.[0]?.url} alt={lugar?.nombre ?? ""} />
+          <SmartImage 
+            src={lugar?.fotos?.[0]?.url} 
+            alt={lugar?.nombre ?? ""} 
+          />
         </div>
 
         <div className="lugar-recorrido-card__info">
@@ -45,7 +48,7 @@ function LugarRecorridoCard({
           </h4>
           <p className="lugar-recorrido-card__direccion">
             <PinIcon />
-            <span>{lugar?.direccion}</span>
+            <p>{lugar?.direccion}</p>
           </p>
           <p className="lugar-recorrido-card__tiempo">
             {paradaViewModel &&
@@ -58,7 +61,7 @@ function LugarRecorridoCard({
               </>
             }
           </p>
-          {paradaViewModel &&
+          {/* {paradaViewModel &&
             <div className="place-card__chips">
             {lugar?.categorias && 
               lugar.categorias.map(x => 
@@ -71,7 +74,7 @@ function LugarRecorridoCard({
             )}
             {lugar?.esBajoTecho && <span className="attr-chip attr-chip--bajotecho">Bajo techo</span>}
             </div>
-          }
+          } */}
         </div>
       </div>
     </div>

@@ -4,11 +4,13 @@ import type { ItinerarioViewModel } from "../types";
 import "./ViajeMap.css"
 import MapBounds from "./MapBounds";
 import CustomMarker from "./CustomMarker";
+import { CustomZoomControl } from "./CustomZoomControl";
 interface ViajeMapProps {
-    itinerarioViewModel: ItinerarioViewModel | null;
+  itinerarioViewModel: ItinerarioViewModel | null;
+  panelWidth: number
 }
 
-function ViajeMap({ itinerarioViewModel }: ViajeMapProps) {
+function ViajeMap({ itinerarioViewModel, panelWidth }: ViajeMapProps) {
     if (!itinerarioViewModel) {
       return (
         <div className="viaje-map-placeholder">
@@ -44,13 +46,17 @@ function ViajeMap({ itinerarioViewModel }: ViajeMapProps) {
         zoom={13}
         scrollWheelZoom={true}
         className="viaje-map-container"
+        zoomControl={false}
       >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          <MapBounds positions={posiciones} />
+          <MapBounds 
+            panelWidth={panelWidth}
+            positions={posiciones} 
+          />
           
           {/* punto de partida */}
           {itinerarioViewModel.itinerario.origenLatitud != null &&
@@ -89,7 +95,22 @@ function ViajeMap({ itinerarioViewModel }: ViajeMapProps) {
             color="#3388ff"
             weight={4}
           />
+          <CustomZoomControl 
+            position="bottomRight"
+          />
       </MapContainer>
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: '100px', // Adjust how tall the fade is
+          background: 'linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 100%)',
+          pointerEvents: 'none', // Lets clicks and drags pass through to the map
+          zIndex: 500, // Places it above map tiles (z-index 200-400)
+        }}
+      />
       </div>
     );
 }
