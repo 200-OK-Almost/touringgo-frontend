@@ -206,3 +206,7 @@
     padding: 0.5rem 1rem;
   }
 }
+
+.duration-step__availability-header {
+  margin-top: clamp(1.25rem, 2vw, 2rem);
+}
