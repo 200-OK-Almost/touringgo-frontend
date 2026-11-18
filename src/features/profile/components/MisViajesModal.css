@@ -216,10 +216,15 @@
 }
 .viaje-link-dias {
   display: flex;
-  flex-wrap: wrap;
-  gap: .2rem .6rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .15rem;
   font-size: .8rem;
   color: var(--text-muted);
+}
+
+.viaje-link-dias span {
+  display: block;
 }
 .viaje-link-info,
 .viaje-link-date {
