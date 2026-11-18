@@ -11,7 +11,6 @@ import "./PlanificacionForm.css"
 import type { CategoriaDto } from "../../api/types";
 import { getCategorias } from "../../api/lugares";
 import { validateStep, type FormErrors } from "./PlanificationForm.validation";
-import type { ViajeCreateDto } from "../viaje/types";
 import { createViaje } from "../viaje/api/viajes";
 import {
   crearItineraryFormDataInicial,
@@ -19,8 +18,8 @@ import {
   type ItineraryFormData,
 } from "./planificacionFormData";
 import { usePlanificacionDraft } from "./hooks/usePlanificacionDraft";
-import { barrioLabel } from "../../lib/format";
 import { construirDias } from "./lib/diasPlanificacion";
+import { construirViajeCreateDto } from "./lib/viajePayload";
 
 const PASOS = [
   { label: "Duración y disponibilidad diaria" },
@@ -145,24 +144,9 @@ function PlanificacionForm() {
 
   async function handleSubmit() {
     setSubmitLoading(true);
-    const primerDia = formData.dias[0];
-    const titulo = `Salida por ${barrioLabel(primerDia.barrio!)}`
 
-    const viajeCreateDto: ViajeCreateDto = {
-      barrio: primerDia.barrio!,
-      tipoViaje: formData.modalidadViaje!,
-      titulo: titulo,
-      alcanceTemporal: formData.disponibilidadDiaria!,
-      fechaInicio: formData.fechaInicio!,
-      fechaFin: formData.fechaFin!,
-      nivelPresupuesto: formData.presupuestoNivel!,
-      ritmoCaminata: formData.ritmoVisita!,
-      tipoPuntoPartida: primerDia.puntoInicio!,
-      categoriaCodigos: formData.categoriasPrioritarias.map(x => x.codigo),
-      lugarPartidaId: primerDia.hospedajeLugarGuid ?? undefined
-    }
-    
     try {
+      const viajeCreateDto = construirViajeCreateDto(formData);
       const viajeResponse = await createViaje(viajeCreateDto);
       clearDraft();
       navigate(`/viajes/${viajeResponse.id}`);

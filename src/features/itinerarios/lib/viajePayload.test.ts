@@ -1,0 +1,87 @@
+import { describe, expect, it } from "vitest";
+import {
+  crearItineraryFormDataInicial,
+  type ItineraryFormData,
+} from "../planificacionFormData";
+import { construirViajeCreateDto } from "./viajePayload";
+
+function crearFormData(): ItineraryFormData {
+  return {
+    ...crearItineraryFormDataInicial(),
+    fechaInicio: "2026-11-18",
+    fechaFin: "2026-11-19",
+    disponibilidadDiaria: "DiaCompleto",
+    modalidadViaje: "Solo",
+    categoriasPrioritarias: [
+      { id: 1, codigo: "cafe_especialidad", nombre: "Café de especialidad" },
+      { id: 2, codigo: "museos_galerias", nombre: "Museos y galerías" },
+    ],
+    ritmoVisita: "Activo",
+    presupuestoNivel: "Equilibrado",
+    duracion: 2,
+    dias: [
+      {
+        fecha: "2026-11-18",
+        dia: 1,
+        barrio: "Palermo",
+        puntoInicio: "NodoUrbano",
+        hospedajeLugarGuid: null,
+        hospedajeBarrio: null,
+      },
+      {
+        fecha: "2026-11-19",
+        dia: 2,
+        barrio: "Recoleta",
+        puntoInicio: "HospedajeSugerido",
+        hospedajeLugarGuid: "hotel-1",
+        hospedajeBarrio: "Recoleta",
+      },
+    ],
+  };
+}
+
+describe("construirViajeCreateDto", () => {
+  it("incluye el array de días con barrio y punto de partida", () => {
+    const dto = construirViajeCreateDto(crearFormData());
+
+    expect(dto.barrio).toBe("Palermo");
+    expect(dto.tipoPuntoPartida).toBe("NodoUrbano");
+    expect(dto.dias).toHaveLength(2);
+    expect(dto.dias?.[0]).toMatchObject({
+      numeroDia: 1,
+      fecha: "2026-11-18",
+      barrio: "Palermo",
+      tipoPuntoPartida: "NodoUrbano",
+    });
+    expect(dto.dias?.[1]).toMatchObject({
+      numeroDia: 2,
+      fecha: "2026-11-19",
+      barrio: "Recoleta",
+      tipoPuntoPartida: "HospedajeSugerido",
+      lugarPartidaId: "hotel-1",
+    });
+  });
+
+  it("usa los datos del primer día para los campos legacy", () => {
+    const dto = construirViajeCreateDto(crearFormData());
+
+    expect(dto.titulo).toBe("Salida por Palermo");
+    expect(dto.lugarPartidaId).toBeUndefined();
+    expect(dto.categoriaCodigos).toEqual([
+      "cafe_especialidad",
+      "museos_galerias",
+    ]);
+  });
+
+  it("falla si un día está incompleto", () => {
+    const formData = crearFormData();
+    formData.dias[1] = {
+      ...formData.dias[1],
+      barrio: null,
+    };
+
+    expect(() => construirViajeCreateDto(formData)).toThrow(
+      "El día 2 está incompleto."
+    );
+  });
+});

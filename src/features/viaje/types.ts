@@ -118,6 +118,18 @@ export type ViajeUpdateDto = {
   parametrosFamilia?: ParametrosFamiliaDto
 }
 
+export type ViajeDiaCreateDto = {
+  numeroDia: number
+  fecha: string
+  barrio: BarrioCaba
+  tipoPuntoPartida: PuntoInicio
+  lugarPartidaId?: string
+  nombrePuntoPartida?: string
+  direccionPartida?: string
+  latitudPartida?: number
+  longitudPartida?: number
+}
+
 export type ViajeCreateDto = {
   titulo: string
   tipoViaje: ModalidadViaje
@@ -134,6 +146,7 @@ export type ViajeCreateDto = {
   direccionPartida?: string
   latitudPartida?: number
   categoriaCodigos: string[]
+  dias?: ViajeDiaCreateDto[]
   parametrosFamilia?: ParametrosFamiliaDto
 }
 
