@@ -7,6 +7,7 @@ import {
   IoWalletOutline,
 } from "react-icons/io5";
 import "./AjustesTab.css";
+import { barrioLabel, categoriaLabel, presupuestoLabel } from "../../../../../lib/format";
 
 interface AjustesTabProps {
   viaje: ViajeDto;
@@ -52,7 +53,7 @@ export function AjustesTab({ viaje }: AjustesTabProps) {
                 <span className="ajustes-tab__field-label">
                   <IoLocationOutline /> Barrio / Zona
                 </span>
-                <span className="ajustes-tab__field-value">{viaje.barrio}</span>
+                <span className="ajustes-tab__field-value">{barrioLabel(viaje.barrio)}</span>
               </div>
             )}
 
@@ -61,7 +62,7 @@ export function AjustesTab({ viaje }: AjustesTabProps) {
                 <IoWalletOutline /> Presupuesto
               </span>
               <span className="ajustes-tab__field-value">
-                {viaje.nivelPresupuesto || "Estándar"}
+                {presupuestoLabel(viaje.nivelPresupuesto)}
               </span>
             </div>
 
@@ -70,7 +71,7 @@ export function AjustesTab({ viaje }: AjustesTabProps) {
                 <IoWalkOutline /> Ritmo de caminata
               </span>
               <span className="ajustes-tab__field-value">
-                {viaje.ritmoCaminata || "Moderado"}
+                {viaje.ritmoCaminata}
               </span>
             </div>
           </div>
@@ -95,8 +96,11 @@ export function AjustesTab({ viaje }: AjustesTabProps) {
             </h3>
             <div className="ajustes-tab__chips">
               {viaje.categoriaCodigos.map((cat) => (
-                <span key={cat} className="ajustes-tab__chip">
-                  {cat}
+                <span 
+                  key={cat} 
+                  className="ajustes-tab__chip"
+                >
+                  {categoriaLabel(cat)}
                 </span>
               ))}
             </div>

@@ -1,4 +1,5 @@
-import type { BarrioCaba, OrigenLugar } from "../api/types";
+import type { BarrioCaba, CategoriaCodigo, OrigenLugar } from "../api/types";
+import type { NivelPresupuesto } from "../features/viaje/types";
 
 const BARRIO_LABELS: Record<BarrioCaba, string> = {
   Palermo: "Palermo",
@@ -10,6 +11,30 @@ const BARRIO_LABELS: Record<BarrioCaba, string> = {
 
 export function barrioLabel(barrio: BarrioCaba): string {
   return BARRIO_LABELS[barrio] ?? barrio;
+}
+
+const PRESUPUESTO_LABELS: Record<NivelPresupuesto, string> = {
+  Economico: "Economico",
+  Equilibrado: "Equilibrado",
+  SinRestricciones: "Sin restricciones",
+};
+
+export function presupuestoLabel(presupuesto: NivelPresupuesto) {
+  return PRESUPUESTO_LABELS[presupuesto] ?? presupuesto;
+}
+
+const CATEGORIA_CODIGOS: Record<CategoriaCodigo, string> = {
+  cafe_especialidad: "Café de especialidad",
+  museos_galerias: "Museos y galerías",
+  parques_aire_libre: "Parques y aire libre",
+  librerias_diseno: "Librerías y diseño",
+  bares_vermu: "Bares y vermú",
+  gastronomia_clasica: "Gastronomía clásica/Bodegón",
+  cocteleria_autor: "Coctelería de autor",
+};
+
+export function categoriaLabel(categoriaCodigo: CategoriaCodigo) {
+  return CATEGORIA_CODIGOS[categoriaCodigo] ?? categoriaCodigo;
 }
 
 export function precioLabel(nivel: number): string {
