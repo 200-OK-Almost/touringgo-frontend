@@ -1,27 +1,38 @@
-import { useState } from "react"
-import type { ItinerarioViewModel, ViajeDto } from "../types"
-import ViajeMap from "./ViajeMap"
-import "./ViajeView.css"
-import type { LugarDetalleDto } from "../../../api/types"
-import { construirDiasViaje } from "../lib/diasViaje"
-import { IoChatbubblesOutline, IoPaperPlane, IoPaperPlaneOutline, IoPeopleOutline, IoSettingsOutline, IoWalletOutline } from "react-icons/io5"
-import DiaSelector from "./DiaSelector"
-import DiaRecorrido from "./DiaRecorrido"
-import { getDayAndMonth } from "../../../lib/format"
+import { useState } from "react";
+import type { ItinerarioViewModel, ViajeDto } from "../types";
+import type { LugarDetalleDto } from "../../../api/types";
+import ViajeMap from "./ViajeMap";
+import { construirDiasViaje } from "../lib/diasViaje";
+import { useMediaQuery } from "../../../hooks/useMediaQuery";
+import ViajePanel from "./panel/ViajePanel";
+import PanelSidebarNav, { type PanelTab } from "./panel/PanelSidebarNav";
+import ChatTab from "./panel/tabs/ChatTab";
+import MiembrosTab from "./panel/tabs/MiembrosTab";
+import AjustesTab from "./panel/tabs/AjustesTab";
+import RecorridoPanel from "./panel/recorrido/RecorridoPanel";
+import "./ViajeView.css";
+
 export interface ViajeViewProps {
-  viaje: ViajeDto
-  itinerariosViewModel: ItinerarioViewModel[] | null
-  lugarPartida: LugarDetalleDto | null
+  viaje: ViajeDto;
+  itinerariosViewModel: ItinerarioViewModel[] | null;
+  lugarPartida: LugarDetalleDto | null;
 }
 
-export type PrimaryTab = "chat" | "miembros" | "ajustes";
-
-function ViajeView({viaje, itinerariosViewModel, lugarPartida}: ViajeViewProps) {
+export function ViajeView({
+  viaje,
+  itinerariosViewModel,
+  lugarPartida,
+}: ViajeViewProps) {
   const [diaActual, setDiaActual] = useState(1);
+  const [activeTab, setActiveTab] = useState<PanelTab>("chat");
+  const [isRecorridoOpen, setIsRecorridoOpen] = useState(true);
 
-  const panelWidth = 800;
+  const isMobile = useMediaQuery("(max-width: 900px)");
 
-  const { dias, warning } = construirDiasViaje(
+  // En desktop, si la pestaña quedó en 'recorrido' (por venir de móvil), volvemos a 'chat'
+  const currentTab = !isMobile && activeTab === "recorrido" ? "chat" : activeTab;
+
+  const { dias } = construirDiasViaje(
     viaje.fechaInicio,
     viaje.fechaFin,
     viaje.itinerarios
@@ -31,9 +42,38 @@ function ViajeView({viaje, itinerariosViewModel, lugarPartida}: ViajeViewProps) 
     ? diaActual
     : dias[0]?.numeroDia ?? 1;
 
-  const itinerarioActual = itinerariosViewModel?.find(
-    i => i.itinerario.numeroDia === diaSeleccionado
-  ) ?? null
+  const itinerarioActual =
+    itinerariosViewModel?.find(
+      (i) => i.itinerario.numeroDia === diaSeleccionado
+    ) ?? null;
+
+  // Calculamos el ancho ocupado por el panel para el offset del mapa en desktop
+  const panelWidth = isMobile ? 0 : isRecorridoOpen ? 900 : 440;
+
+  // Renderizado del contenido primario según la pestaña activa
+  const renderPrimaryContent = () => {
+    if (isMobile && currentTab === "recorrido") {
+      return (
+        <RecorridoPanel
+          dias={dias}
+          diaSeleccionado={diaSeleccionado}
+          onDiaChange={setDiaActual}
+          itinerarioActual={itinerarioActual}
+          lugarPartida={lugarPartida}
+        />
+      );
+    }
+
+    switch (currentTab) {
+      case "miembros":
+        return <MiembrosTab viaje={viaje} />;
+      case "ajustes":
+        return <AjustesTab viaje={viaje} />;
+      case "chat":
+      default:
+        return <ChatTab viaje={viaje} />;
+    }
+  };
 
   return (
     <div className="viaje-layout">
@@ -44,127 +84,32 @@ function ViajeView({viaje, itinerariosViewModel, lugarPartida}: ViajeViewProps) 
         />
       </section>
 
-      <section className="viaje-panel">
-        <section className="viaje-chat">
-          <div className="viaje-chat-left-column">
-            <div className="viaje-chat-left-column-top">
-              <button 
-                className="viaje-chat-left-column-btn"
-              >
-                <IoChatbubblesOutline className="viaje-chat-left-column-icon"/>
-              </button>
-              <button 
-                className="viaje-chat-left-column-btn"
-              >
-                <IoPeopleOutline className="viaje-chat-left-column-icon"/>
-              </button>
-
-            </div>
-            <div className="viaje-chat-left-column-bottom">
-              <button 
-                className="viaje-chat-left-column-btn"
-              >
-                <IoSettingsOutline className="viaje-chat-left-column-icon"/>
-              </button>
-            </div>
-          </div>
-          <div className="viaje-chat-content">
-            <div className="viaje-chat-header">
-              <h2>{viaje.titulo}</h2>
-            </div>
-            <div className="viaje-chat-body">
-              <div className="viaje-chat-message user-message">
-                <div className="message-header">
-                </div>
-                <div className="message-body">
-                  <p>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam architecto nesciunt dolorum voluptates ut officiis nulla illo aut quisquam, perspiciatis iste ipsa vitae dolorem eum? Maiores autem suscipit non totam?
-                  </p>
-                </div>
-              </div>
-              <div className="viaje-chat-message ai-message">
-                <div className="message-header">
-                
-                </div>
-                <div className="message-body">
-                  <p>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam architecto nesciunt dolorum voluptates ut officiis nulla illo aut quisquam, perspiciatis iste ipsa vitae dolorem eum? Maiores autem suscipit non totam?
-                  </p>
-                  <p>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam architecto nesciunt dolorum voluptates ut officiis nulla illo aut quisquam, perspiciatis iste ipsa vitae dolorem eum? Maiores autem suscipit non totam?
-                  </p>
-                  <p>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam architecto nesciunt dolorum voluptates ut officiis nulla illo aut quisquam, perspiciatis iste ipsa vitae dolorem eum? Maiores autem suscipit non totam?
-                  </p>
-                </div>
-              </div>
-              <div className="viaje-chat-message user-message">
-                <div className="message-header">
-                
-                </div>
-                <div className="message-body">
-                  <p>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam architecto nesciunt dolorum voluptates ut officiis nulla illo aut quisquam, perspiciatis iste ipsa vitae dolorem eum? Maiores autem suscipit non totam?
-                  </p>
-                </div>
-              </div>
-              <div className="viaje-chat-message ai-message">
-                <div className="message-header">
-                </div>
-                <div className="message-body">
-                  <p>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam architecto nesciunt dolorum voluptates ut officiis nulla illo aut quisquam, perspiciatis iste ipsa vitae dolorem eum? Maiores autem suscipit non totam?
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="viaje-chat-input-box">
-              <textarea 
-                className="viaje-chat-input"
-                placeholder="Escribe una consulta a tu asistente de viaje"
-                
-              />
-              <div
-                className="viaje-chat-input-bottom"
-              >
-                <button
-                  className="viaje-chat-send-btn"
-                >
-                  <IoPaperPlane />
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section className="viaje-recorrido">
-          <div className="viaje-recorrido-header">
-            <DiaSelector 
-              dias={dias}
-              diaActual={diaSeleccionado}
-              onDiaChange={setDiaActual}
-            />
-          </div>
-          <div className="viaje-recorrido-body">
-            <div className="viaje-recorrido-group">
-              <h3>
-                Día {itinerarioActual?.itinerario.numeroDia} - {getDayAndMonth(new Date(itinerarioActual?.itinerario.fecha!))}
-              </h3>
-              <div className="viaje-recorrido-paradas">
-                <DiaRecorrido
-                  paradasViewModel={itinerarioActual?.paradas ?? null}
-                  lugarPartida={lugarPartida}
-                />
-              </div>
-            </div>
-            <div className="viaje-recorrido-footer">
-              <p>Información sobre el recorrido...</p>
-            </div>
-          </div>
-        </section>
-
-      </section>
-
-  </div>
-  )
+      <ViajePanel
+        isMobile={isMobile}
+        isRecorridoOpen={isRecorridoOpen}
+        sidebarNav={
+          <PanelSidebarNav
+            activeTab={currentTab}
+            onTabChange={setActiveTab}
+            isMobile={isMobile}
+            isRecorridoOpen={isRecorridoOpen}
+            onToggleRecorrido={() => setIsRecorridoOpen((prev) => !prev)}
+          />
+        }
+        primaryContent={renderPrimaryContent()}
+        secondaryContent={
+          <RecorridoPanel
+            dias={dias}
+            diaSeleccionado={diaSeleccionado}
+            onDiaChange={setDiaActual}
+            itinerarioActual={itinerarioActual}
+            lugarPartida={lugarPartida}
+            onClose={() => setIsRecorridoOpen(false)}
+          />
+        }
+      />
+    </div>
+  );
 }
-export default ViajeView
+
+export default ViajeView;

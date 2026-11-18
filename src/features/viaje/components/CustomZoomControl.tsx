@@ -1,6 +1,6 @@
 import { useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
-import { IoAdd, IoAddCircleOutline, IoRemove, IoRemoveCircleOutline } from 'react-icons/io5';
+import { IoAdd, IoRemove } from 'react-icons/io5';
 import { useState } from 'react';
 
 export type CustomZoomControlPosition = 

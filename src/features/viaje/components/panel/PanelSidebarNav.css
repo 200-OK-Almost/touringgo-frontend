@@ -1,0 +1,94 @@
+/* Desktop Sidebar Nav */
+.panel-sidebar-nav--desktop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0.5rem;
+  width: 52px;
+  flex-shrink: 0;
+  height: 100%;
+  box-sizing: border-box;
+  background-color: var(--bg);
+  border-right: 1px solid var(--border);
+  z-index: 603;
+}
+
+.panel-sidebar-nav__top,
+.panel-sidebar-nav__bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.panel-sidebar-nav__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.4rem;
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.panel-sidebar-nav__btn:hover {
+  color: var(--text);
+  border-color: var(--primary);
+  background-color: var(--surface);
+}
+
+.panel-sidebar-nav__btn.active {
+  color: var(--primary);
+  border-color: var(--primary);
+  background-color: var(--primary-subtle);
+}
+
+.panel-sidebar-nav__btn.active-recorrido {
+  color: var(--primary);
+  border-color: var(--primary);
+  background-color: var(--primary-subtle);
+}
+
+.panel-sidebar-nav__icon {
+  display: block;
+}
+
+/* Mobile Horizontal Nav */
+.panel-sidebar-nav--mobile {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  height: 48px;
+  flex-shrink: 0;
+  background-color: var(--bg);
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+}
+
+.panel-sidebar-nav--mobile .panel-sidebar-nav__btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.825rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.panel-sidebar-nav--mobile .panel-sidebar-nav__btn.active {
+  background-color: var(--primary);
+  color: #ffffff;
+}
+
+.panel-sidebar-nav--mobile .panel-sidebar-nav__btn.active .panel-sidebar-nav__icon {
+  color: #ffffff;
+}

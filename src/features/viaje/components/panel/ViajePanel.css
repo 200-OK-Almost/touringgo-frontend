@@ -1,0 +1,136 @@
+/* Contenedor principal de paneles */
+.viaje-panel {
+  box-sizing: border-box;
+  font-size: 0.95rem;
+}
+
+/* =========================================
+   DESKTOP (Flotante sobre el mapa)
+   ========================================= */
+.viaje-panel--desktop {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 600;
+  height: calc(100% - 1rem);
+  pointer-events: auto;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.viaje-panel--desktop.with-recorrido {
+  width: 900px;
+  max-width: calc(100vw - 1rem);
+  display: grid;
+  grid-template-columns: minmax(360px, 1.25fr) minmax(320px, 1.1fr);
+}
+
+.viaje-panel--desktop.without-recorrido {
+  width: 440px;
+  max-width: calc(100vw - 1rem);
+  display: block;
+}
+
+.viaje-panel__primary-card {
+  position: relative;
+  z-index: 602;
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 25px;
+  box-shadow: var(--shadow-md);
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+}
+
+.viaje-panel__primary-body {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.viaje-panel__secondary-wrapper {
+  position: relative;
+  z-index: 601;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 25px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  background-color: var(--bg);
+
+  margin-left: -1.5rem;
+  padding-left: 1.5rem;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* =========================================
+   MOBILE (Bottom Sheet / Dock)
+   ========================================= */
+.viaje-panel--mobile {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background-color: var(--bg);
+  border-top: 1px solid var(--border);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.viaje-panel--mobile.viaje-panel--expanded {
+  height: 65vh;
+}
+
+.viaje-panel--mobile.viaje-panel--collapsed {
+  height: 62px;
+}
+
+.viaje-panel__handle-btn {
+  width: 100%;
+  padding: 0.5rem 0 0.25rem 0;
+  border: none;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.viaje-panel__handle-bar {
+  width: 44px;
+  height: 5px;
+  background-color: var(--border);
+  border-radius: 999px;
+  transition: background-color 0.15s ease;
+}
+
+.viaje-panel__handle-btn:hover .viaje-panel__handle-bar {
+  background-color: var(--text-muted);
+}
+
+.viaje-panel__mobile-nav {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.viaje-panel__mobile-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
