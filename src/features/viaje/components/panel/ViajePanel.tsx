@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./ViajePanel.css";
+import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
 
 interface ViajePanelProps {
   isMobile: boolean;
@@ -7,6 +8,7 @@ interface ViajePanelProps {
   sidebarNav: React.ReactNode;
   primaryContent: React.ReactNode;
   secondaryContent?: React.ReactNode;
+  toggleRecorridoPanel: () => void;
 }
 
 export function ViajePanel({
@@ -15,6 +17,7 @@ export function ViajePanel({
   sidebarNav,
   primaryContent,
   secondaryContent,
+  toggleRecorridoPanel
 }: ViajePanelProps) {
   const [isMobileExpanded, setIsMobileExpanded] = useState(true);
 
@@ -54,13 +57,25 @@ export function ViajePanel({
       <div className="viaje-panel__primary-card">
         {sidebarNav}
         <div className="viaje-panel__primary-body">{primaryContent}</div>
+
+      <button
+        type="button"
+        className="viaje-recorrido__collapse-btn"
+        onClick={toggleRecorridoPanel}
+        title={isRecorridoOpen ? "Ocultar recorrido" : "Mostrar recorrido"}
+        aria-label={isRecorridoOpen ? "Ocultar recorrido" : "Mostrar recorrido"}
+      >
+        {isRecorridoOpen ? <IoChevronBackOutline /> : <IoChevronForwardOutline />}
+      </button>
       </div>
 
-      {isRecorridoOpen && secondaryContent && (
-        <div className="viaje-panel__secondary-wrapper">
+      {secondaryContent && (
+        <div className="viaje-panel__secondary-wrapper" aria-hidden={!isRecorridoOpen}>
           {secondaryContent}
         </div>
       )}
+
+      
     </aside>
   );
 }

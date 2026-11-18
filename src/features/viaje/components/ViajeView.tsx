@@ -50,6 +50,8 @@ export function ViajeView({
   // Calculamos el ancho ocupado por el panel para el offset del mapa en desktop
   const panelWidth = isMobile ? 0 : isRecorridoOpen ? 900 : 440;
 
+  const toggleRecorridoPanel = () => setIsRecorridoOpen((prev) => !prev)
+
   // Renderizado del contenido primario según la pestaña activa
   const renderPrimaryContent = () => {
     if (isMobile && currentTab === "recorrido") {
@@ -87,13 +89,14 @@ export function ViajeView({
       <ViajePanel
         isMobile={isMobile}
         isRecorridoOpen={isRecorridoOpen}
+        toggleRecorridoPanel={toggleRecorridoPanel}
         sidebarNav={
           <PanelSidebarNav
             activeTab={currentTab}
             onTabChange={setActiveTab}
             isMobile={isMobile}
             isRecorridoOpen={isRecorridoOpen}
-            onToggleRecorrido={() => setIsRecorridoOpen((prev) => !prev)}
+            onToggleRecorrido={() => toggleRecorridoPanel()}
           />
         }
         primaryContent={renderPrimaryContent()}

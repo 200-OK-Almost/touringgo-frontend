@@ -37,16 +37,7 @@ export function RecorridoPanel({
             diaActual={diaSeleccionado}
             onDiaChange={onDiaChange}
           />
-          {onClose && (
-            <button
-              type="button"
-              className="viaje-recorrido__collapse-btn"
-              onClick={onClose}
-              title="Ocultar recorrido"
-            >
-              <IoChevronBackOutline />
-            </button>
-          )}
+
         </div>
       </div>
 
