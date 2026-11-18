@@ -17,8 +17,6 @@ interface HarnessProps {
   initialValue?: Date | null;
   initialDuration?: number;
   eventDates?: Date[];
-  onAddReminder?: () => void;
-  onNewEvent?: () => void;
   onChange?: (start: Date, end: Date) => void;
 }
 
@@ -26,8 +24,6 @@ function Harness({
   initialValue = null,
   initialDuration,
   eventDates,
-  onAddReminder,
-  onNewEvent,
   onChange,
 }: HarnessProps) {
   const [value, setValue] = useState<Date | null>(initialValue);
@@ -38,8 +34,6 @@ function Harness({
       minDate={MIN_DATE}
       initialDuration={initialDuration}
       eventDates={eventDates}
-      onAddReminder={onAddReminder}
-      onNewEvent={onNewEvent}
       onChange={(start, end) => {
         setValue(start);
         onChange?.(start, end);
@@ -224,23 +218,4 @@ describe("DateRangeWidget", () => {
     expect(dayButton(NOV_25)).toBeInTheDocument();
   });
 
-  it("dispara los callbacks del pie", () => {
-    const onAddReminder = vi.fn();
-    const onNewEvent = vi.fn();
-
-    render(
-      <Harness
-        onAddReminder={onAddReminder}
-        onNewEvent={onNewEvent}
-      />
-    );
-
-    fireEvent.click(
-      screen.getByRole("button", { name: "Agregar recordatorio" })
-    );
-    fireEvent.click(screen.getByRole("button", { name: "+ Nuevo evento" }));
-
-    expect(onAddReminder).toHaveBeenCalledTimes(1);
-    expect(onNewEvent).toHaveBeenCalledTimes(1);
-  });
 });

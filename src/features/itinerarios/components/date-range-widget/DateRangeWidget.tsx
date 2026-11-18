@@ -28,8 +28,6 @@ export interface DateRangeWidgetProps {
   durations?: number[];
   minDate?: Date;
   eventDates?: Date[];
-  onAddReminder?: () => void;
-  onNewEvent?: () => void;
   initialDuration?: number;
 }
 
@@ -39,8 +37,6 @@ export function DateRangeWidget({
   durations = DEFAULT_DURATIONS,
   minDate,
   eventDates = EMPTY_EVENT_DATES,
-  onAddReminder,
-  onNewEvent,
   initialDuration,
 }: DateRangeWidgetProps) {
   const today = useMemo(() => startOfDay(new Date()), []);
@@ -312,24 +308,6 @@ export function DateRangeWidget({
         <p className="date-widget__status" aria-live="polite">
           {formatRangeSummary(startDate, endDate)}
         </p>
-
-        <footer className="date-widget__footer">
-          <button
-            type="button"
-            className="date-widget__footer-button"
-            onClick={onAddReminder}
-          >
-            Agregar recordatorio
-          </button>
-
-          <button
-            type="button"
-            className="date-widget__footer-button"
-            onClick={onNewEvent}
-          >
-            + Nuevo evento
-          </button>
-        </footer>
       </div>
     </div>
   );

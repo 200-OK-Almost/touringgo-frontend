@@ -1,11 +1,8 @@
-import { Settings } from "lucide-react";
-
 export type CalendarView = "week" | "month";
 
 export interface ViewToggleProps {
   view: CalendarView;
   onChange: (view: CalendarView) => void;
-  onSettingsClick?: () => void;
 }
 
 const OPTIONS: Array<{ value: CalendarView; label: string }> = [
@@ -13,11 +10,7 @@ const OPTIONS: Array<{ value: CalendarView; label: string }> = [
   { value: "month", label: "Mensual" },
 ];
 
-export function ViewToggle({
-  view,
-  onChange,
-  onSettingsClick,
-}: ViewToggleProps) {
+export function ViewToggle({ view, onChange }: ViewToggleProps) {
   return (
     <div className="date-widget__topbar">
       <div
@@ -41,15 +34,6 @@ export function ViewToggle({
           </button>
         ))}
       </div>
-
-      <button
-        type="button"
-        className="date-widget__settings"
-        aria-label="Configuración"
-        onClick={onSettingsClick}
-      >
-        <Settings size={18} strokeWidth={2} aria-hidden="true" />
-      </button>
     </div>
   );
 }
