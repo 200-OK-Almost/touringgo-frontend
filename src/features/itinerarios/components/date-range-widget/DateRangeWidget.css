@@ -5,11 +5,11 @@
 .date-widget {
   position: relative;
   width: 100%;
-  max-width: 380px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 0.75rem;
+  padding: clamp(0.65rem, 1.25vw, 1rem);
   border: 1px solid rgba(15, 118, 110, 0.12);
-  border-radius: 32px;
+  border-radius: clamp(26px, 2.5vw, 32px);
   background:
     radial-gradient(
       ellipse 85% 65% at 72% 8%,
@@ -56,9 +56,9 @@
 }
 
 .date-widget__card {
-  padding: 1rem;
+  padding: clamp(0.85rem, 1.8vw, 1.5rem);
   border: 1px solid rgba(255, 255, 255, 0.85);
-  border-radius: 28px;
+  border-radius: clamp(24px, 2.2vw, 28px);
   background: rgba(255, 255, 255, 0.58);
   box-shadow:
     0 20px 40px -28px rgba(15, 118, 110, 0.35),
@@ -76,13 +76,15 @@
   width: 100%;
   aspect-ratio: 1;
   min-width: 0;
+  min-height: 36px;
+  max-height: 72px;
   padding: 0;
   border: 0;
-  border-radius: 12px;
+  border-radius: clamp(10px, 1vw, 14px);
   background: transparent;
   color: var(--text-heading);
   font: inherit;
-  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 1.1vw, 1.05rem);
   font-weight: 500;
   line-height: 1;
   cursor: pointer;
@@ -163,12 +165,12 @@
 }
 
 .date-widget__toggle-button {
-  padding: 0.4rem 0.85rem;
+  padding: clamp(0.35rem, 0.45vw, 0.45rem) clamp(0.7rem, 0.9vw, 0.95rem);
   border: 0;
   border-radius: 999px;
   background: transparent;
   color: var(--text-muted);
-  font-size: 0.8rem;
+  font-size: clamp(0.75rem, 0.85vw, 0.84rem);
   font-weight: 600;
   line-height: 1;
   cursor: pointer;
@@ -202,12 +204,12 @@
 }
 
 .date-widget__chip {
-  padding: 0.35rem 0.8rem;
+  padding: clamp(0.3rem, 0.4vw, 0.42rem) clamp(0.65rem, 0.85vw, 0.9rem);
   border: 1px solid rgba(15, 118, 110, 0.14);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.62);
   color: var(--text-muted);
-  font-size: 0.8rem;
+  font-size: clamp(0.75rem, 0.85vw, 0.84rem);
   font-weight: 600;
   line-height: 1;
   cursor: pointer;
@@ -241,7 +243,7 @@
 .date-widget__month {
   overflow: hidden;
   color: var(--text-heading);
-  font-size: 1.55rem;
+  font-size: clamp(1.3rem, 2.5vw, 1.9rem);
   font-weight: 300;
   line-height: 1.1;
   letter-spacing: -0.01em;
@@ -253,7 +255,7 @@
   justify-self: end;
   margin-right: 0.15rem;
   color: var(--primary);
-  font-size: 1.55rem;
+  font-size: clamp(1.3rem, 2.5vw, 1.9rem);
   font-weight: 600;
   line-height: 1;
 }
@@ -262,8 +264,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: clamp(30px, 2.8vw, 36px);
+  height: clamp(30px, 2.8vw, 36px);
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -303,13 +305,13 @@
 .date-widget__weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0.25rem;
+  gap: clamp(0.2rem, 0.55vw, 0.45rem);
   margin-bottom: 0.35rem;
 }
 
 .date-widget__weekday {
   color: var(--text-muted);
-  font-size: 0.7rem;
+  font-size: clamp(0.68rem, 0.85vw, 0.78rem);
   font-weight: 600;
   text-align: center;
 }
@@ -318,7 +320,7 @@
 .date-widget__month {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0.25rem;
+  gap: clamp(0.2rem, 0.55vw, 0.45rem);
 }
 
 .date-widget__day-slot {
@@ -330,7 +332,7 @@
   min-height: 1.2em;
   margin-top: 0.75rem;
   color: var(--text-muted);
-  font-size: 0.78rem;
+  font-size: clamp(0.76rem, 0.95vw, 0.88rem);
   text-align: center;
 }
 

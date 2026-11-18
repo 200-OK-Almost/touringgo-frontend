@@ -8,7 +8,6 @@
 
 .rango-fechas__error {
   width: 100%;
-  max-width: 380px;
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--warning-border-subtle);
   border-radius: var(--border-radius);
