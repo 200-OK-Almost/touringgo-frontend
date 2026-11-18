@@ -1,12 +1,14 @@
+import type { LugarDetalleDto } from "../../../api/types"
 import type { ParadaViewModel } from "../types"
 import DiaRecorrido from "./DiaRecorrido"
 import "./RecorridoPanel.css"
 
 interface RecorridoPanelProps {
   paradas: ParadaViewModel[]
+  lugarPartida?: LugarDetalleDto | null
 }
 
-function RecorridoPanel({paradas}: RecorridoPanelProps) {
+function RecorridoPanel({paradas, lugarPartida = null}: RecorridoPanelProps) {
 
   return (
     <>
@@ -16,6 +18,7 @@ function RecorridoPanel({paradas}: RecorridoPanelProps) {
     <div className="recorrido-dia">
       <DiaRecorrido
         paradasViewModel={paradas}
+        lugarPartida={lugarPartida}
       />
     </div>
     </>

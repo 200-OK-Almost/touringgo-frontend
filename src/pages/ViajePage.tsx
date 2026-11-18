@@ -97,13 +97,6 @@ function ViajePage() {
             : prev
         );
 
-          // Actualizamos el estado del viaje a Planificado y le asociamos los itinerarios
-          setViaje((prev: any) => ({
-            ...prev,
-            estado: "Planificado",
-            itinerarios: nuevosItinerarios,
-          }));
-
           await procesarItinerariosYParadas(nuevosItinerarios);
           if (!controller.signal.aborted) setLoading(false);
         } 
@@ -117,7 +110,7 @@ function ViajePage() {
             }
           }, 2000);
         }
-      } catch (err: any) {
+      } catch (err) {
         if (controller.signal.aborted) return;
         console.error(err);
         setError("No se pudo cargar o generar el viaje.");
