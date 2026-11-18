@@ -21,8 +21,8 @@ import { usePlanificacionDraft } from "./hooks/usePlanificacionDraft";
 import { barrioLabel } from "../../lib/format";
 
 const PASOS = [
-  { label: "Barrio y punto de partida" },
   { label: "Duración y disponibilidad diaria" },
+  { label: "Barrio y punto de partida" },
   { label: "Compañía e Intereses" },
   { label: "Estilo" },
 ];
@@ -165,11 +165,10 @@ function PlanificacionForm() {
     switch (currentStepCounter) {
       case 0:
         return (
-          <LocationStep
-            barrio={formData.barrio}
-            puntoInicio={formData.puntoInicio}
-            hospedajeLugarGuid={formData.hospedajeLugarGuid}
-            hospedajeBarrio={formData.hospedajeBarrio}
+          <DurationStep
+            fechaInicio={formData.fechaInicio}
+            fechaFin={formData.fechaFin}
+            disponibilidadDiaria={formData.disponibilidadDiaria}
             onChange={(changes) => updateFormData(changes)}
             errors={errors}
           />
@@ -177,10 +176,11 @@ function PlanificacionForm() {
 
       case 1:
         return (
-          <DurationStep
-            fechaInicio={formData.fechaInicio}
-            fechaFin={formData.fechaFin}
-            disponibilidadDiaria={formData.disponibilidadDiaria}
+          <LocationStep
+            barrio={formData.barrio}
+            puntoInicio={formData.puntoInicio}
+            hospedajeLugarGuid={formData.hospedajeLugarGuid}
+            hospedajeBarrio={formData.hospedajeBarrio}
             onChange={(changes) => updateFormData(changes)}
             errors={errors}
           />

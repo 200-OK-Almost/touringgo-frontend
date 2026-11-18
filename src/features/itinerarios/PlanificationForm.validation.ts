@@ -15,6 +15,26 @@ export function validateStep(formData: ItineraryFormData, step: number): FormErr
 
   switch (step) {
     case 0: 
+      if (!formData.fechaInicio) {
+        errors.fechaInicio = "Seleccioná la fecha de inicio.";
+      } else if (!formData.fechaFin) {
+        errors.fechaFin = "Seleccioná la fecha de fin.";
+      } else {
+        const dias = duracionDiasInclusiva(formData.fechaInicio, formData.fechaFin);
+
+        if (dias === null || dias < 1) {
+          errors.fechaFin = "La fecha de fin no puede ser anterior a la fecha de inicio.";
+        } else if (dias > MAX_DIAS_VIAJE) {
+          errors.fechaFin = MENSAJE_RANGO_INVALIDO;
+        }
+      }
+
+      if (formData.disponibilidadDiaria == null) {
+        errors.disponibilidadDiaria = "Seleccioná una opción de disponiblidad";
+      }
+      break;
+
+    case 1: 
       if (formData.barrio == null) 
         errors.barrio = "Seleccioná un barrio.";
       
@@ -35,26 +55,6 @@ export function validateStep(formData: ItineraryFormData, step: number): FormErr
         errors.hospedajeLugarGuid = `El alojamiento recomendado debe pertenecer al barrio seleccionado (${barrioLabel(formData.barrio)}).`;
       }
 
-      break;
-
-    case 1: 
-      if (!formData.fechaInicio) {
-        errors.fechaInicio = "Seleccioná la fecha de inicio.";
-      } else if (!formData.fechaFin) {
-        errors.fechaFin = "Seleccioná la fecha de fin.";
-      } else {
-        const dias = duracionDiasInclusiva(formData.fechaInicio, formData.fechaFin);
-
-        if (dias === null || dias < 1) {
-          errors.fechaFin = "La fecha de fin no puede ser anterior a la fecha de inicio.";
-        } else if (dias > MAX_DIAS_VIAJE) {
-          errors.fechaFin = MENSAJE_RANGO_INVALIDO;
-        }
-      }
-
-      if (formData.disponibilidadDiaria == null) {
-        errors.disponibilidadDiaria = "Seleccioná una opción de disponiblidad";
-      }
       break;
 
     case 2: 
