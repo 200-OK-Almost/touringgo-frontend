@@ -8,7 +8,7 @@ import { ViewToggle } from "./ViewToggle";
 import { WeekView } from "./WeekView";
 import {
   addDays,
-  formatMonthName,
+  formatMonthYear,
   formatRangeSummary,
   isBeforeDay,
   isSameDay,
@@ -274,7 +274,7 @@ export function DateRangeWidget({
             <ChevronLeft size={18} aria-hidden="true" />
           </button>
 
-          <h2 className="date-widget__month">{formatMonthName(cursor)}</h2>
+          <h2 className="date-widget__month">{formatMonthYear(cursor)}</h2>
 
           <span className="date-widget__selected-day">
             {startDate ? startDate.getDate() : cursor.getDate()}

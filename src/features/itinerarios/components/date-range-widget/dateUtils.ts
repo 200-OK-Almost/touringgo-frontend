@@ -61,6 +61,10 @@ export function formatMonthName(date: Date): string {
   return capitalize(month);
 }
 
+export function formatMonthYear(date: Date): string {
+  return `${formatMonthName(date)} ${date.getFullYear()}`;
+}
+
 export function formatFullDate(date: Date): string {
   return new Intl.DateTimeFormat(LOCALE, {
     weekday: "long",

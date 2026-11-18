@@ -52,7 +52,7 @@ describe("DateRangeWidget", () => {
 
     expect(screen.getByText("Elegí la fecha de inicio")).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Noviembre" })
+      screen.getByRole("heading", { name: "Noviembre 2026" })
     ).toBeInTheDocument();
     expect(dayButton(NOV_18)).not.toBeDisabled();
     expect(dayButton(NOV_17)).toBeDisabled();
@@ -189,7 +189,7 @@ describe("DateRangeWidget", () => {
       screen.getByRole("button", { name: "Mes anterior" })
     ).not.toBeDisabled();
     expect(
-      screen.getByRole("heading", { name: "Diciembre" })
+      screen.getByRole("heading", { name: "Diciembre 2026" })
     ).toBeInTheDocument();
   });
 

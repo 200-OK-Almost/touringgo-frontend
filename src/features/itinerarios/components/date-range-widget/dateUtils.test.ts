@@ -4,6 +4,7 @@ import {
   countDaysInclusive,
   formatFullDate,
   formatMonthName,
+  formatMonthYear,
   formatRangeSummary,
   formatShortDate,
   getMonthGrid,
@@ -137,6 +138,11 @@ describe("formatos en es-AR", () => {
   it("formatea el nombre del mes con mayúscula inicial", () => {
     expect(formatMonthName(new Date(2026, 10, 18))).toBe("Noviembre");
     expect(formatMonthName(new Date(2026, 0, 1))).toBe("Enero");
+  });
+
+  it("formatea el mes junto con el año", () => {
+    expect(formatMonthYear(new Date(2026, 10, 18))).toBe("Noviembre 2026");
+    expect(formatMonthYear(new Date(2027, 0, 1))).toBe("Enero 2027");
   });
 
   it("formatea la fecha completa para el aria-label", () => {
