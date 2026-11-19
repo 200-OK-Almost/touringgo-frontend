@@ -1,6 +1,22 @@
 import type { BarrioCaba, LugarDetalleDto } from "../../api/types"
 import type { DisponibilidadDiaria, ModalidadViaje, PuntoInicio, RitmoCaminata } from "../itinerarios/types"
 
+export type ViajeDiaDto = {
+  id: string
+  viajeId: string
+  numeroDia: number
+  fecha: string | null
+  barrio: BarrioCaba
+  tipoPuntoPartida: PuntoInicio
+  lugarPartidaId?: string
+  nombrePuntoPartida?: string
+  direccionPartida?: string
+  latitudPartida?: number
+  longitudPartida?: number
+  tipoViaje?: ModalidadViaje | null
+  categoriaCodigos?: string[]
+}
+
 export type ViajeDto = {
   id: string
   titulo: string 
@@ -24,6 +40,7 @@ export type ViajeDto = {
   fechaCreacion: string
   fechaActualizacion: string
   categoriaCodigos: string[]
+  dias?: ViajeDiaDto[] | null
   parametrosFamilia?: ParametrosFamiliaDto
   itinerarios: ItinerarioDto[] | null
 }
@@ -87,6 +104,7 @@ export type EstadoViaje =
 
 export type Turno = 
   | "Manana"
+  | "Mediodia"
   | "Tarde"
   | "Noche"
 
@@ -118,6 +136,20 @@ export type ViajeUpdateDto = {
   parametrosFamilia?: ParametrosFamiliaDto
 }
 
+export type ViajeDiaCreateDto = {
+  numeroDia: number
+  fecha: string
+  barrio: BarrioCaba
+  tipoPuntoPartida: PuntoInicio
+  lugarPartidaId?: string
+  nombrePuntoPartida?: string
+  direccionPartida?: string
+  latitudPartida?: number
+  longitudPartida?: number
+  tipoViaje: ModalidadViaje
+  categoriaCodigos: string[]
+}
+
 export type ViajeCreateDto = {
   titulo: string
   tipoViaje: ModalidadViaje
@@ -134,6 +166,7 @@ export type ViajeCreateDto = {
   direccionPartida?: string
   latitudPartida?: number
   categoriaCodigos: string[]
+  dias?: ViajeDiaCreateDto[]
   parametrosFamilia?: ParametrosFamiliaDto
 }
 

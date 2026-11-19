@@ -42,6 +42,24 @@ function crearViaje(sobrescribir: Partial<ViajeDto> = {}): ViajeDto {
     fechaCreacion: "2026-03-01T10:00:00Z",
     fechaActualizacion: "2026-03-01T10:00:00Z",
     categoriaCodigos: ["Gastronomia", "Cultura"],
+    dias: [
+      {
+        id: "33333333-3333-3333-3333-333333333331",
+        viajeId: VIAJE_ID,
+        numeroDia: 1,
+        fecha: "2026-03-10",
+        barrio: "Palermo",
+        tipoPuntoPartida: "PrimeraParada",
+      },
+      {
+        id: "33333333-3333-3333-3333-333333333332",
+        viajeId: VIAJE_ID,
+        numeroDia: 2,
+        fecha: "2026-03-11",
+        barrio: "Recoleta",
+        tipoPuntoPartida: "NodoUrbano",
+      },
+    ],
     itinerarios: null,
     ...sobrescribir,
   };
@@ -70,6 +88,16 @@ beforeEach(() => {
 });
 
 describe("MisViajesModal", () => {
+  it("muestra Salida por Buenos Aires y los barrios de cada día", async () => {
+    renderModal();
+
+    expect(
+      await screen.findByRole("heading", { name: "Salida por Buenos Aires" })
+    ).toBeInTheDocument();
+    expect(screen.getByText("Día 1: Salida por Palermo")).toBeInTheDocument();
+    expect(screen.getByText("Día 2: Salida por Recoleta")).toBeInTheDocument();
+  });
+
   it("renderiza los botones de editar y eliminar", async () => {
     renderModal();
 

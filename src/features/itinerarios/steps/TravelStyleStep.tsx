@@ -1,4 +1,4 @@
-import { IoCafeOutline, IoWalkOutline, IoFlashOutline, IoBusOutline, IoCarOutline } from "react-icons/io5";
+import { IoCafeOutline, IoFlashOutline } from "react-icons/io5";
 import { SelectableCard } from "../../../components/SelectableCard";
 import type { TipoTransporte } from "../../profile/types";
 import type { RitmoCaminata } from "../types";
@@ -11,13 +11,6 @@ type RitmoVisitaOption = {
   description: string,
   icon: React.ReactNode
   value: RitmoCaminata
-}
-
-type TipoTransporteOption = {
-  title: string, 
-  description: string,
-  icon: React.ReactNode
-  value: TipoTransporte
 }
 
 type PresupuestoOption = {
@@ -40,7 +33,7 @@ interface TravelStyleStepProps {
 
 }
 
-function TravelStyleStep({ritmoVisita, tipoTransporte, presupuestoNivel, onChange, errors}: TravelStyleStepProps) {
+function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: TravelStyleStepProps) {
 
   const ritmoVisitaOptions: RitmoVisitaOption[] = [
     { 

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { BarrioCaba } from "../../../api/types";
 import { SelectableCard } from "../../../components/SelectableCard";
 import { FaMapMarkerAlt } from "react-icons/fa";
@@ -5,19 +6,24 @@ import type { PuntoInicio } from "../types";
 import { IoBusinessOutline, IoHomeOutline, IoTrailSignOutline } from "react-icons/io5";
 import type { FormErrors } from "../PlanificationForm.validation";
 import HospedajeSelector from "../components/HospedajeSelector";
+import DaySelectorTabs from "../components/DaySelectorTabs";
+import type { DiaPlanificacion } from "../planificacionFormData";
 
 interface LocationStepProps {
-  puntoInicio: PuntoInicio | null;
-  barrio: BarrioCaba | null;
-  hospedajeLugarGuid: string | null;
-  hospedajeBarrio: BarrioCaba | null;
-  onChange: (changes: {
-    barrio?: BarrioCaba;
-    puntoInicio?: PuntoInicio;
-    hospedajeLugarGuid?: string | null;
-    hospedajeBarrio?: BarrioCaba | null;
-  }) => void;
+  dias: DiaPlanificacion[];
+  onChangeDia: (
+    diaNumero: number,
+    changes: Partial<DiaPlanificacion>
+  ) => void;
   errors: FormErrors;
+}
+
+interface LocationFieldsProps {
+  dia: DiaPlanificacion | null;
+  onChange: (changes: Partial<DiaPlanificacion>) => void;
+  errorBarrio?: string;
+  errorPuntoInicio?: string;
+  errorHospedaje?: string;
 }
 
 type BarrioAndName = {
@@ -32,42 +38,46 @@ type PuntoInicioAndName = {
   value: PuntoInicio;
 };
 
-function LocationStep({
-  puntoInicio,
-  barrio,
-  hospedajeLugarGuid,
-  hospedajeBarrio,
-  onChange,
-  errors,
-}: LocationStepProps) {
-  const barrios: BarrioAndName[] = [
-    { title: "Palermo", value: "Palermo" },
-    { title: "Recoleta", value: "Recoleta" },
-    { title: "San Telmo", value: "SanTelmo" },
-    { title: "San Nicolas", value: "SanNicolas" },
-    { title: "Puerto Madero", value: "PuertoMadero" },
-  ];
+const BARRIOS: BarrioAndName[] = [
+  { title: "Palermo", value: "Palermo" },
+  { title: "Recoleta", value: "Recoleta" },
+  { title: "San Telmo", value: "SanTelmo" },
+  { title: "San Nicolas", value: "SanNicolas" },
+  { title: "Puerto Madero", value: "PuertoMadero" },
+];
 
-  const alojamientoOptions: PuntoInicioAndName[] = [
-    {
-      title: "Ya tengo lugar",
-      description: "Dirección de hotel",
-      icon: <IoHomeOutline />,
-      value: "HospedajePropio",
-    },
-    {
-      title: "Recomiéndenme hospedaje",
-      description: "Cerca del recorrido",
-      icon: <IoBusinessOutline />,
-      value: "HospedajeSugerido",
-    },
-    {
-      title: "Estoy de paso",
-      description: "Punto central del barrio",
-      icon: <IoTrailSignOutline />,
-      value: "NodoUrbano",
-    },
-  ];
+const ALOJAMIENTO_OPTIONS: PuntoInicioAndName[] = [
+  {
+    title: "Ya tengo lugar",
+    description: "Dirección de hotel",
+    icon: <IoHomeOutline />,
+    value: "HospedajePropio",
+  },
+  {
+    title: "Recomiéndenme hospedaje",
+    description: "Cerca del recorrido",
+    icon: <IoBusinessOutline />,
+    value: "HospedajeSugerido",
+  },
+  {
+    title: "Estoy de paso",
+    description: "Punto central del barrio",
+    icon: <IoTrailSignOutline />,
+    value: "NodoUrbano",
+  },
+];
+
+function LocationFields({
+  dia,
+  onChange,
+  errorBarrio,
+  errorPuntoInicio,
+  errorHospedaje,
+}: LocationFieldsProps) {
+  const barrio = dia?.barrio ?? null;
+  const puntoInicio = dia?.puntoInicio ?? null;
+  const hospedajeLugarGuid = dia?.hospedajeLugarGuid ?? null;
+  const hospedajeBarrio = dia?.hospedajeBarrio ?? null;
 
   const showHospedajeSection =
     puntoInicio === "HospedajePropio" || puntoInicio === "HospedajeSugerido";
@@ -78,7 +88,7 @@ function LocationStep({
         <h2>¿Qué barrio querés recorrer?</h2>
       </div>
       <div className="selectable-card-group grid-5">
-        {barrios.map((b) => (
+        {BARRIOS.map((b) => (
           <SelectableCard
             key={b.value}
             title={b.title}
@@ -97,16 +107,16 @@ function LocationStep({
           />
         ))}
       </div>
-      {errors.barrio && (
+      {errorBarrio && (
         <div className="planificacion-field-error">
-          <p>{errors.barrio}</p>
+          <p>{errorBarrio}</p>
         </div>
       )}
       <div className="planificacion-form-header">
         <h2>Punto de partida</h2>
       </div>
       <div className="selectable-card-group grid-3">
-        {alojamientoOptions.map((a) => (
+        {ALOJAMIENTO_OPTIONS.map((a) => (
           <SelectableCard
             key={a.value}
             title={a.title}
@@ -116,23 +126,26 @@ function LocationStep({
             onClick={() =>
               onChange({
                 puntoInicio: a.value,
-                hospedajeLugarGuid: 
-                  a.value === "PrimeraParada" || a.value === "NodoUrbano" ? null : hospedajeLugarGuid,
-                hospedajeBarrio: 
-                  a.value === "PrimeraParada" || a.value === "NodoUrbano" ? null : hospedajeBarrio,
+                hospedajeLugarGuid:
+                  a.value === "PrimeraParada" || a.value === "NodoUrbano"
+                    ? null
+                    : hospedajeLugarGuid,
+                hospedajeBarrio:
+                  a.value === "PrimeraParada" || a.value === "NodoUrbano"
+                    ? null
+                    : hospedajeBarrio,
               })
             }
             variant="big"
           />
         ))}
       </div>
-      {errors.puntoInicio && (
+      {errorPuntoInicio && (
         <div className="planificacion-field-error">
-          <p>{errors.puntoInicio}</p>
+          <p>{errorPuntoInicio}</p>
         </div>
       )}
 
-      {/* Sección de búsqueda y selección de hospedaje */}
       {showHospedajeSection && (
         <HospedajeSelector
           puntoInicio={puntoInicio}
@@ -144,9 +157,87 @@ function LocationStep({
               hospedajeBarrio: lugar?.barrio ?? null,
             })
           }
-          error={errors.hospedajeLugarGuid}
+          error={errorHospedaje}
         />
       )}
+    </>
+  );
+}
+
+function LocationStep({ dias, onChangeDia, errors }: LocationStepProps) {
+  const [diaActivo, setDiaActivo] = useState(1);
+  const esUnDia = dias.length <= 1;
+  const diaSeleccionado = dias.some((dia) => dia.dia === diaActivo)
+    ? diaActivo
+    : dias[0]?.dia ?? 1;
+  const dia = dias.find((d) => d.dia === diaSeleccionado) ?? null;
+  const puedeCopiarBarrio = Boolean(dias[0]?.barrio);
+
+  function aplicarMismoBarrio() {
+    const barrio = dias[0]?.barrio;
+
+    if (!barrio) {
+      return;
+    }
+
+    dias.slice(1).forEach((diaRestante) => {
+      const cambiaBarrio = diaRestante.barrio !== barrio;
+
+      onChangeDia(diaRestante.dia, {
+        barrio,
+        ...(cambiaBarrio
+          ? { hospedajeLugarGuid: null, hospedajeBarrio: null }
+          : {}),
+      });
+    });
+  }
+
+  return (
+    <>
+      {!esUnDia && (
+        <div className="location-days">
+          <div className="location-days__header">
+            <div className="planificacion-form-header">
+              <h2>¿Qué barrio querés recorrer cada día?</h2>
+              <p className="planificacion-form-description text-muted">
+                Elegí un barrio y un punto de partida para cada día del viaje.
+              </p>
+            </div>
+            <button
+              type="button"
+              className="location-days__shortcut"
+              onClick={aplicarMismoBarrio}
+              disabled={!puedeCopiarBarrio}
+            >
+              Usar el mismo barrio para todos los días
+            </button>
+          </div>
+
+          <DaySelectorTabs
+            dias={dias}
+            diaActivo={diaSeleccionado}
+            onChange={setDiaActivo}
+          />
+        </div>
+      )}
+
+      {errors.dias && (
+        <div className="planificacion-field-error" role="alert">
+          <p>{errors.dias}</p>
+        </div>
+      )}
+
+      <LocationFields
+        dia={dia}
+        onChange={(changes) => {
+          if (dia) {
+            onChangeDia(dia.dia, changes);
+          }
+        }}
+        errorBarrio={esUnDia ? errors.barrio : undefined}
+        errorPuntoInicio={esUnDia ? errors.puntoInicio : undefined}
+        errorHospedaje={esUnDia ? errors.hospedajeLugarGuid : undefined}
+      />
     </>
   );
 }
