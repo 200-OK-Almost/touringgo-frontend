@@ -28,6 +28,8 @@ describe("usePlanificacionDraft", () => {
           puntoInicio: "NodoUrbano" as const,
           hospedajeLugarGuid: null,
           hospedajeBarrio: null,
+          modalidadViaje: "Solo" as const,
+          categoriasPrioritarias: [],
         },
       ],
     };
@@ -63,6 +65,8 @@ describe("usePlanificacionDraft", () => {
           puntoInicio: "NodoUrbano" as const,
           hospedajeLugarGuid: null,
           hospedajeBarrio: null,
+          modalidadViaje: "Solo" as const,
+          categoriasPrioritarias: [],
         },
       ],
     };
@@ -108,10 +112,79 @@ describe("usePlanificacionDraft", () => {
 
     const draft = leerPlanificacionDraft();
 
-    expect(draft?.version).toBe(2);
+    expect(draft?.version).toBe(3);
     expect(draft?.currentStepCounter).toBe(0);
     expect(draft?.formData.dias).toHaveLength(2);
     expect(draft?.formData.dias[0].barrio).toBe("Recoleta");
     expect(draft?.formData.dias[1].barrio).toBeNull();
+    expect(draft?.formData.dias[0].modalidadViaje).toBe("Solo");
+  });
+
+  it("migra un borrador v2 copiando las preferencias globales a los días", () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        version: 2,
+        currentStepCounter: 2,
+        formData: {
+          fechaInicio: "2026-11-18",
+          fechaFin: "2026-11-19",
+          disponibilidadDiaria: "DiaCompleto",
+          modalidadViaje: "Amigos",
+          categoriasPrioritarias: [
+            {
+              id: 1,
+              codigo: "cafe_especialidad",
+              nombre: "Café de especialidad",
+            },
+          ],
+          ritmoVisita: "Activo",
+          presupuestoNivel: "Equilibrado",
+          tipoTransporte: null,
+          dias: [
+            {
+              fecha: "2026-11-18",
+              dia: 1,
+              barrio: "Palermo",
+              puntoInicio: "NodoUrbano",
+              hospedajeLugarGuid: null,
+              hospedajeBarrio: null,
+            },
+            {
+              fecha: "2026-11-19",
+              dia: 2,
+              barrio: "Recoleta",
+              puntoInicio: "NodoUrbano",
+              hospedajeLugarGuid: null,
+              hospedajeBarrio: null,
+            },
+          ],
+        },
+      })
+    );
+
+    const draft = leerPlanificacionDraft();
+
+    expect(draft?.version).toBe(3);
+    expect(draft?.currentStepCounter).toBe(2);
+    expect(draft?.formData.dias).toHaveLength(2);
+    expect(draft?.formData.dias).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          dia: 1,
+          modalidadViaje: "Amigos",
+          categoriasPrioritarias: [
+            expect.objectContaining({ codigo: "cafe_especialidad" }),
+          ],
+        }),
+        expect.objectContaining({
+          dia: 2,
+          modalidadViaje: "Amigos",
+          categoriasPrioritarias: [
+            expect.objectContaining({ codigo: "cafe_especialidad" }),
+          ],
+        }),
+      ])
+    );
   });
 });

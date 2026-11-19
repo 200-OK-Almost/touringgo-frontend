@@ -43,6 +43,8 @@ export function construirDias(
       puntoInicio: previo?.puntoInicio ?? null,
       hospedajeLugarGuid: previo?.hospedajeLugarGuid ?? null,
       hospedajeBarrio: previo?.hospedajeBarrio ?? null,
+      modalidadViaje: previo?.modalidadViaje ?? null,
+      categoriasPrioritarias: previo?.categoriasPrioritarias ?? [],
     };
   });
 }

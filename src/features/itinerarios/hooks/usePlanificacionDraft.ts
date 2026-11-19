@@ -1,14 +1,14 @@
-import type { BarrioCaba } from "../../../api/types";
+import type { BarrioCaba, CategoriaDto } from "../../../api/types";
 import {
   crearItineraryFormDataInicial,
   type ItineraryFormData,
 } from "../planificacionFormData";
-import type { PuntoInicio } from "../types";
+import type { ModalidadViaje, PuntoInicio } from "../types";
 import { construirDias } from "../lib/diasPlanificacion";
 
 const STORAGE_KEY = "touringgo:planificacion-draft:v1";
-const VERSION = 2;
-const VERSION_LEGACY = 1;
+const VERSION = 3;
+const VERSIONES_SOPORTADAS = new Set([1, 2, 3]);
 
 export interface PlanificacionDraft {
   version: number;
@@ -24,6 +24,8 @@ interface LegacyFormData {
   hospedajeBarrio?: BarrioCaba | null;
   fechaInicio?: string | null;
   fechaFin?: string | null;
+  modalidadViaje?: ModalidadViaje | null;
+  categoriasPrioritarias?: CategoriaDto[];
   [key: string]: unknown;
 }
 
@@ -56,13 +58,24 @@ function normalizarFormData(
     };
   }
 
+  const modalidadGlobal = base.modalidadViaje ?? null;
+  const categoriasGlobales = Array.isArray(base.categoriasPrioritarias)
+    ? base.categoriasPrioritarias
+    : [];
+  const diasConPreferencias = dias.map((dia) => ({
+    ...dia,
+    modalidadViaje: dia.modalidadViaje ?? modalidadGlobal,
+    categoriasPrioritarias:
+      dia.categoriasPrioritarias.length > 0
+        ? dia.categoriasPrioritarias
+        : categoriasGlobales,
+  }));
+
   return {
     ...base,
-    dias,
-    duracion: dias.length,
-    categoriasPrioritarias: Array.isArray(base.categoriasPrioritarias)
-      ? base.categoriasPrioritarias
-      : [],
+    dias: diasConPreferencias,
+    duracion: diasConPreferencias.length,
+    categoriasPrioritarias: categoriasGlobales,
   };
 }
 
@@ -78,7 +91,8 @@ export function leerPlanificacionDraft(): PlanificacionDraft | null {
 
     if (
       !parsed ||
-      (parsed.version !== VERSION && parsed.version !== VERSION_LEGACY) ||
+      typeof parsed.version !== "number" ||
+      !VERSIONES_SOPORTADAS.has(parsed.version) ||
       typeof parsed.currentStepCounter !== "number" ||
       !parsed.formData ||
       typeof parsed.formData !== "object"
@@ -95,7 +109,7 @@ export function leerPlanificacionDraft(): PlanificacionDraft | null {
       version: VERSION,
       formData,
       currentStepCounter:
-        parsed.version === VERSION_LEGACY ? 0 : parsed.currentStepCounter,
+        parsed.version === 1 ? 0 : parsed.currentStepCounter,
       updatedAt:
         typeof parsed.updatedAt === "string"
           ? parsed.updatedAt
@@ -152,7 +166,9 @@ export function esBorradorConDatos(
         dia.barrio ||
         dia.puntoInicio ||
         dia.hospedajeLugarGuid ||
-        dia.hospedajeBarrio
+        dia.hospedajeBarrio ||
+        dia.modalidadViaje ||
+        dia.categoriasPrioritarias.length > 0
     ) ||
       formData.fechaInicio ||
       formData.fechaFin ||

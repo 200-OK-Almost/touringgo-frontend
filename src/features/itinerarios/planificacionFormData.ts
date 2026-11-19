@@ -15,6 +15,8 @@ export interface DiaPlanificacion {
   puntoInicio: PuntoInicio | null;
   hospedajeLugarGuid: string | null;
   hospedajeBarrio: BarrioCaba | null;
+  modalidadViaje: ModalidadViaje | null;
+  categoriasPrioritarias: CategoriaDto[];
 }
 
 export interface ItineraryFormData {

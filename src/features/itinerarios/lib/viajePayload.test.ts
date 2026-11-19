@@ -27,6 +27,8 @@ function crearFormData(): ItineraryFormData {
         puntoInicio: "NodoUrbano",
         hospedajeLugarGuid: null,
         hospedajeBarrio: null,
+        modalidadViaje: "Solo",
+        categoriasPrioritarias: [],
       },
       {
         fecha: "2026-11-19",
@@ -35,6 +37,8 @@ function crearFormData(): ItineraryFormData {
         puntoInicio: "HospedajeSugerido",
         hospedajeLugarGuid: "hotel-1",
         hospedajeBarrio: "Recoleta",
+        modalidadViaje: "Familia",
+        categoriasPrioritarias: [],
       },
     ],
   };

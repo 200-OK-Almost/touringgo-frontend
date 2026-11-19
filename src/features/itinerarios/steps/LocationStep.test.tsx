@@ -15,6 +15,8 @@ function dia(
     puntoInicio: barrio ? "NodoUrbano" : null,
     hospedajeLugarGuid: null,
     hospedajeBarrio: null,
+    modalidadViaje: barrio ? "Solo" : null,
+    categoriasPrioritarias: [],
   };
 }
 
