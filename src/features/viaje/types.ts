@@ -104,6 +104,7 @@ export type EstadoViaje =
 
 export type Turno = 
   | "Manana"
+  | "Mediodia"
   | "Tarde"
   | "Noche"
 
