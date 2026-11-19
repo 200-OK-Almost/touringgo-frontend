@@ -6,11 +6,8 @@ import type { PuntoInicio } from "../types";
 import { IoBusinessOutline, IoHomeOutline, IoTrailSignOutline } from "react-icons/io5";
 import type { FormErrors } from "../PlanificationForm.validation";
 import HospedajeSelector from "../components/HospedajeSelector";
+import DaySelectorTabs from "../components/DaySelectorTabs";
 import type { DiaPlanificacion } from "../planificacionFormData";
-import {
-  diaEstaCompleto,
-  formatearDiaPlanificacion,
-} from "../lib/diasPlanificacion";
 
 interface LocationStepProps {
   dias: DiaPlanificacion[];
@@ -216,36 +213,11 @@ function LocationStep({ dias, onChangeDia, errors }: LocationStepProps) {
             </button>
           </div>
 
-          <div
-            className="location-days__tabs"
-            role="tablist"
-            aria-label="Días del viaje"
-          >
-            {dias.map((diaDelViaje) => {
-              const activo = diaDelViaje.dia === diaSeleccionado;
-              const completo = diaEstaCompleto(diaDelViaje);
-
-              return (
-                <button
-                  key={diaDelViaje.dia}
-                  type="button"
-                  role="tab"
-                  aria-selected={activo}
-                  className={`location-day-tab ${
-                    activo ? "location-day-tab--active" : ""
-                  } ${completo ? "location-day-tab--complete" : ""}`}
-                  onClick={() => setDiaActivo(diaDelViaje.dia)}
-                >
-                  <span className="location-day-tab__title">
-                    {formatearDiaPlanificacion(diaDelViaje)}
-                  </span>
-                  <span className="location-day-tab__status">
-                    {completo ? "Completo" : "Falta completar"}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+          <DaySelectorTabs
+            dias={dias}
+            diaActivo={diaSeleccionado}
+            onChange={setDiaActivo}
+          />
         </div>
       )}
 

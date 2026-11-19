@@ -246,52 +246,6 @@
   cursor: not-allowed;
 }
 
-.location-days__tabs {
-  display: flex;
-  gap: 0.5rem;
-  overflow-x: auto;
-  padding-bottom: 0.25rem;
-}
-
-.location-day-tab {
-  min-width: 160px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  padding: 0.65rem 0.8rem;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: #ffffff;
-  text-align: left;
-  cursor: pointer;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
-}
-
-.location-day-tab:hover {
-  border-color: var(--primary);
-}
-
-.location-day-tab--active {
-  border-color: var(--primary);
-  background-color: rgba(15, 118, 110, 0.04);
-  box-shadow: 0 0 0 1px var(--primary);
-}
-
-.location-day-tab__title {
-  color: var(--text-heading);
-  font-weight: 600;
-}
-
-.location-day-tab__status {
-  color: var(--text-muted);
-  font-size: 0.75rem;
-}
-
-.location-day-tab--complete .location-day-tab__status {
-  color: var(--emerald-600);
-  font-weight: 600;
-}
-
 @media (max-width: 640px) {
   .location-days__header {
     align-items: stretch;
