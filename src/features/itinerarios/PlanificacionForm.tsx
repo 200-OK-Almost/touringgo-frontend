@@ -113,25 +113,12 @@ function PlanificacionForm() {
   }
 
   function updateDia(diaNumero: number, changes: Partial<DiaPlanificacion>) {
-    setFormData((prev) => {
-      const dias = prev.dias.map((dia) =>
+    setFormData((prev) => ({
+      ...prev,
+      dias: prev.dias.map((dia) =>
         dia.dia === diaNumero ? { ...dia, ...changes } : dia
-      );
-      const actualizaPreferencias =
-        "modalidadViaje" in changes || "categoriasPrioritarias" in changes;
-      const primerDia = dias[0];
-
-      return {
-        ...prev,
-        dias,
-        ...(diaNumero === 1 && actualizaPreferencias && primerDia
-          ? {
-              modalidadViaje: primerDia.modalidadViaje,
-              categoriasPrioritarias: primerDia.categoriasPrioritarias,
-            }
-          : {}),
-      };
-    });
+      ),
+    }));
   }
 
   function handleNext() {

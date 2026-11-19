@@ -16,6 +16,8 @@ export type FormErrors = Partial<
   barrio?: string;
   puntoInicio?: string;
   hospedajeLugarGuid?: string;
+  modalidadViaje?: string;
+  categoriasPrioritarias?: string;
 };
 
 export function validateStep(formData: ItineraryFormData, step: number): FormErrors {

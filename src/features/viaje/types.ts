@@ -13,6 +13,8 @@ export type ViajeDiaDto = {
   direccionPartida?: string
   latitudPartida?: number
   longitudPartida?: number
+  tipoViaje?: ModalidadViaje | null
+  categoriaCodigos?: string[]
 }
 
 export type ViajeDto = {
@@ -143,6 +145,8 @@ export type ViajeDiaCreateDto = {
   direccionPartida?: string
   latitudPartida?: number
   longitudPartida?: number
+  tipoViaje: ModalidadViaje
+  categoriaCodigos: string[]
 }
 
 export type ViajeCreateDto = {

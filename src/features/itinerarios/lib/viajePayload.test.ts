@@ -11,11 +11,6 @@ function crearFormData(): ItineraryFormData {
     fechaInicio: "2026-11-18",
     fechaFin: "2026-11-19",
     disponibilidadDiaria: "DiaCompleto",
-    modalidadViaje: "Solo",
-    categoriasPrioritarias: [
-      { id: 1, codigo: "cafe_especialidad", nombre: "Café de especialidad" },
-      { id: 2, codigo: "museos_galerias", nombre: "Museos y galerías" },
-    ],
     ritmoVisita: "Activo",
     presupuestoNivel: "Equilibrado",
     duracion: 2,
@@ -28,7 +23,10 @@ function crearFormData(): ItineraryFormData {
         hospedajeLugarGuid: null,
         hospedajeBarrio: null,
         modalidadViaje: "Solo",
-        categoriasPrioritarias: [],
+        categoriasPrioritarias: [
+          { id: 1, codigo: "cafe_especialidad", nombre: "Café de especialidad" },
+          { id: 2, codigo: "museos_galerias", nombre: "Museos y galerías" },
+        ],
       },
       {
         fecha: "2026-11-19",
@@ -38,7 +36,10 @@ function crearFormData(): ItineraryFormData {
         hospedajeLugarGuid: "hotel-1",
         hospedajeBarrio: "Recoleta",
         modalidadViaje: "Familia",
-        categoriasPrioritarias: [],
+        categoriasPrioritarias: [
+          { id: 3, codigo: "parques_aire_libre", nombre: "Parques y aire libre" },
+          { id: 4, codigo: "gastronomia_clasica", nombre: "Gastronomía clásica" },
+        ],
       },
     ],
   };
@@ -56,6 +57,8 @@ describe("construirViajeCreateDto", () => {
       fecha: "2026-11-18",
       barrio: "Palermo",
       tipoPuntoPartida: "NodoUrbano",
+      tipoViaje: "Solo",
+      categoriaCodigos: ["cafe_especialidad", "museos_galerias"],
     });
     expect(dto.dias?.[1]).toMatchObject({
       numeroDia: 2,
@@ -63,6 +66,8 @@ describe("construirViajeCreateDto", () => {
       barrio: "Recoleta",
       tipoPuntoPartida: "HospedajeSugerido",
       lugarPartidaId: "hotel-1",
+      tipoViaje: "Familia",
+      categoriaCodigos: ["parques_aire_libre", "gastronomia_clasica"],
     });
   });
 
@@ -70,6 +75,7 @@ describe("construirViajeCreateDto", () => {
     const dto = construirViajeCreateDto(crearFormData());
 
     expect(dto.titulo).toBe("Salida por Buenos Aires");
+    expect(dto.tipoViaje).toBe("Solo");
     expect(dto.lugarPartidaId).toBeUndefined();
     expect(dto.categoriaCodigos).toEqual([
       "cafe_especialidad",

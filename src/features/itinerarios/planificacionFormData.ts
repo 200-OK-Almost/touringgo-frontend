@@ -27,10 +27,6 @@ export interface ItineraryFormData {
   fechaFin: string | null;
   disponibilidadDiaria: DisponibilidadDiaria | null;
 
-  modalidadViaje: ModalidadViaje | null;
-
-  categoriasPrioritarias: CategoriaDto[];
-
   ritmoVisita: RitmoCaminata | null;
   presupuestoNivel: NivelPresupuesto | null;
   tipoTransporte: TipoTransporte | null;
@@ -44,8 +40,6 @@ export function crearItineraryFormDataInicial(): ItineraryFormData {
     fechaInicio: null,
     fechaFin: null,
     disponibilidadDiaria: null,
-    modalidadViaje: null,
-    categoriasPrioritarias: [],
     ritmoVisita: null,
     tipoTransporte: null,
     presupuestoNivel: null,

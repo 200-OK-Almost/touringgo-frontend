@@ -37,6 +37,8 @@ function normalizarFormData(
     puntoInicio,
     hospedajeLugarGuid,
     hospedajeBarrio,
+    modalidadViaje,
+    categoriasPrioritarias,
     ...resto
   } = raw as LegacyFormData;
 
@@ -58,9 +60,9 @@ function normalizarFormData(
     };
   }
 
-  const modalidadGlobal = base.modalidadViaje ?? null;
-  const categoriasGlobales = Array.isArray(base.categoriasPrioritarias)
-    ? base.categoriasPrioritarias
+  const modalidadGlobal = modalidadViaje ?? null;
+  const categoriasGlobales = Array.isArray(categoriasPrioritarias)
+    ? categoriasPrioritarias
     : [];
   const diasConPreferencias = dias.map((dia) => ({
     ...dia,
@@ -75,7 +77,6 @@ function normalizarFormData(
     ...base,
     dias: diasConPreferencias,
     duracion: diasConPreferencias.length,
-    categoriasPrioritarias: categoriasGlobales,
   };
 }
 
@@ -173,11 +174,9 @@ export function esBorradorConDatos(
       formData.fechaInicio ||
       formData.fechaFin ||
       formData.disponibilidadDiaria ||
-      formData.modalidadViaje ||
       formData.ritmoVisita ||
       formData.presupuestoNivel ||
-      formData.tipoTransporte ||
-      formData.categoriasPrioritarias.length > 0
+      formData.tipoTransporte
   );
 }
 
