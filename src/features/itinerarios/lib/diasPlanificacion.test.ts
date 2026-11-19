@@ -1,10 +1,18 @@
 import { describe, expect, it } from "vitest";
+import type { CategoriaDto } from "../../../api/types";
 import type { DiaPlanificacion } from "../planificacionFormData";
 import {
   construirDias,
   diaEstaCompleto,
+  diasConPreferenciasFaltantes,
   diasFaltantes,
+  preferenciasDiaCompletas,
 } from "./diasPlanificacion";
+
+const CATEGORIAS: CategoriaDto[] = [
+  { id: 1, codigo: "cafe_especialidad", nombre: "Café de especialidad" },
+  { id: 2, codigo: "museos_galerias", nombre: "Museos y galerías" },
+];
 
 function dia(
   fecha: string,
@@ -96,5 +104,20 @@ describe("diasPlanificacion", () => {
     };
 
     expect(diaEstaCompleto(diaConHospedaje)).toBe(false);
+  });
+
+  it("detecta preferencias completas y faltantes por día", () => {
+    const completo: DiaPlanificacion = {
+      ...dia("2026-11-18", 1, "Palermo"),
+      modalidadViaje: "Solo",
+      categoriasPrioritarias: CATEGORIAS,
+    };
+    const incompleto = dia("2026-11-19", 2, "Recoleta");
+
+    expect(preferenciasDiaCompletas(completo)).toBe(true);
+    expect(preferenciasDiaCompletas(incompleto)).toBe(false);
+    expect(
+      diasConPreferenciasFaltantes([completo, incompleto])
+    ).toEqual(["Día 2"]);
   });
 });

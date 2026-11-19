@@ -94,4 +94,28 @@ describe("construirViajeCreateDto", () => {
       "El día 2 está incompleto."
     );
   });
+
+  it("falla si falta la modalidad de un día", () => {
+    const formData = crearFormData();
+    formData.dias[1] = {
+      ...formData.dias[1],
+      modalidadViaje: null,
+    };
+
+    expect(() => construirViajeCreateDto(formData)).toThrow(
+      "El día 2 está incompleto."
+    );
+  });
+
+  it("falla si un día tiene menos de dos categorías", () => {
+    const formData = crearFormData();
+    formData.dias[1] = {
+      ...formData.dias[1],
+      categoriasPrioritarias: formData.dias[1].categoriasPrioritarias.slice(0, 1),
+    };
+
+    expect(() => construirViajeCreateDto(formData)).toThrow(
+      "El día 2 necesita al menos 2 categorías."
+    );
+  });
 });
