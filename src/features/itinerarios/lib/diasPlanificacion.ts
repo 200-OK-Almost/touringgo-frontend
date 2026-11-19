@@ -80,3 +80,19 @@ export function diasFaltantes(dias: DiaPlanificacion[]): string[] {
     .filter((dia) => !diaEstaCompleto(dia))
     .map((dia) => `Día ${dia.dia}`);
 }
+
+export function preferenciasDiaCompletas(dia: DiaPlanificacion): boolean {
+  return Boolean(
+    dia.modalidadViaje &&
+      dia.categoriasPrioritarias.length >= 2 &&
+      dia.categoriasPrioritarias.length <= 4
+  );
+}
+
+export function diasConPreferenciasFaltantes(
+  dias: DiaPlanificacion[]
+): string[] {
+  return dias
+    .filter((dia) => !preferenciasDiaCompletas(dia))
+    .map((dia) => `Día ${dia.dia}`);
+}

@@ -10,6 +10,7 @@ interface DaySelectorTabsProps {
   diaActivo: number;
   onChange: (numeroDia: number) => void;
   ariaLabel?: string;
+  isComplete?: (dia: DiaPlanificacion) => boolean;
 }
 
 function DaySelectorTabs({
@@ -17,6 +18,7 @@ function DaySelectorTabs({
   diaActivo,
   onChange,
   ariaLabel = "Días del viaje",
+  isComplete = diaEstaCompleto,
 }: DaySelectorTabsProps) {
   if (dias.length === 0) {
     return null;
@@ -26,7 +28,7 @@ function DaySelectorTabs({
     <div className="day-tabs" role="tablist" aria-label={ariaLabel}>
       {dias.map((dia) => {
         const activo = dia.dia === diaActivo;
-        const completo = diaEstaCompleto(dia);
+        const completo = isComplete(dia);
 
         return (
           <button
