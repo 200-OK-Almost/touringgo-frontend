@@ -26,12 +26,29 @@ export function ViajeView({
 }: ViajeViewProps) {
   const [diaActual, setDiaActual] = useState(1);
   const [activeTab, setActiveTab] = useState<PanelTab>("chat");
+  const [isChatOpen, setIsChatOpen] = useState(true);
   const [isRecorridoOpen, setIsRecorridoOpen] = useState(true);
 
   const isMobile = useMediaQuery("(max-width: 900px)");
 
   // En desktop, si la pestaña quedó en 'recorrido' (por venir de móvil), volvemos a 'chat'
   const currentTab = !isMobile && activeTab === "recorrido" ? "chat" : activeTab;
+
+  const handleTabChange = (tab: PanelTab) => {
+    if (tab === "recorrido") {
+      setActiveTab(tab);
+      return;
+    }
+
+    // En desktop, clickear la pestaña activa colapsa/expande el contenido
+    if (!isMobile && tab === activeTab) {
+      setIsChatOpen((prev) => !prev);
+      return;
+    }
+
+    setActiveTab(tab);
+    setIsChatOpen(true);
+  };
 
   const { dias } = construirDiasViaje(
     viaje.fechaInicio,
@@ -48,8 +65,10 @@ export function ViajeView({
       (i) => i.itinerario.numeroDia === diaSeleccionado
     ) ?? null;
 
-  // Calculamos el ancho ocupado por el panel para el offset del mapa en desktop
-  const panelWidth = isMobile ? 0 : isRecorridoOpen ? 900 : 440;
+  // Calculamos el ancho ocupado por los paneles para el offset del mapa en desktop
+  const primaryWidth = isChatOpen ? 480 : 54;
+  const recorridoWidth = isRecorridoOpen ? (isChatOpen ? 396 : 420) : 0;
+  const panelWidth = isMobile ? 0 : primaryWidth + recorridoWidth;
 
   const toggleRecorridoPanel = () => setIsRecorridoOpen((prev) => !prev)
 
@@ -95,13 +114,14 @@ export function ViajeView({
 
       <ViajePanel
         isMobile={isMobile}
+        isChatOpen={isChatOpen}
         isRecorridoOpen={isRecorridoOpen}
-        toggleRecorridoPanel={toggleRecorridoPanel}
         sidebarNav={
           <PanelSidebarNav
             activeTab={currentTab}
-            onTabChange={setActiveTab}
+            onTabChange={handleTabChange}
             isMobile={isMobile}
+            isChatOpen={isChatOpen}
             isRecorridoOpen={isRecorridoOpen}
             onToggleRecorrido={() => toggleRecorridoPanel()}
           />
@@ -115,7 +135,6 @@ export function ViajeView({
             onDiaChange={setDiaActual}
             itinerarioActual={itinerarioActual}
             lugarPartida={lugarPartida}
-            onClose={() => setIsRecorridoOpen(false)}
           />
         }
       />

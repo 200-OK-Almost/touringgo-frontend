@@ -12,7 +12,6 @@ interface RecorridoPanelProps {
   onDiaChange: (dia: number) => void;
   itinerarioActual: ItinerarioViewModel | null;
   lugarPartida: LugarDetalleDto | null;
-  onClose?: () => void;
   barrioDiaActual: BarrioPorDia
 }
 
@@ -22,7 +21,6 @@ export function RecorridoPanel({
   onDiaChange,
   itinerarioActual,
   lugarPartida,
-  onClose,
   barrioDiaActual
 }: RecorridoPanelProps) {
   const fechaStr = itinerarioActual?.itinerario.fecha

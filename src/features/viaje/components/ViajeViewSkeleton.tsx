@@ -4,7 +4,7 @@ import "./panel/ViajePanel.css"
 import "./panel/PanelSidebarNav.css"
 import "./panel/tabs/ChatTab.css"
 
-import { IoChatbubblesOutline, IoChevronBackOutline, IoMapOutline, IoPaperPlane, IoPeopleOutline, IoSettingsOutline } from "react-icons/io5";
+import { IoChatbubblesOutline, IoMapOutline, IoPaperPlane, IoPeopleOutline, IoSettingsOutline } from "react-icons/io5";
 import { LugarRecorridoCardSkeleton } from "./LugarRecorridoCardSkeleton";
 interface ViajeViewSkeletonProps {
   isGenerating?: boolean; // When state is 'Borrador' or 'EnPlanificacion'
@@ -56,9 +56,6 @@ export function ViajeViewSkeleton({ isGenerating = false }: ViajeViewSkeletonPro
                 <div className="panel-sidebar-nav__btn">
                   <IoSettingsOutline className="panel-sidebar-nav__icon" />
                 </div>
-              </div>
-              <div className="viaje-recorrido__collapse-btn">
-                <IoChevronBackOutline />   
               </div>
             </nav>
 
