@@ -30,6 +30,7 @@ export function ViajeView({
   const [isRecorridoOpen, setIsRecorridoOpen] = useState(true);
 
   const isMobile = useMediaQuery("(max-width: 900px)");
+  const isCompactPanel = useMediaQuery("(min-width: 901px) and (max-width: 1100px)");
 
   // En desktop, si la pestaña quedó en 'recorrido' (por venir de móvil), volvemos a 'chat'
   const currentTab = !isMobile && activeTab === "recorrido" ? "chat" : activeTab;
@@ -66,8 +67,10 @@ export function ViajeView({
     ) ?? null;
 
   // Calculamos el ancho ocupado por los paneles para el offset del mapa en desktop
-  const primaryWidth = isChatOpen ? 480 : 54;
-  const recorridoWidth = isRecorridoOpen ? (isChatOpen ? 396 : 420) : 0;
+  const primaryWidth = isChatOpen ? (isCompactPanel ? 420 : 480) : 54;
+  const secondaryWidth = isCompactPanel ? 360 : 420;
+  const recorridoVisibleWidth = isChatOpen ? secondaryWidth - 24 : secondaryWidth;
+  const recorridoWidth = isRecorridoOpen ? recorridoVisibleWidth : 0;
   const panelWidth = isMobile ? 0 : primaryWidth + recorridoWidth;
 
   const toggleRecorridoPanel = () => setIsRecorridoOpen((prev) => !prev)

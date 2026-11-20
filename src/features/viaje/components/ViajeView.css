@@ -2,6 +2,7 @@
 .viaje-layout {
   width: 100%;
   height: calc(100vh - 55px);
+  height: calc(100dvh - 55px);
   overflow: hidden;
   position: relative;
 }
@@ -97,6 +98,7 @@
 @media (max-width: 900px) {
   .viaje-layout {
     height: 100vh;
+    height: 100dvh;
     overflow: hidden;
   }
 

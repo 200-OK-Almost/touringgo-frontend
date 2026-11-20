@@ -8,6 +8,9 @@
    DESKTOP (Flotante sobre el mapa)
    ========================================= */
 .viaje-panel--desktop {
+  --panel-primary-width: 480px;
+  --panel-secondary-width: 420px;
+
   position: absolute;
   top: 0.5rem;
   left: 0.5rem;
@@ -28,7 +31,7 @@
 }
 
 .viaje-panel--desktop.without-recorrido {
-  width: 480px;
+  width: var(--panel-primary-width);
   max-width: calc(100vw - 1rem);
   display: flex;
 }
@@ -40,8 +43,8 @@
 .viaje-panel__primary-card {
   position: relative;
   z-index: 602;
-  width: 480px;
-  min-width: 480px;
+  width: var(--panel-primary-width);
+  min-width: var(--panel-primary-width);
   flex-shrink: 0; /* Impide que el flexbox lo aplaste */
   
   background-color: var(--bg);
@@ -93,8 +96,8 @@
   background-color: var(--bg);
   
   /* Estado ABIERTO */
-  width: 420px;
-  max-width: 420px;
+  width: var(--panel-secondary-width);
+  max-width: var(--panel-secondary-width);
   margin-left: -1.5rem;
   padding-left: 1.5rem;
   opacity: 1;
@@ -134,6 +137,14 @@
   height: 100%;
 }
 
+/* Breakpoint intermedio: reduce los paneles para dejar más espacio al mapa */
+@media (min-width: 901px) and (max-width: 1100px) {
+  .viaje-panel--desktop {
+    --panel-primary-width: 420px;
+    --panel-secondary-width: 360px;
+  }
+}
+
 /* =========================================
    MOBILE (Bottom Sheet / Dock)
    ========================================= */
@@ -155,10 +166,15 @@
 
 .viaje-panel--mobile.viaje-panel--expanded {
   height: 65vh;
+  height: 65dvh;
 }
 
 .viaje-panel--mobile.viaje-panel--collapsed {
-  height: 62px;
+  height: 66px;
+}
+
+.viaje-panel--mobile.viaje-panel--collapsed .viaje-panel__mobile-body {
+  display: none;
 }
 
 .viaje-panel__handle-btn {

@@ -28,7 +28,6 @@ export function ViajeViewSkeleton({ isGenerating = false }: ViajeViewSkeletonPro
               color: "var(--text-muted)",
               fontSize: "0.9rem",
               fontWeight: 500,
-              paddingLeft: 900,
             }}
           >
             {isGenerating ? "Diseñando ruta inteligente en el mapa..." : "Cargando mapa..."}
@@ -36,7 +35,7 @@ export function ViajeViewSkeleton({ isGenerating = false }: ViajeViewSkeletonPro
         </section>
         
         <aside
-          className={`viaje-panel viaje-panel--desktop`}
+          className={`viaje-panel viaje-panel--desktop with-recorrido`}
           aria-label="Panel de control del viaje"
         >
           <div className="viaje-panel__primary-card">
@@ -74,15 +73,12 @@ export function ViajeViewSkeleton({ isGenerating = false }: ViajeViewSkeletonPro
           
                 <div className="chat-tab__body">
                   <div className="chat-message user-message">
-                    <div 
-                      className="chat-message__body"
-                      style={{
-                      }}
-                    >
+                    <div className="chat-message__body">
                       <div 
                         className="skeleton"
                         style={{
-                          width: 319.75,
+                          width: "18rem",
+                          maxWidth: "100%",
                           height: 50,
                           backgroundColor: "transparent",
                           margin: "-16px -12px"
@@ -96,7 +92,8 @@ export function ViajeViewSkeleton({ isGenerating = false }: ViajeViewSkeletonPro
                       <div 
                         className="skeleton"
                         style={{
-                          width: 319.75,
+                          width: "18rem",
+                          maxWidth: "100%",
                           height: 100,
                           margin: "-16px -16px",
                           borderRadius: 16,
@@ -181,7 +178,10 @@ export function ViajeViewSkeleton({ isGenerating = false }: ViajeViewSkeletonPro
               </div>
               <div className="viaje-recorrido__body">
                 <div className="viaje-recorrido__group">
-                  <div className="viaje-recorrido__day-title skeleton" />
+                  <div
+                    className="viaje-recorrido__day-title skeleton"
+                    style={{ width: "55%", height: "18px", borderRadius: 4 }}
+                  />
 
                   <div className="viaje-recorrido__paradas">
                     <LugarRecorridoCardSkeleton />
