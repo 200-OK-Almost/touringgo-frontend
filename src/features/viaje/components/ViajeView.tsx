@@ -9,7 +9,6 @@ import "./ViajeView.css";
 import { useState } from "react"
 import type { ItinerarioViewModel, ViajeDto } from "../types"
 import ViajeMap from "./ViajeMap"
-import "./ViajeView.css"
 import type { LugarDetalleDto } from "../../../api/types"
 import { construirDiasViaje, obtenerBarriosPorDia } from "../lib/diasViaje"
 
