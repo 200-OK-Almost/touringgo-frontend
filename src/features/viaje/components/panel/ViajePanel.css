@@ -22,16 +22,15 @@
 }
 
 .viaje-panel--desktop.with-recorrido {
-  width: 900px;
+  width: fit-content;
   max-width: calc(100vw - 1rem);
-  display: grid;
-  grid-template-columns: minmax(360px, 1.25fr) minmax(320px, 1.1fr);
+  display: flex;
 }
 
 .viaje-panel--desktop.without-recorrido {
-  width: 478px;
+  width: 480px;
   max-width: calc(100vw - 1rem);
-  display: block;
+  display: flex;
 }
 
 .viaje-panel__primary-card {
@@ -110,16 +109,17 @@
 }
 /* Contenido interno del recorrido para que no se deforme durante el colapso */
 .viaje-panel__secondary-wrapper > * {
-  width: 420px;
-  min-width: 420px;
+  width: 100%;
+  min-width: 0;
   height: 100%;
 }
 
 .viaje-recorrido__collapse-btn {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 50%;
+  left: 480px;
   z-index: 605;
+  transform: translate(-50%, -50%);
 
   display: flex;
   align-items: center;
@@ -133,6 +133,7 @@
   cursor: pointer;
   transition: all 0.15s ease;
   flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .viaje-recorrido__collapse-btn:hover {

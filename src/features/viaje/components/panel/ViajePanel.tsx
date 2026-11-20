@@ -57,6 +57,7 @@ export function ViajePanel({
       <div className="viaje-panel__primary-card">
         {sidebarNav}
         <div className="viaje-panel__primary-body">{primaryContent}</div>
+      </div>
 
       <button
         type="button"
@@ -67,7 +68,6 @@ export function ViajePanel({
       >
         {isRecorridoOpen ? <IoChevronBackOutline /> : <IoChevronForwardOutline />}
       </button>
-      </div>
 
       {secondaryContent && (
         <div className="viaje-panel__secondary-wrapper" aria-hidden={!isRecorridoOpen}>
