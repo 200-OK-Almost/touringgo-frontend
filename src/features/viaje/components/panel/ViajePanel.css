@@ -1,0 +1,205 @@
+/* Contenedor principal de paneles */
+.viaje-panel {
+  box-sizing: border-box;
+  font-size: 0.95rem;
+}
+
+/* =========================================
+   DESKTOP (Flotante sobre el mapa)
+   ========================================= */
+.viaje-panel--desktop {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 600;
+  height: calc(100% - 1rem);
+  pointer-events: auto;
+
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  overflow: visible;
+}
+
+.viaje-panel--desktop.with-recorrido {
+  width: 900px;
+  max-width: calc(100vw - 1rem);
+  display: grid;
+  grid-template-columns: minmax(360px, 1.25fr) minmax(320px, 1.1fr);
+}
+
+.viaje-panel--desktop.without-recorrido {
+  width: 478px;
+  max-width: calc(100vw - 1rem);
+  display: block;
+}
+
+.viaje-panel__primary-card {
+  position: relative;
+  z-index: 602;
+  width: 480px;
+  min-width: 480px;
+  flex-shrink: 0; /* Impide que el flexbox lo aplaste */
+  
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 25px;
+  box-shadow: var(--shadow-md);
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+}
+
+.viaje-panel__primary-body {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.viaje-panel__secondary-wrapper {
+  position: relative;
+  z-index: 601;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  
+  border-radius: 25px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  background-color: var(--bg);
+  
+  /* Estado ABIERTO */
+  width: 420px;
+  max-width: 420px;
+  margin-left: -1.5rem;
+  padding-left: 1.5rem;
+  opacity: 1;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  pointer-events: auto;
+  transform: translateX(0);
+  /* Transición fluida compatible con Firefox y Chrome */
+  transition: 
+    width 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+    max-width 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+    padding-left 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.22s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+  
+  will-change: width, transform, opacity;
+}
+
+/* Estado CERRADO: se oculta deslizándose hacia adentro del panel primario */
+.viaje-panel--desktop.without-recorrido .viaje-panel__secondary-wrapper {
+  width: 0;
+  max-width: 0;
+  padding-left: 0;
+  opacity: 0;
+  transform: translateX(-40px); /* Efecto de deslizarse detrás de la tarjeta */
+  border-color: transparent;
+  box-shadow: none;
+  pointer-events: none;
+}
+/* Contenido interno del recorrido para que no se deforme durante el colapso */
+.viaje-panel__secondary-wrapper > * {
+  width: 420px;
+  min-width: 420px;
+  height: 100%;
+}
+
+.viaje-recorrido__collapse-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 605;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.viaje-recorrido__collapse-btn:hover {
+  color: var(--text);
+  border-color: var(--text-muted);
+}
+
+/* =========================================
+   MOBILE (Bottom Sheet / Dock)
+   ========================================= */
+.viaje-panel--mobile {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background-color: var(--bg);
+  border-top: 1px solid var(--border);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.viaje-panel--mobile.viaje-panel--expanded {
+  height: 65vh;
+}
+
+.viaje-panel--mobile.viaje-panel--collapsed {
+  height: 62px;
+}
+
+.viaje-panel__handle-btn {
+  width: 100%;
+  padding: 0.5rem 0 0.25rem 0;
+  border: none;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.viaje-panel__handle-bar {
+  width: 44px;
+  height: 5px;
+  background-color: var(--border);
+  border-radius: 999px;
+  transition: background-color 0.15s ease;
+}
+
+.viaje-panel__handle-btn:hover .viaje-panel__handle-bar {
+  background-color: var(--text-muted);
+}
+
+.viaje-panel__mobile-nav {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.viaje-panel__mobile-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}

@@ -1,4 +1,4 @@
-import type { BarrioCaba, LugarDetalleDto } from "../../api/types"
+import type { BarrioCaba, CategoriaCodigo, LugarDetalleDto } from "../../api/types"
 import type { DisponibilidadDiaria, ModalidadViaje, PuntoInicio, RitmoCaminata } from "../itinerarios/types"
 
 export type ViajeDiaDto = {
@@ -39,7 +39,7 @@ export type ViajeDto = {
   creadoPorUsuarioId: string
   fechaCreacion: string
   fechaActualizacion: string
-  categoriaCodigos: string[]
+  categoriaCodigos: CategoriaCodigo[]
   dias?: ViajeDiaDto[] | null
   parametrosFamilia?: ParametrosFamiliaDto
   itinerarios: ItinerarioDto[] | null

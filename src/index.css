@@ -7,6 +7,7 @@
   --bg-subtle: #f8f7fa;
   --border: #e5e4e7;
   --primary: #0f766e;
+  --primary-subtle: #ebf4f4;
   --primary-hover: #0b5f58;
   --primary-active: #084742;
   --secondary: rgb(245, 158, 11);
@@ -15,6 +16,9 @@
   --warning-bg-subtle: #fff3cd;
   --warning-border-subtle: #ffe69c;
   --warning-text: #664d03;
+
+  --white-hover: #F3F4F6;
+  --white-active: #E5E7EB;
 
   /* Explorador de Lugares */
   --bg-page: #f7f8fa;
@@ -41,6 +45,20 @@
   --shadow:
     0 10px 15px -3px rgba(0, 0, 0, 0.1),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  --shadow-sm:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 2px 4px rgba(0, 0, 0, 0.04);
+
+  --shadow-md: 
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 8px 16px rgba(0, 0, 0, 0.06),
+    0 16px 32px rgba(0, 0, 0, 0.04);
+
+  --shadow-lg: 
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    0 16px 32px rgba(0, 0, 0, 0.16),
+    0 32px 64px rgba(0, 0, 0, 0.16);
 
   /* Global defaults */
   font-family: var(--font-sans);
@@ -96,6 +114,7 @@ svg {
 
 #root {
   min-height: 100vh;
+  height: 100%;
   /* para poder usar flex:1 en componentes y centrar verticalmente */
   display: flex;
   flex-direction: column;
@@ -108,21 +127,6 @@ main {
 .text-muted {
   color: var(--text-muted);
 }
-
-/* .skeleton {
-  background: linear-gradient(90deg, #eef0f3 25%, #f7f8fa 37%, #eef0f3 63%);
-  background-size: 400% 100%;
-  animation: shimmer 1.4s ease infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 100% 0;
-  }
-  100% {
-    background-position: -100% 0;
-  }
-} */
 
 .skeleton {
   position: relative;
@@ -201,4 +205,30 @@ main {
 }
 .page-error-home-btn:active {
   background-color: #e7e7e7;
+}
+
+/* scrollbar */
+html {
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+/* Chrome, Edge, Safari */
+html::-webkit-scrollbar {
+  width: 6px;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+html::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }

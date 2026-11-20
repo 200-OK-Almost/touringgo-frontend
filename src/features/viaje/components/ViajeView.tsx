@@ -1,24 +1,39 @@
+import { useMediaQuery } from "../../../hooks/useMediaQuery";
+import ViajePanel from "./panel/ViajePanel";
+import PanelSidebarNav, { type PanelTab } from "./panel/PanelSidebarNav";
+import ChatTab from "./panel/tabs/ChatTab";
+import MiembrosTab from "./panel/tabs/MiembrosTab";
+import AjustesTab from "./panel/tabs/AjustesTab";
+import RecorridoPanel from "./panel/recorrido/RecorridoPanel";
+import "./ViajeView.css";
 import { useState } from "react"
-import { barrioLabel, capitalize } from "../../../lib/format"
 import type { ItinerarioViewModel, ViajeDto } from "../types"
-import AsistentePanel from "./AsistentePanel"
 import ViajeMap from "./ViajeMap"
 import "./ViajeView.css"
-import DiaRecorrido from "./DiaRecorrido"
-import DiaSelector from "./DiaSelector"
 import type { LugarDetalleDto } from "../../../api/types"
 import { construirDiasViaje, obtenerBarriosPorDia } from "../lib/diasViaje"
-import { TITULO_VIAJE_POR_DEFECTO } from "../lib/viajeTitulo"
+
 export interface ViajeViewProps {
-  viaje: ViajeDto
-  itinerariosViewModel: ItinerarioViewModel[] | null
-  lugarPartida: LugarDetalleDto | null
+  viaje: ViajeDto;
+  itinerariosViewModel: ItinerarioViewModel[] | null;
+  lugarPartida: LugarDetalleDto | null;
 }
 
-function ViajeView({viaje, itinerariosViewModel, lugarPartida}: ViajeViewProps) {
+export function ViajeView({
+  viaje,
+  itinerariosViewModel,
+  lugarPartida,
+}: ViajeViewProps) {
   const [diaActual, setDiaActual] = useState(1);
+  const [activeTab, setActiveTab] = useState<PanelTab>("chat");
+  const [isRecorridoOpen, setIsRecorridoOpen] = useState(true);
 
-  const { dias, warning } = construirDiasViaje(
+  const isMobile = useMediaQuery("(max-width: 900px)");
+
+  // En desktop, si la pestaña quedó en 'recorrido' (por venir de móvil), volvemos a 'chat'
+  const currentTab = !isMobile && activeTab === "recorrido" ? "chat" : activeTab;
+
+  const { dias } = construirDiasViaje(
     viaje.fechaInicio,
     viaje.fechaFin,
     viaje.itinerarios
@@ -28,11 +43,42 @@ function ViajeView({viaje, itinerariosViewModel, lugarPartida}: ViajeViewProps) 
     ? diaActual
     : dias[0]?.numeroDia ?? 1;
 
-  const itinerarioActual = itinerariosViewModel?.find(
-    i => i.itinerario.numeroDia === diaSeleccionado
-  ) ?? null
+  const itinerarioActual =
+    itinerariosViewModel?.find(
+      (i) => i.itinerario.numeroDia === diaSeleccionado
+    ) ?? null;
 
-  const titulo = viaje.titulo || TITULO_VIAJE_POR_DEFECTO;
+  // Calculamos el ancho ocupado por el panel para el offset del mapa en desktop
+  const panelWidth = isMobile ? 0 : isRecorridoOpen ? 900 : 440;
+
+  const toggleRecorridoPanel = () => setIsRecorridoOpen((prev) => !prev)
+
+  // Renderizado del contenido primario según la pestaña activa
+  const renderPrimaryContent = () => {
+    if (isMobile && currentTab === "recorrido") {
+      return (
+        <RecorridoPanel
+          dias={dias}
+          diaSeleccionado={diaSeleccionado}
+          onDiaChange={setDiaActual}
+          itinerarioActual={itinerarioActual}
+          lugarPartida={lugarPartida}
+          barrioDiaActual={barrioDiaActual}
+        />
+      );
+    }
+
+    switch (currentTab) {
+      case "miembros":
+        return <MiembrosTab viaje={viaje} />;
+      case "ajustes":
+        return <AjustesTab viaje={viaje} />;
+      case "chat":
+      default:
+        return <ChatTab viaje={viaje} />;
+    }
+  };
+
   const barriosPorDia = obtenerBarriosPorDia(viaje.barrio, viaje.dias);
   const barrioDiaActual =
     barriosPorDia.find((dia) => dia.numeroDia === diaSeleccionado) ??
@@ -40,60 +86,41 @@ function ViajeView({viaje, itinerariosViewModel, lugarPartida}: ViajeViewProps) 
 
   return (
     <div className="viaje-layout">
-      {/* Main content */}
-      <main className="viaje-content">
-          {/* Trip header */}
-          <header className="viaje-header">
-            <div className="viaje-header-info">
-              <h1>{titulo}</h1>
-              <p className="viaje-header-barrios">
-                {barriosPorDia.length > 1
-                  ? `Día ${barrioDiaActual.numeroDia} · `
-                  : ""}
-                Salida por {barrioLabel(barrioDiaActual.barrio)}
-              </p>
-              <p>
-                {capitalize(viaje.tipoViaje)}
-                <span>·</span>
-                {viaje.ritmoCaminata}
-              </p>
-            </div>
-            <DiaSelector 
-              dias={dias}
-              diaActual={diaSeleccionado}
-              onDiaChange={setDiaActual}
-            />
-          </header>
-          {warning && (
-            <p className="viaje-dias-warning" role="status">
-              {warning}
-            </p>
-          )}
-          <div className="recorrido-header">
-            <h2>Recorrido</h2>
-          </div>
-          <section className="viaje-mapa">
-              <ViajeMap
-                itinerarioViewModel={itinerarioActual}
-              />
-          </section>
-          {/* Itinerary */}
-          <section className="viaje-recorrido">
-            <div className="recorrido-dia">
-              <DiaRecorrido
-                paradasViewModel={itinerarioActual?.paradas ?? null}
-                lugarPartida={lugarPartida}
-              />
-            </div>
-          </section>
-      </main>
+      <section className="viaje-mapa">
+        <ViajeMap
+          itinerarioViewModel={itinerarioActual}
+          panelWidth={panelWidth}
+        />
+      </section>
 
-      {/* Chat sidebar */}
-      <aside className="viaje-sidebar">
-          <AsistentePanel />
-      </aside>
-
-  </div>
-  )
+      <ViajePanel
+        isMobile={isMobile}
+        isRecorridoOpen={isRecorridoOpen}
+        toggleRecorridoPanel={toggleRecorridoPanel}
+        sidebarNav={
+          <PanelSidebarNav
+            activeTab={currentTab}
+            onTabChange={setActiveTab}
+            isMobile={isMobile}
+            isRecorridoOpen={isRecorridoOpen}
+            onToggleRecorrido={() => toggleRecorridoPanel()}
+          />
+        }
+        primaryContent={renderPrimaryContent()}
+        secondaryContent={
+          <RecorridoPanel
+            dias={dias}
+            diaSeleccionado={diaSeleccionado}
+            barrioDiaActual={barrioDiaActual}
+            onDiaChange={setDiaActual}
+            itinerarioActual={itinerarioActual}
+            lugarPartida={lugarPartida}
+            onClose={() => setIsRecorridoOpen(false)}
+          />
+        }
+      />
+    </div>
+  );
 }
-export default ViajeView
+
+export default ViajeView;

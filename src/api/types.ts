@@ -15,6 +15,15 @@ export type RestriccionDietaria =
   | "Vegetariano"
   | "IntoleranteLactosa";
 
+export type CategoriaCodigo = 
+ | "cafe_especialidad"
+ | "museos_galerias"
+ | "parques_aire_libre"
+ | "librerias_diseno"
+ | "bares_vermu"
+ | "gastronomia_clasica"
+ | "cocteleria_autor"
+
 export interface LugarResumenDto {
   id: string;
   nombre: string;
