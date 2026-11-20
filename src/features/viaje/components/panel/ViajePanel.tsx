@@ -74,8 +74,6 @@ export function ViajePanel({
           {secondaryContent}
         </div>
       )}
-
-      
     </aside>
   );
 }

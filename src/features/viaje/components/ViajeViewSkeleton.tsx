@@ -1,9 +1,11 @@
 import "./ViajeView.css";
 import "./DiaSelector.css";
-import { LugarRecorridoCardSkeleton } from "./LugarRecorridoCardSkeleton";
-import { SidebarCollapseIcon } from "./AsistentePanel";
-import { IoSparkles } from "react-icons/io5";
+import "./panel/ViajePanel.css"
+import "./panel/PanelSidebarNav.css"
+import "./panel/tabs/ChatTab.css"
 
+import { IoChatbubblesOutline, IoChevronBackOutline, IoMapOutline, IoPaperPlane, IoPeopleOutline, IoSettingsOutline } from "react-icons/io5";
+import { LugarRecorridoCardSkeleton } from "./LugarRecorridoCardSkeleton";
 interface ViajeViewSkeletonProps {
   isGenerating?: boolean; // When state is 'Borrador' or 'EnPlanificacion'
 }
@@ -11,30 +13,8 @@ interface ViajeViewSkeletonProps {
 export function ViajeViewSkeleton({ isGenerating = false }: ViajeViewSkeletonProps) {
   return (
     <div className="viaje-layout">
-      {/* Left Column */}
-      <main className="viaje-content">
-        <header className="viaje-header">
-          <div className="viaje-header-info" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-            <div className="skeleton" style={{ width: "240px", height: "28px", borderRadius: "6px" }} />
-            <div className="skeleton" style={{ width: "150px", height: "16px", borderRadius: "4px" }} />
-          </div>
-
-          {/* DiaSelector Skeleton */}
-          <div className="dia-selector-container">
-            <div className="skeleton" style={{ width: "32px", height: "18px", borderRadius: "3px", marginBottom: "4px", alignSelf: "center"}} />
-            <div className="dia-selector" style={{ gap: "0.35rem" }}>
-              <div className="skeleton" style={{ width: "34px", height: "34px", borderRadius: "8px" }} />
-              <div className="skeleton" style={{ width: "34px", height: "34px", borderRadius: "8px" }} />
-              <div className="skeleton" style={{ width: "34px", height: "34px", borderRadius: "8px" }} />
-            </div>
-          </div>
-        </header>
-
-        <div className="recorrido-header">
-          <div className="skeleton" style={{ width: "110px", height: "22px", borderRadius: "4px" }} />
-        </div>
-
-        {/* Map Skeleton */}
+      
+        {/* map skeleton */}
         <section className="viaje-mapa">
           <div
             className="skeleton"
@@ -42,49 +22,193 @@ export function ViajeViewSkeleton({ isGenerating = false }: ViajeViewSkeletonPro
               width: "100%",
               height: "100%",
               minHeight: "350px",
-              borderRadius: "10px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               color: "var(--text-muted)",
               fontSize: "0.9rem",
               fontWeight: 500,
+              paddingLeft: 900,
             }}
           >
             {isGenerating ? "Diseñando ruta inteligente en el mapa..." : "Cargando mapa..."}
           </div>
         </section>
+        
+        <aside
+          className={`viaje-panel viaje-panel--desktop`}
+          aria-label="Panel de control del viaje"
+        >
+          <div className="viaje-panel__primary-card">
+            <nav className="panel-sidebar-nav panel-sidebar-nav--desktop" aria-label="Navegación de secciones">
+              <div className="panel-sidebar-nav__top">
+                <div className="panel-sidebar-nav__btn">
+                  <IoChatbubblesOutline className="panel-sidebar-nav__icon" />
+                </div>
+                <div className="panel-sidebar-nav__btn">
+                  <IoPeopleOutline className="panel-sidebar-nav__icon" />
+                </div>        
+              </div>
+              <div className="panel-sidebar-nav__bottom">
+                <div className="panel-sidebar-nav__btn">
+                  <IoMapOutline className="panel-sidebar-nav__icon" />
+                </div>
+                <div className="panel-sidebar-nav__btn">
+                  <IoSettingsOutline className="panel-sidebar-nav__icon" />
+                </div>
+              </div>
+              <div className="viaje-recorrido__collapse-btn">
+                <IoChevronBackOutline />   
+              </div>
+            </nav>
 
-        {/* Itinerary Cards Skeleton */}
-        <section className="viaje-recorrido">
-          <div className="recorrido-dia">
-            <LugarRecorridoCardSkeleton />
-            <LugarRecorridoCardSkeleton />
+            <div className="viaje-panel__primary-body">
+              <div className="chat-tab">
+                <div className="chat-tab__header">
+                  <div 
+                    className="skeleton"
+                    style={{
+                      height: 23,
+                      width: "80%",
+                      borderRadius: 10
+                    }}
+                  />
+                </div>
+          
+                <div className="chat-tab__body">
+                  <div className="chat-message user-message">
+                    <div 
+                      className="chat-message__body"
+                      style={{
+                      }}
+                    >
+                      <div 
+                        className="skeleton"
+                        style={{
+                          width: 319.75,
+                          height: 50,
+                          backgroundColor: "transparent",
+                          margin: "-16px -12px"
+                        }}
+                      />
+                    </div>
+                  </div>
+          
+                  <div className="chat-message ai-message">
+                    <div className="chat-message__body">
+                      <div 
+                        className="skeleton"
+                        style={{
+                          width: 319.75,
+                          height: 100,
+                          margin: "-16px -16px",
+                          borderRadius: 16,
+                          borderBottomLeftRadius: 4
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+          
+                <div className="chat-tab__input-box">
+                  <textarea
+                    className="chat-tab__input"
+                    placeholder="Escribe una consulta a tu asistente de viaje..."
+                    disabled={true}
+                  />
+                  <div className="chat-tab__input-bottom">
+                    <button
+                      type="button"
+                      className="chat-tab__send-btn"
+                      aria-label="Enviar mensaje"
+                      disabled={true}
+                    >
+                      <IoPaperPlane />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </section>
-      </main>
+    
+          <div className="viaje-panel__secondary-wrapper">
+            <section className="viaje-recorrido">
+              <div className="viaje-recorrido__header">
+                <div className="viaje-recorrido__header-row">
+                  <div className="dia-selector-container">
+                    <div className="dia-selector-label">
+                      <div 
+                        className="skeleton" 
+                        style={{
+                          width: "40px", height: "18px", borderRadius: "3px", marginBottom: "4px", alignSelf: "center"
+                        }}/>
+                      </div>
+                      <div className="dia-selector">
+                        <div className="dia-selector__item">
+                          <div 
+                            className="skeleton"
+                            style={{ 
+                              width: 47 + 12.8, 
+                              height: 34 + 7.2, 
+                              borderRadius: "8px",
+                              margin: "-0.45rem -0.8rem"
+                            }}
+                          />
+                        </div>
+                        <div className="dia-selector__item">
+                          <div 
+                            className="skeleton"
+                            style={{ 
+                              width: 47 + 12.8, 
+                              height: 34 + 7.2, 
+                              borderRadius: "8px",
+                              margin: "-0.45rem -0.8rem"
+                            }}
+                          />
+                        </div>
+                        <div className="dia-selector__item">
+                          <div 
+                            className="skeleton"
+                            style={{ 
+                              width: 47 + 12.8, 
+                              height: 34 + 7.2, 
+                              borderRadius: "8px",
+                              margin: "-0.45rem -0.8rem"
+                            }}
+                          />
+                        </div>
+                      </div>
+                  </div>
 
-      {/* Right Sidebar Skeleton */}
-      <aside className="viaje-sidebar">
-        <div className="asistente-header">
-          <div className="asistente-header-left">
-            <IoSparkles className="asistente-header-icon" />
-            <h3>Asistente</h3>
+                </div>
+              </div>
+              <div className="viaje-recorrido__body">
+                <div className="viaje-recorrido__group">
+                  <div className="viaje-recorrido__day-title skeleton" />
+
+                  <div className="viaje-recorrido__paradas">
+                    <LugarRecorridoCardSkeleton />
+                    <LugarRecorridoCardSkeleton />
+                    <LugarRecorridoCardSkeleton />
+                  </div>
+                </div>
+
+                <div className="viaje-recorrido__footer">
+                  <div 
+                    className="skeleton"
+                    style={{
+                      width: "100%",
+                      height: 16,
+                      borderRadius: 6
+                    }}
+                  />
+                </div>
+              </div>
+            </section>
           </div>
-          <div className="asistente-header-right">{SidebarCollapseIcon()}</div>
-        </div>
+          
+        </aside>
 
-        <div className="asistente-body" style={{ padding: "1rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-          <div className="skeleton" style={{ width: "85%", height: "45px", borderRadius: "8px" }} />
-          <div className="skeleton" style={{ width: "65%", height: "35px", borderRadius: "8px" }} />
-        </div>
-
-        <div className="asistente-footer">
-          <div className="asistente-message-box">
-            <input className="asistente-input" type="text" placeholder="Preparando asistente..." disabled />
-          </div>
-        </div>
-      </aside>
     </div>
   );
 }
