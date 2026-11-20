@@ -2,8 +2,9 @@ import { PinIcon } from "../../../components/SelectablePlaceCard"
 import SmartImage from "../../../components/SmartImage"
 import type { ParadaViewModel } from "../types";
 import "./LugarRecorridoCard.css"
-import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5";
+import { IoCalendarOutline, IoStar, IoTimeOutline } from "react-icons/io5";
 import type { LugarDetalleDto } from "../../../api/types";
+import { formatearPuntuacion } from "../../../lib/format";
 
 export interface LugarRecorridoCardProps {
   paradaViewModel?: ParadaViewModel;
@@ -30,6 +31,8 @@ function LugarRecorridoCard({
 } : LugarRecorridoCardProps) {
   
   const lugar = lugarPartida ? lugarPartida : paradaViewModel?.lugar
+  const puntuacion = formatearPuntuacion(lugar?.puntuacion ?? null);
+  const categoria = lugar?.categorias?.[0]?.nombre;
 
   return (
     <div className="lugar-recorrido-card">
@@ -46,21 +49,39 @@ function LugarRecorridoCard({
           <h4 className="lugar-recorrido-card__nombre">
             {lugarPartida && "Punto de partida - "}{lugar?.nombre}
           </h4>
+          {(puntuacion || categoria) && (
+            <div className="lugar-recorrido-card__meta">
+              {puntuacion && (
+                <span className="lugar-recorrido-card__rating">
+                  <IoStar className="lugar-recorrido-card__rating-icon" />
+                  {puntuacion}
+                  {lugar?.cantidadResenas ? (
+                    <span className="lugar-recorrido-card__resenas">
+                      ({lugar.cantidadResenas})
+                    </span>
+                  ) : null}
+                </span>
+              )}
+              {categoria && (
+                <span className="lugar-recorrido-card__categoria">
+                  {categoria}
+                </span>
+              )}
+            </div>
+          )}
           <p className="lugar-recorrido-card__direccion">
             <PinIcon />
-            <p>{lugar?.direccion}</p>
+            <span>{lugar?.direccion}</span>
           </p>
-          <p className="lugar-recorrido-card__tiempo">
-            {paradaViewModel &&
-              <>
+          {paradaViewModel && (
+            <p className="lugar-recorrido-card__tiempo">
               <IoCalendarOutline className="lugar-recorrido-card__icon"/>
               {formatearHora(paradaViewModel.parada.horaInicio)}
               <span>·</span>
               <IoTimeOutline className="lugar-recorrido-card__icon"/>
               {formatearDuracion(paradaViewModel.parada.duracionMinutos)}
-              </>
-            }
-          </p>
+            </p>
+          )}
           {/* {paradaViewModel &&
             <div className="place-card__chips">
             {lugar?.categorias && 

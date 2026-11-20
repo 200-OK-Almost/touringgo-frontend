@@ -52,7 +52,7 @@
 }
 
 .viaje-recorrido__paradas {
-  --lugar-thumb-size: 50px;
+  --lugar-thumb-size: 56px;
   border-radius: 16px;
   display: flex;
   flex-direction: column;
