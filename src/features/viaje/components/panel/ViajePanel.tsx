@@ -18,7 +18,7 @@ export function ViajePanel({
   primaryContent,
   secondaryContent,
 }: ViajePanelProps) {
-  const [isMobileExpanded, setIsMobileExpanded] = useState(true);
+  const [isMobileExpanded, setIsMobileExpanded] = useState(false);
 
   if (isMobile) {
     return (
