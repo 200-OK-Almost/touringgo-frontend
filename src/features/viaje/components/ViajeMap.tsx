@@ -1,4 +1,5 @@
 import { MapContainer, TileLayer, Polyline } from "react-leaflet";
+import { useMemo } from "react";
 import type { LatLngExpression } from "leaflet";
 import type { ItinerarioViewModel } from "../types";
 import "./ViajeMap.css"
@@ -14,6 +15,23 @@ interface ViajeMapProps {
 }
 
 function ViajeMap({ itinerarioViewModel, panelWidth }: ViajeMapProps) {
+    const posiciones = useMemo<LatLngExpression[]>(() => {
+      if (!itinerarioViewModel) return [];
+
+      const paradasPosiciones: LatLngExpression[] = itinerarioViewModel.paradas.map(parada => [
+        parada.lugar.latitud,
+        parada.lugar.longitud
+      ]);
+
+      const { origenLatitud, origenLongitud } = itinerarioViewModel.itinerario;
+
+      if (origenLatitud != null && origenLongitud != null) {
+        return [[origenLatitud, origenLongitud], ...paradasPosiciones];
+      }
+
+      return paradasPosiciones;
+    }, [itinerarioViewModel]);
+
     if (!itinerarioViewModel) {
       return (
         <div className="viaje-map-placeholder">
@@ -24,26 +42,6 @@ function ViajeMap({ itinerarioViewModel, panelWidth }: ViajeMapProps) {
     const paradas = itinerarioViewModel.paradas
 
     const centro: LatLngExpression = [-34.6037, -58.3816];
-    
-    const paradasPosiciones: LatLngExpression[] = paradas.map(parada => [
-      parada.lugar.latitud,
-      parada.lugar.longitud
-    ]);
-    let posiciones: LatLngExpression[] = paradasPosiciones
-
-    if (
-      itinerarioViewModel.itinerario.origenLatitud != null &&
-      itinerarioViewModel.itinerario.origenLongitud != null
-    ) {
-      const origenPosicion: LatLngExpression = [
-        itinerarioViewModel.itinerario.origenLatitud,
-        itinerarioViewModel.itinerario.origenLongitud
-      ]
-      posiciones = [
-        origenPosicion,
-        ... posiciones
-      ]
-    }
     
     return (
       <div className="viaje-map-wrapper">

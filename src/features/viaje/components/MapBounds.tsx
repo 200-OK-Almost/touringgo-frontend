@@ -21,7 +21,7 @@ function MapBounds({ positions, panelWidth }: MapBoundsProps) {
       paddingBottomRight: [24, 24],
       maxZoom: 16
     });
-  }, [map, positions]);
+  }, [map, positions, panelWidth]);
   
   return null;
 }
