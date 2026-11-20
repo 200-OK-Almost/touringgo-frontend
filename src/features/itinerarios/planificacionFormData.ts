@@ -8,19 +8,24 @@ import type {
   RitmoCaminata,
 } from "./types";
 
-export interface ItineraryFormData {
+export interface DiaPlanificacion {
+  fecha: string;
+  dia: number;
   barrio: BarrioCaba | null;
   puntoInicio: PuntoInicio | null;
   hospedajeLugarGuid: string | null;
   hospedajeBarrio: BarrioCaba | null;
+  modalidadViaje: ModalidadViaje | null;
+  categoriasPrioritarias: CategoriaDto[];
+}
+
+export interface ItineraryFormData {
+  duracion: number;
+  dias: DiaPlanificacion[];
 
   fechaInicio: string | null;
   fechaFin: string | null;
   disponibilidadDiaria: DisponibilidadDiaria | null;
-
-  modalidadViaje: ModalidadViaje | null;
-
-  categoriasPrioritarias: CategoriaDto[];
 
   ritmoVisita: RitmoCaminata | null;
   presupuestoNivel: NivelPresupuesto | null;
@@ -29,16 +34,12 @@ export interface ItineraryFormData {
 
 export function crearItineraryFormDataInicial(): ItineraryFormData {
   return {
-    barrio: null,
-    puntoInicio: null,
-    hospedajeLugarGuid: null,
-    hospedajeBarrio: null,
+    duracion: 0,
+    dias: [],
 
     fechaInicio: null,
     fechaFin: null,
     disponibilidadDiaria: null,
-    modalidadViaje: null,
-    categoriasPrioritarias: [],
     ritmoVisita: null,
     tipoTransporte: null,
     presupuestoNivel: null,

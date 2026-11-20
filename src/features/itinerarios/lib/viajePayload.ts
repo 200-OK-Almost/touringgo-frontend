@@ -1,0 +1,52 @@
+import type { ViajeCreateDto, ViajeDiaCreateDto } from "../../viaje/types";
+import { TITULO_VIAJE_POR_DEFECTO } from "../../viaje/lib/viajeTitulo";
+import type { DiaPlanificacion, ItineraryFormData } from "../planificacionFormData";
+
+function construirDia(dia: DiaPlanificacion): ViajeDiaCreateDto {
+  if (!dia.barrio || !dia.puntoInicio || !dia.modalidadViaje) {
+    throw new Error(`El día ${dia.dia} está incompleto.`);
+  }
+
+  if (dia.categoriasPrioritarias.length < 2) {
+    throw new Error(`El día ${dia.dia} necesita al menos 2 categorías.`);
+  }
+
+  return {
+    numeroDia: dia.dia,
+    fecha: dia.fecha,
+    barrio: dia.barrio,
+    tipoPuntoPartida: dia.puntoInicio,
+    lugarPartidaId: dia.hospedajeLugarGuid ?? undefined,
+    tipoViaje: dia.modalidadViaje,
+    categoriaCodigos: dia.categoriasPrioritarias.map(
+      (categoria) => categoria.codigo
+    ),
+  };
+}
+
+export function construirViajeCreateDto(
+  formData: ItineraryFormData
+): ViajeCreateDto {
+  const primerDia = formData.dias[0];
+
+  if (!primerDia?.barrio || !primerDia.puntoInicio || !primerDia.modalidadViaje) {
+    throw new Error("El viaje necesita al menos un día completo.");
+  }
+
+  return {
+    titulo: TITULO_VIAJE_POR_DEFECTO,
+    tipoViaje: primerDia.modalidadViaje,
+    barrio: primerDia.barrio,
+    alcanceTemporal: formData.disponibilidadDiaria!,
+    fechaInicio: formData.fechaInicio!,
+    fechaFin: formData.fechaFin!,
+    nivelPresupuesto: formData.presupuestoNivel!,
+    ritmoCaminata: formData.ritmoVisita!,
+    tipoPuntoPartida: primerDia.puntoInicio,
+    lugarPartidaId: primerDia.hospedajeLugarGuid ?? undefined,
+    categoriaCodigos: primerDia.categoriasPrioritarias.map(
+      (categoria) => categoria.codigo
+    ),
+    dias: formData.dias.map(construirDia),
+  };
+}

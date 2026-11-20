@@ -1,8 +1,3 @@
-import { useState } from "react";
-import type { ItinerarioViewModel, ViajeDto } from "../types";
-import type { LugarDetalleDto } from "../../../api/types";
-import ViajeMap from "./ViajeMap";
-import { construirDiasViaje } from "../lib/diasViaje";
 import { useMediaQuery } from "../../../hooks/useMediaQuery";
 import ViajePanel from "./panel/ViajePanel";
 import PanelSidebarNav, { type PanelTab } from "./panel/PanelSidebarNav";
@@ -11,6 +6,12 @@ import MiembrosTab from "./panel/tabs/MiembrosTab";
 import AjustesTab from "./panel/tabs/AjustesTab";
 import RecorridoPanel from "./panel/recorrido/RecorridoPanel";
 import "./ViajeView.css";
+import { useState } from "react"
+import type { ItinerarioViewModel, ViajeDto } from "../types"
+import ViajeMap from "./ViajeMap"
+import "./ViajeView.css"
+import type { LugarDetalleDto } from "../../../api/types"
+import { construirDiasViaje, obtenerBarriosPorDia } from "../lib/diasViaje"
 
 export interface ViajeViewProps {
   viaje: ViajeDto;
@@ -62,6 +63,7 @@ export function ViajeView({
           onDiaChange={setDiaActual}
           itinerarioActual={itinerarioActual}
           lugarPartida={lugarPartida}
+          barrioDiaActual={barrioDiaActual}
         />
       );
     }
@@ -76,6 +78,11 @@ export function ViajeView({
         return <ChatTab viaje={viaje} />;
     }
   };
+
+  const barriosPorDia = obtenerBarriosPorDia(viaje.barrio, viaje.dias);
+  const barrioDiaActual =
+    barriosPorDia.find((dia) => dia.numeroDia === diaSeleccionado) ??
+    barriosPorDia[0];
 
   return (
     <div className="viaje-layout">
@@ -104,6 +111,7 @@ export function ViajeView({
           <RecorridoPanel
             dias={dias}
             diaSeleccionado={diaSeleccionado}
+            barrioDiaActual={barrioDiaActual}
             onDiaChange={setDiaActual}
             itinerarioActual={itinerarioActual}
             lugarPartida={lugarPartida}

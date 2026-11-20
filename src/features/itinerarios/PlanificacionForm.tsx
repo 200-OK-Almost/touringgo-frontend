@@ -11,18 +11,19 @@ import "./PlanificacionForm.css"
 import type { CategoriaDto } from "../../api/types";
 import { getCategorias } from "../../api/lugares";
 import { validateStep, type FormErrors } from "./PlanificationForm.validation";
-import type { ViajeCreateDto } from "../viaje/types";
 import { createViaje } from "../viaje/api/viajes";
 import {
   crearItineraryFormDataInicial,
+  type DiaPlanificacion,
   type ItineraryFormData,
 } from "./planificacionFormData";
 import { usePlanificacionDraft } from "./hooks/usePlanificacionDraft";
-import { barrioLabel } from "../../lib/format";
+import { construirDias } from "./lib/diasPlanificacion";
+import { construirViajeCreateDto } from "./lib/viajePayload";
 
 const PASOS = [
-  { label: "Barrio y punto de partida" },
   { label: "Duración y disponibilidad diaria" },
+  { label: "Barrio y punto de partida" },
   { label: "Compañía e Intereses" },
   { label: "Estilo" },
 ];
@@ -91,9 +92,32 @@ function PlanificacionForm() {
   }
 
   function updateFormData(changes: Partial<ItineraryFormData>) {
+    setFormData((prev) => {
+      const next = {
+        ...prev,
+        ...changes,
+      };
+
+      if ("fechaInicio" in changes || "fechaFin" in changes) {
+        const dias = construirDias(next.fechaInicio, next.fechaFin, prev.dias);
+
+        return {
+          ...next,
+          dias,
+          duracion: dias.length,
+        };
+      }
+
+      return next;
+    });
+  }
+
+  function updateDia(diaNumero: number, changes: Partial<DiaPlanificacion>) {
     setFormData((prev) => ({
       ...prev,
-      ...changes,
+      dias: prev.dias.map((dia) =>
+        dia.dia === diaNumero ? { ...dia, ...changes } : dia
+      ),
     }));
   }
 
@@ -120,23 +144,9 @@ function PlanificacionForm() {
 
   async function handleSubmit() {
     setSubmitLoading(true);
-    const titulo = `Salida por ${barrioLabel(formData.barrio!)}`
 
-    const viajeCreateDto: ViajeCreateDto = {
-      barrio: formData.barrio!,
-      tipoViaje: formData.modalidadViaje!,
-      titulo: titulo,
-      alcanceTemporal: formData.disponibilidadDiaria!,
-      fechaInicio: formData.fechaInicio!,
-      fechaFin: formData.fechaFin!,
-      nivelPresupuesto: formData.presupuestoNivel!,
-      ritmoCaminata: formData.ritmoVisita!,
-      tipoPuntoPartida: formData.puntoInicio!,
-      categoriaCodigos: formData.categoriasPrioritarias.map(x => x.codigo),
-      lugarPartidaId: formData.hospedajeLugarGuid!
-    }
-    
     try {
+      const viajeCreateDto = construirViajeCreateDto(formData);
       const viajeResponse = await createViaje(viajeCreateDto);
       clearDraft();
       navigate(`/viajes/${viajeResponse.id}`);
@@ -165,18 +175,6 @@ function PlanificacionForm() {
     switch (currentStepCounter) {
       case 0:
         return (
-          <LocationStep
-            barrio={formData.barrio}
-            puntoInicio={formData.puntoInicio}
-            hospedajeLugarGuid={formData.hospedajeLugarGuid}
-            hospedajeBarrio={formData.hospedajeBarrio}
-            onChange={(changes) => updateFormData(changes)}
-            errors={errors}
-          />
-        );
-
-      case 1:
-        return (
           <DurationStep
             fechaInicio={formData.fechaInicio}
             fechaFin={formData.fechaFin}
@@ -186,26 +184,21 @@ function PlanificacionForm() {
           />
         );
 
+      case 1:
+        return (
+          <LocationStep
+            dias={formData.dias}
+            onChangeDia={updateDia}
+            errors={errors}
+          />
+        );
+
       case 2:
         return (
           <TravelCompanionsAndInterestsStep
             categorias={categorias}
-            modalidadViaje={formData.modalidadViaje}
-            categoriasPrioritarias={formData.categoriasPrioritarias}
-            onChange={(changes) => {
-              if (changes.categoriasPrioritarias && changes.categoriasPrioritarias.length >= 4) {
-                const prevErrors = errors;
-                const validationErrors = validateStep(
-                  { ...formData, ...changes },
-                  currentStepCounter
-                );
-                setErrors({
-                  ...prevErrors,
-                  categoriasPrioritarias: validationErrors.categoriasPrioritarias,
-                });
-              }
-              updateFormData(changes);
-            }}
+            dias={formData.dias}
+            onChangeDia={updateDia}
             errors={errors}
           />
         );

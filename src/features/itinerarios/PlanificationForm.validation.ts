@@ -5,39 +5,26 @@ import {
   MAX_DIAS_VIAJE,
   MENSAJE_RANGO_INVALIDO,
 } from "./lib/fechas";
+import {
+  diaEstaCompleto,
+  diasConPreferenciasFaltantes,
+} from "./lib/diasPlanificacion";
 
 export type FormErrors = Partial<
   Record<keyof ItineraryFormData, string>
->;
+> & {
+  barrio?: string;
+  puntoInicio?: string;
+  hospedajeLugarGuid?: string;
+  modalidadViaje?: string;
+  categoriasPrioritarias?: string;
+};
 
 export function validateStep(formData: ItineraryFormData, step: number): FormErrors {
   const errors: FormErrors = {};
 
   switch (step) {
     case 0: 
-      if (formData.barrio == null) 
-        errors.barrio = "Seleccioná un barrio.";
-      
-      if (formData.puntoInicio == null) {
-        errors.puntoInicio = "Seleccioná un punto de partida.";
-      } else if (
-        (formData.puntoInicio === "HospedajePropio" || formData.puntoInicio === "HospedajeSugerido") &&
-        formData.hospedajeLugarGuid == null
-      ) {
-        errors.hospedajeLugarGuid = "Seleccioná un lugar de alojamiento de la lista.";
-      } else if (
-        (formData.puntoInicio === "HospedajeSugerido" || formData.puntoInicio === "HospedajePropio") &&
-        formData.hospedajeLugarGuid != null &&
-        formData.barrio != null &&
-        formData.hospedajeBarrio != null &&
-        formData.hospedajeBarrio !== formData.barrio
-      ) {
-        errors.hospedajeLugarGuid = `El alojamiento recomendado debe pertenecer al barrio seleccionado (${barrioLabel(formData.barrio)}).`;
-      }
-
-      break;
-
-    case 1: 
       if (!formData.fechaInicio) {
         errors.fechaInicio = "Seleccioná la fecha de inicio.";
       } else if (!formData.fechaFin) {
@@ -57,16 +44,84 @@ export function validateStep(formData: ItineraryFormData, step: number): FormErr
       }
       break;
 
-    case 2: 
-      if (formData.modalidadViaje == null) {
-        errors.modalidadViaje = "Seleccioná una modalidad de viaje.";
+    case 1: {
+      if (formData.dias.length === 0) {
+        errors.dias = "Elegí las fechas del viaje para definir los días.";
+        break;
       }
 
-      if (formData.categoriasPrioritarias.length < 2 || formData.categoriasPrioritarias.length > 4) {
-        errors.categoriasPrioritarias = "Seleccioná entre 2 y 4 categorías.";
+      if (formData.dias.length === 1) {
+        const dia = formData.dias[0];
+        const barrio = dia.barrio;
+        const puntoInicio = dia.puntoInicio;
+        const hospedajeLugarGuid = dia.hospedajeLugarGuid;
+        const hospedajeBarrio = dia.hospedajeBarrio;
+
+        if (barrio == null)
+          errors.barrio = "Seleccioná un barrio.";
+
+        if (puntoInicio == null) {
+          errors.puntoInicio = "Seleccioná un punto de partida.";
+        } else if (
+          (puntoInicio === "HospedajePropio" || puntoInicio === "HospedajeSugerido") &&
+          hospedajeLugarGuid == null
+        ) {
+          errors.hospedajeLugarGuid = "Seleccioná un lugar de alojamiento de la lista.";
+        } else if (
+          (puntoInicio === "HospedajeSugerido" || puntoInicio === "HospedajePropio") &&
+          hospedajeLugarGuid != null &&
+          barrio != null &&
+          hospedajeBarrio != null &&
+          hospedajeBarrio !== barrio
+        ) {
+          errors.hospedajeLugarGuid = `El alojamiento recomendado debe pertenecer al barrio seleccionado (${barrioLabel(barrio)}).`;
+        }
+
+        break;
+      }
+
+      const diasFaltantes = formData.dias
+        .filter((dia) => !diaEstaCompleto(dia))
+        .map((dia) => `Día ${dia.dia}`);
+
+      if (diasFaltantes.length > 0) {
+        errors.dias = `Faltan completar: ${diasFaltantes.join(", ")}.`;
       }
 
       break;
+    }
+
+    case 2: {
+      if (formData.dias.length === 0) {
+        errors.dias = "Elegí las fechas del viaje para definir los días.";
+        break;
+      }
+
+      if (formData.dias.length === 1) {
+        const dia = formData.dias[0];
+
+        if (dia.modalidadViaje == null) {
+          errors.modalidadViaje = "Seleccioná una modalidad de viaje.";
+        }
+
+        if (
+          dia.categoriasPrioritarias.length < 2 ||
+          dia.categoriasPrioritarias.length > 4
+        ) {
+          errors.categoriasPrioritarias = "Seleccioná entre 2 y 4 categorías.";
+        }
+
+        break;
+      }
+
+      const diasFaltantes = diasConPreferenciasFaltantes(formData.dias);
+
+      if (diasFaltantes.length > 0) {
+        errors.dias = `Faltan completar: ${diasFaltantes.join(", ")}.`;
+      }
+
+      break;
+    }
     
     case 3:
       if (formData.ritmoVisita == null) {

@@ -1,10 +1,9 @@
-import type { DiaViaje } from "../../../lib/diasViaje";
+import type { BarrioPorDia, DiaViaje } from "../../../lib/diasViaje";
 import type { ItinerarioViewModel } from "../../../types";
 import type { LugarDetalleDto } from "../../../../../api/types";
 import DiaSelector from "../../DiaSelector";
 import DiaRecorrido from "../../DiaRecorrido";
-import { getDayAndMonth } from "../../../../../lib/format";
-import { IoChevronBackOutline } from "react-icons/io5";
+import { barrioLabel, getDayAndMonth } from "../../../../../lib/format";
 import "./RecorridoPanel.css";
 
 interface RecorridoPanelProps {
@@ -14,6 +13,7 @@ interface RecorridoPanelProps {
   itinerarioActual: ItinerarioViewModel | null;
   lugarPartida: LugarDetalleDto | null;
   onClose?: () => void;
+  barrioDiaActual: BarrioPorDia
 }
 
 export function RecorridoPanel({
@@ -23,6 +23,7 @@ export function RecorridoPanel({
   itinerarioActual,
   lugarPartida,
   onClose,
+  barrioDiaActual
 }: RecorridoPanelProps) {
   const fechaStr = itinerarioActual?.itinerario.fecha
     ? getDayAndMonth(new Date(itinerarioActual.itinerario.fecha))
@@ -46,6 +47,7 @@ export function RecorridoPanel({
           <h3 className="viaje-recorrido__day-title">
             Día {itinerarioActual?.itinerario.numeroDia ?? diaSeleccionado}
             {fechaStr ? ` - ${fechaStr}` : ""}
+            {` - ${barrioLabel(barrioDiaActual.barrio)}`}
           </h3>
 
           <div className="viaje-recorrido__paradas">

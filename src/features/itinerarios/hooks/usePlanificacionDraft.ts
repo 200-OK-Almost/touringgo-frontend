@@ -1,16 +1,83 @@
+import type { BarrioCaba, CategoriaDto } from "../../../api/types";
 import {
   crearItineraryFormDataInicial,
   type ItineraryFormData,
 } from "../planificacionFormData";
+import type { ModalidadViaje, PuntoInicio } from "../types";
+import { construirDias } from "../lib/diasPlanificacion";
 
 const STORAGE_KEY = "touringgo:planificacion-draft:v1";
-const VERSION = 1;
+const VERSION = 3;
+const VERSIONES_SOPORTADAS = new Set([1, 2, 3]);
 
 export interface PlanificacionDraft {
   version: number;
   formData: ItineraryFormData;
   currentStepCounter: number;
   updatedAt: string;
+}
+
+interface LegacyFormData {
+  barrio?: BarrioCaba | null;
+  puntoInicio?: PuntoInicio | null;
+  hospedajeLugarGuid?: string | null;
+  hospedajeBarrio?: BarrioCaba | null;
+  fechaInicio?: string | null;
+  fechaFin?: string | null;
+  modalidadViaje?: ModalidadViaje | null;
+  categoriasPrioritarias?: CategoriaDto[];
+  [key: string]: unknown;
+}
+
+function normalizarFormData(
+  raw: Partial<ItineraryFormData> | LegacyFormData
+): ItineraryFormData {
+  const {
+    barrio,
+    puntoInicio,
+    hospedajeLugarGuid,
+    hospedajeBarrio,
+    modalidadViaje,
+    categoriasPrioritarias,
+    ...resto
+  } = raw as LegacyFormData;
+
+  const base = {
+    ...crearItineraryFormDataInicial(),
+    ...(resto as Partial<ItineraryFormData>),
+  };
+
+  const diasPrevios = Array.isArray(base.dias) ? base.dias : [];
+  const dias = construirDias(base.fechaInicio, base.fechaFin, diasPrevios);
+
+  if (dias.length > 0 && barrio != null) {
+    dias[0] = {
+      ...dias[0],
+      barrio,
+      puntoInicio: puntoInicio ?? null,
+      hospedajeLugarGuid: hospedajeLugarGuid ?? null,
+      hospedajeBarrio: hospedajeBarrio ?? null,
+    };
+  }
+
+  const modalidadGlobal = modalidadViaje ?? null;
+  const categoriasGlobales = Array.isArray(categoriasPrioritarias)
+    ? categoriasPrioritarias
+    : [];
+  const diasConPreferencias = dias.map((dia) => ({
+    ...dia,
+    modalidadViaje: dia.modalidadViaje ?? modalidadGlobal,
+    categoriasPrioritarias:
+      dia.categoriasPrioritarias.length > 0
+        ? dia.categoriasPrioritarias
+        : categoriasGlobales,
+  }));
+
+  return {
+    ...base,
+    dias: diasConPreferencias,
+    duracion: diasConPreferencias.length,
+  };
 }
 
 export function leerPlanificacionDraft(): PlanificacionDraft | null {
@@ -25,7 +92,8 @@ export function leerPlanificacionDraft(): PlanificacionDraft | null {
 
     if (
       !parsed ||
-      parsed.version !== VERSION ||
+      typeof parsed.version !== "number" ||
+      !VERSIONES_SOPORTADAS.has(parsed.version) ||
       typeof parsed.currentStepCounter !== "number" ||
       !parsed.formData ||
       typeof parsed.formData !== "object"
@@ -34,18 +102,15 @@ export function leerPlanificacionDraft(): PlanificacionDraft | null {
       return null;
     }
 
-    const formData = {
-      ...crearItineraryFormDataInicial(),
-      ...parsed.formData,
-      categoriasPrioritarias: Array.isArray(parsed.formData.categoriasPrioritarias)
-        ? parsed.formData.categoriasPrioritarias
-        : [],
-    };
+    const formData = normalizarFormData(
+      parsed.formData as Partial<ItineraryFormData> | LegacyFormData
+    );
 
     return {
       version: VERSION,
       formData,
-      currentStepCounter: parsed.currentStepCounter,
+      currentStepCounter:
+        parsed.version === 1 ? 0 : parsed.currentStepCounter,
       updatedAt:
         typeof parsed.updatedAt === "string"
           ? parsed.updatedAt
@@ -97,18 +162,21 @@ export function esBorradorConDatos(
   }
 
   return Boolean(
-    formData.barrio ||
-      formData.puntoInicio ||
-      formData.hospedajeLugarGuid ||
-      formData.hospedajeBarrio ||
+    formData.dias.some(
+      (dia) =>
+        dia.barrio ||
+        dia.puntoInicio ||
+        dia.hospedajeLugarGuid ||
+        dia.hospedajeBarrio ||
+        dia.modalidadViaje ||
+        dia.categoriasPrioritarias.length > 0
+    ) ||
       formData.fechaInicio ||
       formData.fechaFin ||
       formData.disponibilidadDiaria ||
-      formData.modalidadViaje ||
       formData.ritmoVisita ||
       formData.presupuestoNivel ||
-      formData.tipoTransporte ||
-      formData.categoriasPrioritarias.length > 0
+      formData.tipoTransporte
   );
 }
 

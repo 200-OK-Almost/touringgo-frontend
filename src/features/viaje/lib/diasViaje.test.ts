@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   construirDiasViaje,
   MAX_DIAS_VISIBLES,
+  obtenerBarriosPorDia,
 } from "./diasViaje";
 
 describe("construirDiasViaje", () => {
@@ -82,6 +83,26 @@ describe("construirDiasViaje", () => {
 
     expect(resultado.dias).toEqual([
       { numeroDia: 2, fecha: "2026-03-11", tieneItinerario: true },
+    ]);
+  });
+});
+
+describe("obtenerBarriosPorDia", () => {
+  it("usa los barrios configurados por día", () => {
+    const barrios = obtenerBarriosPorDia("Palermo", [
+      { numeroDia: 2, barrio: "Recoleta" },
+      { numeroDia: 1, barrio: "Palermo" },
+    ]);
+
+    expect(barrios).toEqual([
+      { numeroDia: 1, barrio: "Palermo" },
+      { numeroDia: 2, barrio: "Recoleta" },
+    ]);
+  });
+
+  it("usa el barrio único como fallback", () => {
+    expect(obtenerBarriosPorDia("SanTelmo", null)).toEqual([
+      { numeroDia: 1, barrio: "SanTelmo" },
     ]);
   });
 });

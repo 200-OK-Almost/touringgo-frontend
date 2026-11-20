@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { ViajeDto } from "../../../types";
 import { IoPaperPlane } from "react-icons/io5";
 import "./ChatTab.css";
+import { TITULO_VIAJE_POR_DEFECTO } from "../../../lib/viajeTitulo";
 
 interface ChatTabProps {
   viaje: ViajeDto;
@@ -26,7 +27,7 @@ export function ChatTab({ viaje }: ChatTabProps) {
   return (
     <div className="chat-tab">
       <div className="chat-tab__header">
-        <h2>{viaje.titulo || "Asistente Turi"}</h2>
+        <h2>{viaje.titulo || TITULO_VIAJE_POR_DEFECTO}</h2>
       </div>
 
       <div className="chat-tab__body">
