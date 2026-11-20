@@ -25,7 +25,7 @@ export function ViajeView({
 }: ViajeViewProps) {
   const [diaActual, setDiaActual] = useState(1);
   const [activeTab, setActiveTab] = useState<PanelTab>("chat");
-  const [isChatOpen, setIsChatOpen] = useState(true);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [isRecorridoOpen, setIsRecorridoOpen] = useState(true);
 
   const isMobile = useMediaQuery("(max-width: 900px)");
