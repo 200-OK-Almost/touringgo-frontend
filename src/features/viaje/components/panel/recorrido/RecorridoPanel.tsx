@@ -12,7 +12,7 @@ interface RecorridoPanelProps {
   onDiaChange: (dia: number) => void;
   itinerarioActual: ItinerarioViewModel | null;
   lugarPartida: LugarDetalleDto | null;
-  barrioDiaActual: BarrioPorDia
+  barrioDiaActual?: BarrioPorDia
 }
 
 export function RecorridoPanel({
@@ -45,7 +45,7 @@ export function RecorridoPanel({
           <h3 className="viaje-recorrido__day-title">
             Día {itinerarioActual?.itinerario.numeroDia ?? diaSeleccionado}
             {fechaStr ? ` - ${fechaStr}` : ""}
-            {` - ${barrioLabel(barrioDiaActual.barrio)}`}
+            {barrioDiaActual ? ` - ${barrioLabel(barrioDiaActual.barrio)}` : ""}
           </h3>
 
           <div className="viaje-recorrido__paradas">
