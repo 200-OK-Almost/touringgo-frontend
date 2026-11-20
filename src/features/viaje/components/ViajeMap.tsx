@@ -1,16 +1,37 @@
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
+import { MapContainer, TileLayer, Polyline } from "react-leaflet";
+import { useMemo } from "react";
 import type { LatLngExpression } from "leaflet";
 import type { ItinerarioViewModel } from "../types";
 import "./ViajeMap.css"
 import MapBounds from "./MapBounds";
 import CustomMarker from "./CustomMarker";
 import { CustomZoomControl } from "./CustomZoomControl";
+
+const ROUTE_COLOR = "#059669";
+
 interface ViajeMapProps {
   itinerarioViewModel: ItinerarioViewModel | null;
   panelWidth: number
 }
 
 function ViajeMap({ itinerarioViewModel, panelWidth }: ViajeMapProps) {
+    const posiciones = useMemo<LatLngExpression[]>(() => {
+      if (!itinerarioViewModel) return [];
+
+      const paradasPosiciones: LatLngExpression[] = itinerarioViewModel.paradas.map(parada => [
+        parada.lugar.latitud,
+        parada.lugar.longitud
+      ]);
+
+      const { origenLatitud, origenLongitud } = itinerarioViewModel.itinerario;
+
+      if (origenLatitud != null && origenLongitud != null) {
+        return [[origenLatitud, origenLongitud], ...paradasPosiciones];
+      }
+
+      return paradasPosiciones;
+    }, [itinerarioViewModel]);
+
     if (!itinerarioViewModel) {
       return (
         <div className="viaje-map-placeholder">
@@ -21,23 +42,6 @@ function ViajeMap({ itinerarioViewModel, panelWidth }: ViajeMapProps) {
     const paradas = itinerarioViewModel.paradas
 
     const centro: LatLngExpression = [-34.6037, -58.3816];
-    
-    const paradasPosiciones: LatLngExpression[] = paradas.map(parada => [
-      parada.lugar.latitud,
-      parada.lugar.longitud
-    ]);
-    let posiciones: LatLngExpression[] = paradasPosiciones
-
-    if (itinerarioViewModel.itinerario.origenLatitud && itinerarioViewModel.itinerario.origenLongitud) {
-      const origenPosicion: LatLngExpression = [
-        itinerarioViewModel.itinerario.origenLatitud,
-        itinerarioViewModel.itinerario.origenLongitud
-      ]
-      posiciones = [
-        origenPosicion,
-        ... posiciones
-      ]
-    }
     
     return (
       <div className="viaje-map-wrapper">
@@ -61,19 +65,18 @@ function ViajeMap({ itinerarioViewModel, panelWidth }: ViajeMapProps) {
           {/* punto de partida */}
           {itinerarioViewModel.itinerario.origenLatitud != null &&
             itinerarioViewModel.itinerario.origenLongitud != null && (
-              <Marker
+              <CustomMarker
                 key={`origen-${itinerarioViewModel.itinerario.origenLatitud}-${itinerarioViewModel.itinerario.origenLongitud}`}
                 position={[
                   Number(itinerarioViewModel.itinerario.origenLatitud),
                   Number(itinerarioViewModel.itinerario.origenLongitud),
                 ]}
+                variant="origin"
               >
-                <Popup>
-                  <strong>Punto de partida</strong>
-                  <br />
-                  {itinerarioViewModel.itinerario.origenDescripcion}
-                </Popup>
-              </Marker>
+                <strong>Punto de partida</strong>
+                <br />
+                {itinerarioViewModel.itinerario.origenDescripcion}
+              </CustomMarker>
             )}
           {paradas.map((parada, index) => (
             <CustomMarker
@@ -92,25 +95,15 @@ function ViajeMap({ itinerarioViewModel, panelWidth }: ViajeMapProps) {
 
           <Polyline
             positions={posiciones}
-            color="#3388ff"
-            weight={4}
+            color={ROUTE_COLOR}
+            weight={5}
+            dashArray="2 8"
+            lineCap="round"
           />
           <CustomZoomControl 
             position="bottomRight"
           />
       </MapContainer>
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: '100px', // Adjust how tall the fade is
-          background: 'linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 100%)',
-          pointerEvents: 'none', // Lets clicks and drags pass through to the map
-          zIndex: 500, // Places it above map tiles (z-index 200-400)
-        }}
-      />
       </div>
     );
 }

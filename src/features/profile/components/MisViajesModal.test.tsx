@@ -41,7 +41,7 @@ function crearViaje(sobrescribir: Partial<ViajeDto> = {}): ViajeDto {
     creadoPorUsuarioId: "22222222-2222-2222-2222-222222222222",
     fechaCreacion: "2026-03-01T10:00:00Z",
     fechaActualizacion: "2026-03-01T10:00:00Z",
-    categoriaCodigos: ["Gastronomia", "Cultura"],
+    categoriaCodigos: ["gastronomia_clasica", "museos_galerias"],
     dias: [
       {
         id: "33333333-3333-3333-3333-333333333331",

@@ -9,12 +9,11 @@
   border-radius: 25px;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  margin-left: -1.5rem;
 }
 
 .viaje-recorrido__header {
   flex-shrink: 0;
-  padding: 0.85rem 1rem 0.65rem 2.25rem;
+  padding: 0.85rem 1rem 0.65rem 1rem;
   border-bottom: 1px solid var(--border);
 }
 
@@ -33,7 +32,7 @@
   overflow-y: auto;
   gap: 1rem;
 
-  padding-left: 2.25rem;
+  padding-left: 1rem;
   padding-right: 0.75rem;
   padding-top: 0.75rem;
   padding-bottom: 1rem;
@@ -53,6 +52,7 @@
 }
 
 .viaje-recorrido__paradas {
+  --lugar-thumb-size: 56px;
   border-radius: 16px;
   display: flex;
   flex-direction: column;
@@ -63,15 +63,14 @@
 .viaje-recorrido__paradas::before {
   content: "";
   position: absolute;
-  left: 37px;
-  top: 15px;
-  bottom: 15px;
+  left: calc(0.75rem + var(--lugar-thumb-size) / 2);
+  top: calc(0.75rem + var(--lugar-thumb-size) / 2);
+  bottom: calc(0.75rem + var(--lugar-thumb-size) / 2);
   width: 2px;
-  background: #cbd5e1;
+  background: var(--border);
 }
 
 .viaje-recorrido__footer {
-  margin-top: auto;
   padding-top: 1rem;
   border-top: 1px dashed var(--border);
 }
@@ -96,9 +95,5 @@
   .viaje-recorrido__body {
     padding-left: 1rem;
     padding-right: 0.75rem;
-  }
-
-  .viaje-recorrido__collapse-btn {
-    display: none;
   }
 }

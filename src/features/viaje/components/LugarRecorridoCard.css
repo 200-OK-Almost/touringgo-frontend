@@ -7,19 +7,14 @@
   width: 100%;
 
   border-radius: 10px;
-  border: 1px solid var(--border, #e5e4e7);
-  background: #ffffff;
-  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface);
   text-align: left;
   transition: all 0.15s ease;
   position: relative;
-  flex: 1;
+  flex-shrink: 0;
 
   box-shadow: var(--shadow-sm);
-}
-
-.lugar-recorrido-card:hover {
-  background-color: var(--bg-subtle, #f8f7fa);
 }
 
 .lugar-recorrido-card__body {
@@ -29,13 +24,13 @@
 }
 
 .lugar-recorrido-card__thumb {
-  width: 50px;
-  height: 50px;
+  width: var(--lugar-thumb-size, 56px);
+  height: var(--lugar-thumb-size, 56px);
   border-radius: 8px;
   overflow: hidden;
   flex-shrink: 0;
-  background-color: var(--bg-subtle, #f8f7fa);
-  border: 1px solid var(--border, #e5e4e7);
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border);
 }
 .lugar-recorrido-card__thumb .smart-image {
   width: 100%;
@@ -55,9 +50,50 @@
   font-size: 0.95rem;
   font-weight: 600;
   line-height: 1.3;
-  color: var(--text-heading, #17141c);
+  color: var(--text-heading);
   margin: 0;
   word-break: break-word;
+}
+
+.lugar-recorrido-card__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.lugar-recorrido-card__rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.lugar-recorrido-card__rating-icon {
+  flex-shrink: 0;
+  font-size: 0.95rem;
+  color: var(--secondary);
+}
+
+.lugar-recorrido-card__resenas {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.lugar-recorrido-card__categoria {
+  max-width: 100%;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--primary-subtle);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .lugar-recorrido-card__direccion,
@@ -65,13 +101,14 @@
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.8rem;
-  color: var(--text-muted, #6b6375);
+  font-size: 0.85rem;
+  color: var(--text-muted);
   margin: 0;
   word-break: break-word;
   min-width: 0;
 }
-.lugar-recorrido-card__direccion p {
+.lugar-recorrido-card__direccion span {
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -79,4 +116,5 @@
 .lugar-recorrido-card__icon {
   font-size: 18px;
   color: var(--primary);
+  flex-shrink: 0;
 }

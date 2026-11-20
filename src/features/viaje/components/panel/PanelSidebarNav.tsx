@@ -12,6 +12,7 @@ interface PanelSidebarNavProps {
   activeTab: PanelTab;
   onTabChange: (tab: PanelTab) => void;
   isMobile?: boolean;
+  isChatOpen?: boolean;
   isRecorridoOpen?: boolean;
   onToggleRecorrido?: () => void;
 }
@@ -20,6 +21,7 @@ export function PanelSidebarNav({
   activeTab,
   onTabChange,
   isMobile = false,
+  isChatOpen = true,
   isRecorridoOpen = true,
   onToggleRecorrido,
 }: PanelSidebarNavProps) {
@@ -74,18 +76,18 @@ export function PanelSidebarNav({
       <div className="panel-sidebar-nav__top">
         <button
           type="button"
-          className={`panel-sidebar-nav__btn ${activeTab === "chat" ? "active" : ""}`}
+          className={`panel-sidebar-nav__btn ${activeTab === "chat" && isChatOpen ? "active" : ""}`}
           onClick={() => onTabChange("chat")}
-          title="Chat con Turi"
+          title={activeTab === "chat" && isChatOpen ? "Ocultar chat" : "Chat con Turi"}
         >
           <IoChatbubblesOutline className="panel-sidebar-nav__icon" />
         </button>
 
         <button
           type="button"
-          className={`panel-sidebar-nav__btn ${activeTab === "miembros" ? "active" : ""}`}
+          className={`panel-sidebar-nav__btn ${activeTab === "miembros" && isChatOpen ? "active" : ""}`}
           onClick={() => onTabChange("miembros")}
-          title="Miembros del viaje"
+          title={activeTab === "miembros" && isChatOpen ? "Ocultar miembros" : "Miembros del viaje"}
         >
           <IoPeopleOutline className="panel-sidebar-nav__icon" />
         </button>
@@ -105,9 +107,9 @@ export function PanelSidebarNav({
 
         <button
           type="button"
-          className={`panel-sidebar-nav__btn ${activeTab === "ajustes" ? "active" : ""}`}
+          className={`panel-sidebar-nav__btn ${activeTab === "ajustes" && isChatOpen ? "active" : ""}`}
           onClick={() => onTabChange("ajustes")}
-          title="Ajustes del viaje"
+          title={activeTab === "ajustes" && isChatOpen ? "Ocultar ajustes" : "Ajustes del viaje"}
         >
           <IoSettingsOutline className="panel-sidebar-nav__icon" />
         </button>

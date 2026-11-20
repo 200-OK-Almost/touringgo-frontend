@@ -4,7 +4,13 @@
   height: 100%;
 }
 .viaje-map-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: var(--bg-subtle);
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: 500;
 }
 
 .viaje-map-container {
@@ -16,26 +22,50 @@
 }
 
 .leaflet-control-attribution {
-  display: none;
+  padding: 0 0.35rem;
+  border-radius: 4px 0 0 0;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.leaflet-control-attribution a {
+  color: var(--text-muted);
 }
 
 .map-zoom-btn-container {
   display: flex;
   flex-direction: row;
   gap: .5rem;
-  background-color: white;
+  background-color: var(--surface);
   border: 1px solid var(--border) !important; /* to override leaflet's native border */
   border-radius: 20px !important;
   padding: .5rem;
   justify-content: space-between;
   align-items: center;
-  width: 150px;
+  width: auto;
+  min-width: 0;
+  max-width: calc(100vw - 1rem);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
 
   font-family: var(--font-sans);
   font-size: .975rem;
 }
 
+.map-zoom-value p {
+  margin: 0;
+  min-width: 2.5rem;
+  text-align: center;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
 .map-zoom-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.15rem;
   border-radius: 50%;
   padding: .25rem;
@@ -46,4 +76,15 @@
 }
 .map-zoom-btn:active {
   background-color: var(--white-active);
+}
+
+@media (max-width: 640px) {
+  .map-zoom-btn-container {
+    gap: .35rem;
+    padding: .35rem .45rem;
+  }
+
+  .map-zoom-value {
+    display: none;
+  }
 }

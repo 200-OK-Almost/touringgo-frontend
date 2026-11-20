@@ -3,7 +3,7 @@ import type { ItinerarioViewModel } from "../../../types";
 import type { LugarDetalleDto } from "../../../../../api/types";
 import DiaSelector from "../../DiaSelector";
 import DiaRecorrido from "../../DiaRecorrido";
-import { barrioLabel, getDayAndMonth } from "../../../../../lib/format";
+import { barrioLabel } from "../../../../../lib/format";
 import "./RecorridoPanel.css";
 
 interface RecorridoPanelProps {
@@ -12,8 +12,7 @@ interface RecorridoPanelProps {
   onDiaChange: (dia: number) => void;
   itinerarioActual: ItinerarioViewModel | null;
   lugarPartida: LugarDetalleDto | null;
-  onClose?: () => void;
-  barrioDiaActual: BarrioPorDia
+  barrioDiaActual?: BarrioPorDia
 }
 
 export function RecorridoPanel({
@@ -22,13 +21,8 @@ export function RecorridoPanel({
   onDiaChange,
   itinerarioActual,
   lugarPartida,
-  onClose,
   barrioDiaActual
 }: RecorridoPanelProps) {
-  const fechaStr = itinerarioActual?.itinerario.fecha
-    ? getDayAndMonth(new Date(itinerarioActual.itinerario.fecha))
-    : "";
-
   return (
     <section className="viaje-recorrido">
       <div className="viaje-recorrido__header">
@@ -45,9 +39,8 @@ export function RecorridoPanel({
       <div className="viaje-recorrido__body">
         <div className="viaje-recorrido__group">
           <h3 className="viaje-recorrido__day-title">
-            Día {itinerarioActual?.itinerario.numeroDia ?? diaSeleccionado}
-            {fechaStr ? ` - ${fechaStr}` : ""}
-            {` - ${barrioLabel(barrioDiaActual.barrio)}`}
+            Día {diaSeleccionado}
+            {barrioDiaActual ? ` - ${barrioLabel(barrioDiaActual.barrio)}` : ""}
           </h3>
 
           <div className="viaje-recorrido__paradas">

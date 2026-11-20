@@ -8,6 +8,7 @@ import {
 } from "react-icons/io5";
 import "./AjustesTab.css";
 import { barrioLabel, categoriaLabel, presupuestoLabel } from "../../../../../lib/format";
+import { parseFechaLocal } from "../../../../itinerarios/lib/fechas";
 
 interface AjustesTabProps {
   viaje: ViajeDto;
@@ -16,14 +17,14 @@ interface AjustesTabProps {
 export function AjustesTab({ viaje }: AjustesTabProps) {
   const formatearFecha = (fechaStr: string | null) => {
     if (!fechaStr) return "Sin fecha";
-    const fecha = new Date(fechaStr);
-    return isNaN(fecha.getTime())
-      ? fechaStr
-      : fecha.toLocaleDateString("es-AR", {
+    const fecha = parseFechaLocal(fechaStr.slice(0, 10));
+    return fecha
+      ? fecha.toLocaleDateString("es-AR", {
           day: "numeric",
           month: "short",
           year: "numeric",
-        });
+        })
+      : fechaStr;
   };
 
   return (

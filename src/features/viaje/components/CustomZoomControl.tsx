@@ -1,7 +1,7 @@
 import { useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import { IoAdd, IoRemove } from 'react-icons/io5';
-import { useState } from 'react';
+import { useState, type MouseEvent } from 'react';
 
 export type CustomZoomControlPosition = 
   | "topLeft"
@@ -40,8 +40,8 @@ export function CustomZoomControl({ position = 'topRight' } : CustomZoomControlP
   };
 
   // Prevent map clicks/double-clicks from firing when clicking the buttons
-  const stopPropagation = (e: any) => {
-    L.DomEvent.stopPropagation(e);
+  const stopPropagation = (e: MouseEvent<HTMLDivElement>) => {
+    L.DomEvent.stopPropagation(e.nativeEvent);
   };
 
   return (

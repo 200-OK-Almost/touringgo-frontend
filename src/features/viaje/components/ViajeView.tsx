@@ -9,7 +9,6 @@ import "./ViajeView.css";
 import { useState } from "react"
 import type { ItinerarioViewModel, ViajeDto } from "../types"
 import ViajeMap from "./ViajeMap"
-import "./ViajeView.css"
 import type { LugarDetalleDto } from "../../../api/types"
 import { construirDiasViaje, obtenerBarriosPorDia } from "../lib/diasViaje"
 
@@ -26,12 +25,30 @@ export function ViajeView({
 }: ViajeViewProps) {
   const [diaActual, setDiaActual] = useState(1);
   const [activeTab, setActiveTab] = useState<PanelTab>("chat");
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [isRecorridoOpen, setIsRecorridoOpen] = useState(true);
 
   const isMobile = useMediaQuery("(max-width: 900px)");
+  const isCompactPanel = useMediaQuery("(min-width: 901px) and (max-width: 1100px)");
 
   // En desktop, si la pestaña quedó en 'recorrido' (por venir de móvil), volvemos a 'chat'
   const currentTab = !isMobile && activeTab === "recorrido" ? "chat" : activeTab;
+
+  const handleTabChange = (tab: PanelTab) => {
+    if (tab === "recorrido") {
+      setActiveTab(tab);
+      return;
+    }
+
+    // En desktop, clickear la pestaña activa colapsa/expande el contenido
+    if (!isMobile && tab === activeTab) {
+      setIsChatOpen((prev) => !prev);
+      return;
+    }
+
+    setActiveTab(tab);
+    setIsChatOpen(true);
+  };
 
   const { dias } = construirDiasViaje(
     viaje.fechaInicio,
@@ -48,8 +65,12 @@ export function ViajeView({
       (i) => i.itinerario.numeroDia === diaSeleccionado
     ) ?? null;
 
-  // Calculamos el ancho ocupado por el panel para el offset del mapa en desktop
-  const panelWidth = isMobile ? 0 : isRecorridoOpen ? 900 : 440;
+  // Calculamos el ancho ocupado por los paneles para el offset del mapa en desktop
+  const primaryWidth = isChatOpen ? (isCompactPanel ? 420 : 480) : 54;
+  const secondaryWidth = isCompactPanel ? 360 : 420;
+  const recorridoVisibleWidth = isChatOpen ? secondaryWidth - 24 : secondaryWidth;
+  const recorridoWidth = isRecorridoOpen ? recorridoVisibleWidth : 0;
+  const panelWidth = isMobile ? 0 : primaryWidth + recorridoWidth;
 
   const toggleRecorridoPanel = () => setIsRecorridoOpen((prev) => !prev)
 
@@ -95,13 +116,14 @@ export function ViajeView({
 
       <ViajePanel
         isMobile={isMobile}
+        isChatOpen={isChatOpen}
         isRecorridoOpen={isRecorridoOpen}
-        toggleRecorridoPanel={toggleRecorridoPanel}
         sidebarNav={
           <PanelSidebarNav
             activeTab={currentTab}
-            onTabChange={setActiveTab}
+            onTabChange={handleTabChange}
             isMobile={isMobile}
+            isChatOpen={isChatOpen}
             isRecorridoOpen={isRecorridoOpen}
             onToggleRecorrido={() => toggleRecorridoPanel()}
           />
@@ -115,7 +137,6 @@ export function ViajeView({
             onDiaChange={setDiaActual}
             itinerarioActual={itinerarioActual}
             lugarPartida={lugarPartida}
-            onClose={() => setIsRecorridoOpen(false)}
           />
         }
       />

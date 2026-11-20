@@ -1,25 +1,24 @@
 import React, { useState } from "react";
 import "./ViajePanel.css";
-import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
 
 interface ViajePanelProps {
   isMobile: boolean;
+  isChatOpen: boolean;
   isRecorridoOpen: boolean;
   sidebarNav: React.ReactNode;
   primaryContent: React.ReactNode;
   secondaryContent?: React.ReactNode;
-  toggleRecorridoPanel: () => void;
 }
 
 export function ViajePanel({
   isMobile,
+  isChatOpen,
   isRecorridoOpen,
   sidebarNav,
   primaryContent,
   secondaryContent,
-  toggleRecorridoPanel
 }: ViajePanelProps) {
-  const [isMobileExpanded, setIsMobileExpanded] = useState(true);
+  const [isMobileExpanded, setIsMobileExpanded] = useState(false);
 
   if (isMobile) {
     return (
@@ -51,22 +50,12 @@ export function ViajePanel({
     <aside
       className={`viaje-panel viaje-panel--desktop ${
         isRecorridoOpen ? "with-recorrido" : "without-recorrido"
-      }`}
+      } ${isChatOpen ? "" : "chat-collapsed"}`}
       aria-label="Panel de control del viaje"
     >
       <div className="viaje-panel__primary-card">
         {sidebarNav}
         <div className="viaje-panel__primary-body">{primaryContent}</div>
-
-      <button
-        type="button"
-        className="viaje-recorrido__collapse-btn"
-        onClick={toggleRecorridoPanel}
-        title={isRecorridoOpen ? "Ocultar recorrido" : "Mostrar recorrido"}
-        aria-label={isRecorridoOpen ? "Ocultar recorrido" : "Mostrar recorrido"}
-      >
-        {isRecorridoOpen ? <IoChevronBackOutline /> : <IoChevronForwardOutline />}
-      </button>
       </div>
 
       {secondaryContent && (

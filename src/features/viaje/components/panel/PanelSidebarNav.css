@@ -86,9 +86,9 @@
 
 .panel-sidebar-nav--mobile .panel-sidebar-nav__btn.active {
   background-color: var(--primary);
-  color: #ffffff;
+  color: var(--bg);
 }
 
 .panel-sidebar-nav--mobile .panel-sidebar-nav__btn.active .panel-sidebar-nav__icon {
-  color: #ffffff;
+  color: var(--bg);
 }
