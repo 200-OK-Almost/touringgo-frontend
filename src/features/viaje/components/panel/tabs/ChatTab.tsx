@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type {
   AplicarAccionAsistenteDto,
+  AsistenteCapacidadesDto,
   ItinerarioViewModel,
   RecomendacionLugarDto,
   ViajeDto,
@@ -8,7 +9,9 @@ import type {
 import {
   aplicarAccionAsistente,
   enviarMensajeAsistente,
+  getCapacidadesAsistente,
 } from "../../../api/asistente";
+import { ApiError } from "../../../../../api/client";
 import SmartImage from "../../../../../components/SmartImage";
 import { formatearPuntuacion } from "../../../../../lib/format";
 import {
@@ -33,9 +36,16 @@ type ChatMessage = {
   recomendaciones?: RecomendacionLugarDto[];
   advertencia?: string | null;
   puedeAplicar?: boolean;
+  accion?: "recargar";
 };
 
 type TipoAccion = AplicarAccionAsistenteDto["tipo"];
+
+type ErrorChat = {
+  contenido: string;
+  advertencia?: string | null;
+  accion?: "recargar";
+};
 
 const MENSAJE_BIENVENIDA: ChatMessage = {
   id: "bienvenida",
@@ -50,6 +60,61 @@ function crearIdMensaje(): string {
   }
 
   return `${Date.now()}-${Math.random()}`;
+}
+
+function crearMensajeError(
+  error: unknown,
+  contexto: "consulta" | "aplicar"
+): ErrorChat {
+  if (error instanceof ApiError) {
+    switch (error.status) {
+      case 429:
+        return {
+          contenido:
+            "Demasiadas consultas al asistente. Esperá un momento antes de volver a intentar.",
+          advertencia: error.retryAfterSeconds
+            ? `Podés reintentar en ${error.retryAfterSeconds} segundos.`
+            : "Podés reintentar en unos segundos.",
+        };
+      case 409:
+        return {
+          contenido:
+            "El itinerario cambió desde que se generó esta recomendación.",
+          advertencia:
+            "Recargá el itinerario y volvé a pedir la sugerencia antes de aplicar.",
+          accion: "recargar",
+        };
+      case 404:
+        return {
+          contenido:
+            "No se encontró el viaje, el lugar o la parada solicitada.",
+          advertencia: "Recargá la página para actualizar los datos del viaje.",
+          accion: "recargar",
+        };
+      case 403:
+        return {
+          contenido:
+            "Solo el administrador del viaje puede aplicar cambios al itinerario.",
+        };
+      case 400:
+        return {
+          contenido: error.message || "La acción solicitada no es válida.",
+        };
+      default:
+        return {
+          contenido:
+            error.message ||
+            "No se pudo completar la operación con el asistente.",
+        };
+    }
+  }
+
+  return {
+    contenido:
+      contexto === "consulta"
+        ? "No pude consultar al asistente en este momento. Intentá de nuevo en unos segundos."
+        : "No pude aplicar el cambio en el itinerario. Intentá de nuevo.",
+  };
 }
 
 interface RecomendacionCardProps {
@@ -165,7 +230,42 @@ export function ChatTab({
   const [mensajes, setMensajes] = useState<ChatMessage[]>([MENSAJE_BIENVENIDA]);
   const [enviando, setEnviando] = useState(false);
   const [aplicando, setAplicando] = useState(false);
+  const [recargando, setRecargando] = useState(false);
+  const [capacidades, setCapacidades] = useState<AsistenteCapacidadesDto | null>(
+    null
+  );
+  const [cargandoCapacidades, setCargandoCapacidades] = useState(true);
+  const [errorCapacidades, setErrorCapacidades] = useState<string | null>(null);
+  const [intentoCapacidades, setIntentoCapacidades] = useState(0);
   const bodyRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let activo = true;
+
+    getCapacidadesAsistente()
+      .then((respuesta) => {
+        if (activo) {
+          setCapacidades(respuesta);
+        }
+      })
+      .catch(() => {
+        if (activo) {
+          setCapacidades(null);
+          setErrorCapacidades(
+            "No se pudo verificar el estado del asistente."
+          );
+        }
+      })
+      .finally(() => {
+        if (activo) {
+          setCargandoCapacidades(false);
+        }
+      });
+
+    return () => {
+      activo = false;
+    };
+  }, [intentoCapacidades]);
 
   useEffect(() => {
     if (bodyRef.current) {
@@ -173,10 +273,28 @@ export function ChatTab({
     }
   }, [mensajes, enviando]);
 
+  const asistenteHabilitado = capacidades?.habilitado === true;
+  const asistenteNoDisponible = !cargandoCapacidades && !asistenteHabilitado;
+  const bloqueado = cargandoCapacidades || asistenteNoDisponible;
+
+  const handleRecargar = async () => {
+    if (recargando) {
+      return;
+    }
+
+    setRecargando(true);
+
+    try {
+      await onItinerarioActualizado();
+    } finally {
+      setRecargando(false);
+    }
+  };
+
   const handleSendMessage = async () => {
     const texto = inputText.trim();
 
-    if (!texto || enviando) {
+    if (!texto || enviando || bloqueado) {
       return;
     }
 
@@ -213,15 +331,16 @@ export function ChatTab({
           puedeAplicar: respuesta.puedeAplicar,
         },
       ]);
-    } catch {
+    } catch (error) {
+      const errorChat = crearMensajeError(error, "consulta");
+
+      setInputText(texto);
       setMensajes((prev) => [
         ...prev,
         {
           id: crearIdMensaje(),
           rol: "assistant",
-          contenido:
-            "No pude consultar al asistente en este momento. Intentá de nuevo en unos segundos.",
-          advertencia: null,
+          ...errorChat,
         },
       ]);
     } finally {
@@ -236,7 +355,7 @@ export function ChatTab({
   ) => {
     const version = itinerarioActual?.itinerario.version;
 
-    if (!version || aplicando) {
+    if (!version || aplicando || bloqueado) {
       return;
     }
 
@@ -266,18 +385,14 @@ export function ChatTab({
         },
       ]);
     } catch (error) {
-      const mensaje =
-        error instanceof Error
-          ? error.message
-          : "No pude aplicar el cambio en el itinerario.";
+      const errorChat = crearMensajeError(error, "aplicar");
 
       setMensajes((prev) => [
         ...prev,
         {
           id: crearIdMensaje(),
           rol: "assistant",
-          contenido: mensaje,
-          advertencia: "No se modificó el itinerario.",
+          ...errorChat,
         },
       ]);
     } finally {
@@ -293,7 +408,8 @@ export function ChatTab({
   };
 
   const paradasActuales = itinerarioActual?.paradas ?? [];
-  const puedeAplicar = Boolean(itinerarioActual?.itinerario.version);
+  const puedeAplicar =
+    asistenteHabilitado && Boolean(itinerarioActual?.itinerario.version);
 
   return (
     <div className="chat-tab">
@@ -302,6 +418,30 @@ export function ChatTab({
       </div>
 
       <div className="chat-tab__body" ref={bodyRef}>
+        {cargandoCapacidades && (
+          <div className="chat-tab__status">Verificando asistente...</div>
+        )}
+
+        {asistenteNoDisponible && (
+          <div className="chat-tab__status chat-tab__status--error">
+            <p>
+              {errorCapacidades ??
+                "El asistente no está habilitado en este entorno."}
+            </p>
+            <button
+              type="button"
+              className="chat-tab__status-btn"
+              onClick={() => {
+                setCargandoCapacidades(true);
+                setErrorCapacidades(null);
+                setIntentoCapacidades((prev) => prev + 1);
+              }}
+            >
+              Reintentar
+            </button>
+          </div>
+        )}
+
         {mensajes.map((mensaje) => (
           <div
             key={mensaje.id}
@@ -316,6 +456,17 @@ export function ChatTab({
                 <p className="chat-message__advertencia">
                   {mensaje.advertencia}
                 </p>
+              )}
+
+              {mensaje.accion === "recargar" && (
+                <button
+                  type="button"
+                  className="chat-message__action"
+                  onClick={handleRecargar}
+                  disabled={recargando}
+                >
+                  {recargando ? "Recargando..." : "Recargar itinerario"}
+                </button>
               )}
 
               {mensaje.recomendaciones && mensaje.recomendaciones.length > 0 && (
@@ -351,18 +502,22 @@ export function ChatTab({
       <div className="chat-tab__input-box">
         <textarea
           className="chat-tab__input"
-          placeholder="Escribe una consulta a tu asistente de viaje..."
+          placeholder={
+            bloqueado
+              ? "Asistente no disponible"
+              : "Escribe una consulta a tu asistente de viaje..."
+          }
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           onKeyDown={handleKeyDown}
-          disabled={enviando}
+          disabled={enviando || bloqueado}
         />
         <div className="chat-tab__input-bottom">
           <button
             type="button"
             className="chat-tab__send-btn"
             onClick={handleSendMessage}
-            disabled={enviando || !inputText.trim()}
+            disabled={enviando || bloqueado || !inputText.trim()}
             aria-label="Enviar mensaje"
           >
             <IoPaperPlane />
