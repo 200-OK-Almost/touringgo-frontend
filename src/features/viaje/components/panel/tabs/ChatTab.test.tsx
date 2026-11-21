@@ -213,6 +213,79 @@ describe("ChatTab", () => {
     );
   });
 
+  it("muestra las aclaraciones y envía la opción elegida", async () => {
+    enviarMensajeMock
+      .mockResolvedValueOnce(
+        crearRespuesta({
+          mensaje: "¿A cuál parada te referís?",
+          recomendaciones: [],
+          aclaracion: {
+            pregunta: "¿A cuál parada te referís?",
+            opciones: [
+              { id: "parada-1", etiqueta: "Café Uno (Mañana)" },
+              { id: "parada-2", etiqueta: "Café Dos (Tarde)" },
+            ],
+          },
+        })
+      )
+      .mockResolvedValueOnce(
+        crearRespuesta({ mensaje: "Encontré 1 lugar para reemplazar." })
+      );
+
+    renderChat();
+    await enviarTexto("Reemplazá el café por un bar");
+
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Café Uno (Mañana)" })
+    );
+
+    await waitFor(() => {
+      expect(enviarMensajeMock).toHaveBeenCalledTimes(2);
+    });
+    expect(enviarMensajeMock).toHaveBeenLastCalledWith(
+      VIAJE_ID,
+      expect.objectContaining({
+        mensaje: "Reemplazá Café Uno (Mañana) por un bar",
+        numeroDia: 1,
+      })
+    );
+    expect(
+      screen.queryByRole("button", { name: "Café Dos (Tarde)" })
+    ).not.toBeInTheDocument();
+  });
+
+  it("conserva el nuevo lugar al responder una aclaración con en vez de", async () => {
+    enviarMensajeMock
+      .mockResolvedValueOnce(
+        crearRespuesta({
+          mensaje: "¿A cuál parada te referís?",
+          recomendaciones: [],
+          aclaracion: {
+            pregunta: "¿A cuál parada te referís?",
+            opciones: [{ id: "parada-1", etiqueta: "Museo (Tarde)" }],
+          },
+        })
+      )
+      .mockResolvedValueOnce(crearRespuesta());
+
+    renderChat();
+    await enviarTexto("En vez de la última parada, poné un bar");
+
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Museo (Tarde)" })
+    );
+
+    await waitFor(() => {
+      expect(enviarMensajeMock).toHaveBeenCalledTimes(2);
+    });
+    expect(enviarMensajeMock).toHaveBeenLastCalledWith(
+      VIAJE_ID,
+      expect.objectContaining({
+        mensaje: "Reemplazá Museo (Tarde) por un bar",
+      })
+    );
+  });
+
   it("aplica una recomendación agregando la parada y refresca", async () => {
     enviarMensajeMock.mockResolvedValue(crearRespuesta());
     const { onItinerarioActualizado } = renderChat();
