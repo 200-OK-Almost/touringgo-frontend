@@ -54,6 +54,7 @@ export type ItinerarioDto = {
   origenDescripcion: string | null
   origenLatitud: number | null
   origenLongitud: number | null
+  version: string | null
   paradas: ParadaItinerarioDto[]
 }
 
@@ -168,5 +169,85 @@ export type ViajeCreateDto = {
   categoriaCodigos: string[]
   dias?: ViajeDiaCreateDto[]
   parametrosFamilia?: ParametrosFamiliaDto
+}
+
+export type MensajeHistorialDto = {
+  rol: "user" | "assistant"
+  contenido: string
+}
+
+export type AsistenteRequestDto = {
+  mensaje: string
+  numeroDia?: number | null
+  historial?: MensajeHistorialDto[]
+}
+
+export type RecomendacionLugarDto = {
+  lugarId: string
+  nombre: string
+  descripcion: string | null
+  direccion: string | null
+  barrio: BarrioCaba
+  subzona: string | null
+  latitud: number
+  longitud: number
+  puntuacion: number | null
+  cantidadResenas: number
+  nivelPrecio: number
+  duracionMinutos: number
+  esAireLibre: boolean
+  esBajoTecho: boolean
+  aptoNinos: boolean
+  accesible: boolean
+  fotoPortadaUrl: string | null
+  categorias: string[]
+  opcionesDietarias: string[]
+  similitud: number
+  motivo: string
+}
+
+export type OpcionAclaracionDto = {
+  id: string
+  etiqueta: string
+}
+
+export type AclaracionDto = {
+  pregunta: string
+  opciones: OpcionAclaracionDto[]
+}
+
+export type AccionPropuestaDto = {
+  tipo: "AgregarParada" | "ReemplazarParada"
+  numeroDia: number
+  lugarId: string
+  paradaId: string | null
+  turno: Turno | null
+  version: string
+}
+
+export type AplicarAccionAsistenteDto = AccionPropuestaDto
+
+export type AsistenteResponseDto = {
+  mensaje: string
+  puedeAplicar: boolean
+  recomendaciones: RecomendacionLugarDto[]
+  accion: AccionPropuestaDto | null
+  aclaracion: AclaracionDto | null
+  advertencia: string | null
+}
+
+export type AsistenteLimitesDto = {
+  topK: number
+  minResultados: number
+  maxMensajeCaracteres: number
+  maxHistorial: number
+  rateLimitPorUsuario: number
+  rateLimitPorViaje: number
+  ventanaRateLimitSegundos: number
+}
+
+export type AsistenteCapacidadesDto = {
+  habilitado: boolean
+  limites: AsistenteLimitesDto
 }
 
