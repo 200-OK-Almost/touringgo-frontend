@@ -358,3 +358,32 @@
   cursor: default;
 }
 
+.chat-aclaracion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.55rem;
+}
+
+.chat-aclaracion__opcion {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background-color: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.78rem;
+  padding: 0.35rem 0.65rem;
+  cursor: pointer;
+}
+
+.chat-aclaracion__opcion:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+  background-color: var(--primary-subtle);
+}
+
+.chat-aclaracion__opcion:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+

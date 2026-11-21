@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type {
+  AclaracionDto,
   AplicarAccionAsistenteDto,
   AsistenteCapacidadesDto,
   ItinerarioViewModel,
@@ -37,6 +38,8 @@ type ChatMessage = {
   advertencia?: string | null;
   puedeAplicar?: boolean;
   accion?: "recargar";
+  aclaracion?: AclaracionDto | null;
+  mensajeOriginal?: string;
 };
 
 type TipoAccion = AplicarAccionAsistenteDto["tipo"];
@@ -115,6 +118,31 @@ function crearMensajeError(
         ? "No pude consultar al asistente en este momento. Intentá de nuevo en unos segundos."
         : "No pude aplicar el cambio en el itinerario. Intentá de nuevo.",
   };
+}
+
+function construirMensajeAclaracion(
+  mensajeOriginal: string,
+  etiqueta: string
+): string {
+  const por = mensajeOriginal.match(/\bpor\b/i);
+
+  if (por?.index !== undefined) {
+    const deseo = mensajeOriginal.slice(por.index + por[0].length).trim();
+
+    if (deseo) {
+      return `Reemplazá ${etiqueta} por ${deseo}`;
+    }
+  }
+
+  const despuesComa = mensajeOriginal.match(
+    /,\s*(?:pon[eé]|agreg[aá]|sum[aá])\s+(.+)$/i
+  );
+
+  if (despuesComa?.[1]) {
+    return `Reemplazá ${etiqueta} por ${despuesComa[1].trim()}`;
+  }
+
+  return `Reemplazá ${etiqueta}`;
 }
 
 interface RecomendacionCardProps {
@@ -291,8 +319,8 @@ export function ChatTab({
     }
   };
 
-  const handleSendMessage = async () => {
-    const texto = inputText.trim();
+  const enviarTexto = async (textoOriginal: string) => {
+    const texto = textoOriginal.trim();
 
     if (!texto || enviando || bloqueado) {
       return;
@@ -329,6 +357,8 @@ export function ChatTab({
           recomendaciones: respuesta.recomendaciones,
           advertencia: respuesta.advertencia,
           puedeAplicar: respuesta.puedeAplicar,
+          aclaracion: respuesta.aclaracion,
+          mensajeOriginal: texto,
         },
       ]);
     } catch (error) {
@@ -346,6 +376,28 @@ export function ChatTab({
     } finally {
       setEnviando(false);
     }
+  };
+
+  const handleSendMessage = async () => {
+    await enviarTexto(inputText);
+  };
+
+  const handleSeleccionarAclaracion = async (
+    mensajeId: string,
+    mensajeOriginal: string,
+    etiqueta: string
+  ) => {
+    if (enviando || bloqueado) {
+      return;
+    }
+
+    setMensajes((prev) =>
+      prev.map((mensaje) =>
+        mensaje.id === mensajeId ? { ...mensaje, aclaracion: null } : mensaje
+      )
+    );
+
+    await enviarTexto(construirMensajeAclaracion(mensajeOriginal, etiqueta));
   };
 
   const handleAplicar = async (
@@ -467,6 +519,28 @@ export function ChatTab({
                 >
                   {recargando ? "Recargando..." : "Recargar itinerario"}
                 </button>
+              )}
+
+              {mensaje.aclaracion && mensaje.aclaracion.opciones.length > 0 && (
+                <div className="chat-aclaracion">
+                  {mensaje.aclaracion.opciones.map((opcion) => (
+                    <button
+                      key={opcion.id}
+                      type="button"
+                      className="chat-aclaracion__opcion"
+                      disabled={enviando || bloqueado}
+                      onClick={() =>
+                        handleSeleccionarAclaracion(
+                          mensaje.id,
+                          mensaje.mensajeOriginal ?? "",
+                          opcion.etiqueta
+                        )
+                      }
+                    >
+                      {opcion.etiqueta}
+                    </button>
+                  ))}
+                </div>
               )}
 
               {mensaje.recomendaciones && mensaje.recomendaciones.length > 0 && (
