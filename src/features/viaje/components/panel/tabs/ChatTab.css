@@ -131,3 +131,123 @@
 .chat-tab__send-btn:active {
   transform: scale(0.95);
 }
+
+.chat-message__advertencia {
+  margin: 0.5rem 0 0;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  background-color: #fff8e1;
+  color: #8a5a00;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.chat-recomendaciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.chat-recomendacion {
+  display: flex;
+  gap: 0.65rem;
+  padding: 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background-color: var(--bg);
+}
+
+.chat-recomendacion__thumb {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 10px;
+  background-color: var(--surface);
+}
+
+.chat-recomendacion__content {
+  min-width: 0;
+  flex: 1;
+}
+
+.chat-recomendacion__nombre {
+  margin: 0 0 0.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-recomendacion__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.chat-recomendacion__rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  color: #b45309;
+  font-weight: 600;
+}
+
+.chat-recomendacion__rating svg {
+  width: 12px;
+  height: 12px;
+}
+
+.chat-recomendacion__resenas {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.chat-recomendacion__direccion {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+  margin: 0.3rem 0 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.chat-recomendacion__direccion svg {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+  margin-top: 0.1rem;
+}
+
+.chat-recomendacion__direccion span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-recomendacion__motivo {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  color: var(--text);
+}
+
+.chat-message--loading p {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.chat-tab__send-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+  transform: none;
+}
+
+.chat-tab__input:disabled {
+  opacity: 0.7;
+}

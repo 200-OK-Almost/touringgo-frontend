@@ -96,7 +96,7 @@ export function ViajeView({
         return <AjustesTab viaje={viaje} />;
       case "chat":
       default:
-        return <ChatTab viaje={viaje} />;
+        return <ChatTab viaje={viaje} numeroDia={diaSeleccionado} />;
     }
   };
 
