@@ -1,6 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import type { RecomendacionLugarDto, ViajeDto } from "../../../types";
-import { enviarMensajeAsistente } from "../../../api/asistente";
+import type {
+  AplicarAccionAsistenteDto,
+  ItinerarioViewModel,
+  RecomendacionLugarDto,
+  ViajeDto,
+} from "../../../types";
+import {
+  aplicarAccionAsistente,
+  enviarMensajeAsistente,
+} from "../../../api/asistente";
 import SmartImage from "../../../../../components/SmartImage";
 import { formatearPuntuacion } from "../../../../../lib/format";
 import {
@@ -14,6 +22,8 @@ import { TITULO_VIAJE_POR_DEFECTO } from "../../../lib/viajeTitulo";
 interface ChatTabProps {
   viaje: ViajeDto;
   numeroDia: number;
+  itinerarioActual: ItinerarioViewModel | null;
+  onItinerarioActualizado: () => Promise<void>;
 }
 
 type ChatMessage = {
@@ -22,7 +32,10 @@ type ChatMessage = {
   contenido: string;
   recomendaciones?: RecomendacionLugarDto[];
   advertencia?: string | null;
+  puedeAplicar?: boolean;
 };
+
+type TipoAccion = AplicarAccionAsistenteDto["tipo"];
 
 const MENSAJE_BIENVENIDA: ChatMessage = {
   id: "bienvenida",
@@ -39,7 +52,27 @@ function crearIdMensaje(): string {
   return `${Date.now()}-${Math.random()}`;
 }
 
-function RecomendacionCard({ recomendacion }: { recomendacion: RecomendacionLugarDto }) {
+interface RecomendacionCardProps {
+  recomendacion: RecomendacionLugarDto;
+  numeroDia: number;
+  puedeAplicar: boolean;
+  paradasActuales: ItinerarioViewModel["paradas"];
+  aplicando: boolean;
+  onAplicar: (
+    recomendacion: RecomendacionLugarDto,
+    tipo: TipoAccion,
+    paradaId?: string
+  ) => void;
+}
+
+function RecomendacionCard({
+  recomendacion,
+  numeroDia,
+  puedeAplicar,
+  paradasActuales,
+  aplicando,
+  onAplicar,
+}: RecomendacionCardProps) {
   const puntuacion = formatearPuntuacion(recomendacion.puntuacion);
   const categoria = recomendacion.categorias[0]?.replaceAll("_", " ");
 
@@ -82,15 +115,56 @@ function RecomendacionCard({ recomendacion }: { recomendacion: RecomendacionLuga
         )}
 
         <p className="chat-recomendacion__motivo">{recomendacion.motivo}</p>
+
+        {puedeAplicar && (
+          <div className="chat-recomendacion__acciones">
+            <button
+              type="button"
+              className="chat-recomendacion__btn"
+              disabled={aplicando}
+              onClick={() => onAplicar(recomendacion, "AgregarParada")}
+            >
+              Agregar al día {numeroDia}
+            </button>
+
+            {paradasActuales.length > 0 && (
+              <select
+                className="chat-recomendacion__select"
+                value=""
+                disabled={aplicando}
+                aria-label="Reemplazar una parada"
+                onChange={(event) => {
+                  const paradaId = event.target.value;
+                  if (paradaId) {
+                    onAplicar(recomendacion, "ReemplazarParada", paradaId);
+                  }
+                }}
+              >
+                <option value="">Reemplazar parada...</option>
+                {paradasActuales.map((parada) => (
+                  <option key={parada.parada.id} value={parada.parada.id}>
+                    {parada.parada.turno} · {parada.lugar.nombre}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+        )}
       </div>
     </article>
   );
 }
 
-export function ChatTab({ viaje, numeroDia }: ChatTabProps) {
+export function ChatTab({
+  viaje,
+  numeroDia,
+  itinerarioActual,
+  onItinerarioActualizado,
+}: ChatTabProps) {
   const [inputText, setInputText] = useState("");
   const [mensajes, setMensajes] = useState<ChatMessage[]>([MENSAJE_BIENVENIDA]);
   const [enviando, setEnviando] = useState(false);
+  const [aplicando, setAplicando] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -136,6 +210,7 @@ export function ChatTab({ viaje, numeroDia }: ChatTabProps) {
           contenido: respuesta.mensaje,
           recomendaciones: respuesta.recomendaciones,
           advertencia: respuesta.advertencia,
+          puedeAplicar: respuesta.puedeAplicar,
         },
       ]);
     } catch {
@@ -154,12 +229,71 @@ export function ChatTab({ viaje, numeroDia }: ChatTabProps) {
     }
   };
 
+  const handleAplicar = async (
+    recomendacion: RecomendacionLugarDto,
+    tipo: TipoAccion,
+    paradaId?: string
+  ) => {
+    const version = itinerarioActual?.itinerario.version;
+
+    if (!version || aplicando) {
+      return;
+    }
+
+    setAplicando(true);
+
+    try {
+      await aplicarAccionAsistente(viaje.id, {
+        tipo,
+        numeroDia,
+        lugarId: recomendacion.lugarId,
+        paradaId: paradaId ?? null,
+        turno: null,
+        version,
+      });
+
+      await onItinerarioActualizado();
+
+      setMensajes((prev) => [
+        ...prev,
+        {
+          id: crearIdMensaje(),
+          rol: "assistant",
+          contenido:
+            tipo === "AgregarParada"
+              ? `Listo, agregué “${recomendacion.nombre}” al día ${numeroDia}.`
+              : `Listo, reemplacé una parada por “${recomendacion.nombre}”.`,
+        },
+      ]);
+    } catch (error) {
+      const mensaje =
+        error instanceof Error
+          ? error.message
+          : "No pude aplicar el cambio en el itinerario.";
+
+      setMensajes((prev) => [
+        ...prev,
+        {
+          id: crearIdMensaje(),
+          rol: "assistant",
+          contenido: mensaje,
+          advertencia: "No se modificó el itinerario.",
+        },
+      ]);
+    } finally {
+      setAplicando(false);
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
   };
+
+  const paradasActuales = itinerarioActual?.paradas ?? [];
+  const puedeAplicar = Boolean(itinerarioActual?.itinerario.version);
 
   return (
     <div className="chat-tab">
@@ -190,6 +324,13 @@ export function ChatTab({ viaje, numeroDia }: ChatTabProps) {
                     <RecomendacionCard
                       key={recomendacion.lugarId}
                       recomendacion={recomendacion}
+                      numeroDia={numeroDia}
+                      puedeAplicar={
+                        Boolean(mensaje.puedeAplicar) && puedeAplicar
+                      }
+                      paradasActuales={paradasActuales}
+                      aplicando={aplicando}
+                      onAplicar={handleAplicar}
                     />
                   ))}
                 </div>

@@ -251,3 +251,48 @@
 .chat-tab__input:disabled {
   opacity: 0.7;
 }
+
+.chat-recomendacion__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.55rem;
+}
+
+.chat-recomendacion__btn,
+.chat-recomendacion__select {
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.55rem;
+}
+
+.chat-recomendacion__btn {
+  border: none;
+  background-color: var(--primary);
+  color: white;
+  cursor: pointer;
+}
+
+.chat-recomendacion__btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.chat-recomendacion__btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.chat-recomendacion__select {
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  max-width: 100%;
+}
+
+.chat-recomendacion__select:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
