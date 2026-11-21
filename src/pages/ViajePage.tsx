@@ -127,6 +127,34 @@ function ViajePage() {
     };
   }, [id]);
 
+  const recargarViaje = async () => {
+    if (!id) return;
+
+    const viajeData = await getViaje(id);
+    setViaje(viajeData);
+
+    if (viajeData.lugarPartidaId != null) {
+      const lugarPartidaData = await getLugar(viajeData.lugarPartidaId);
+      setLugarPartida(lugarPartidaData);
+    }
+
+    const itinerarios = viajeData.itinerarios ?? [];
+    const lugarIds = [
+      ...new Set(
+        itinerarios.flatMap((itinerario) =>
+          itinerario.paradas.map((parada) => parada.lugarId)
+        )
+      ),
+    ];
+
+    if (lugarIds.length > 0) {
+      const lugaresData = await getLugaresDetalle(lugarIds);
+      setLugares(lugaresData);
+    } else {
+      setLugares([]);
+    }
+  };
+
   if (loading) {
     const isGenerating = viaje?.estado === "Borrador" || viaje?.estado === "EnPlanificacion";
     return (
@@ -179,6 +207,7 @@ function ViajePage() {
       viaje={viaje}
       itinerariosViewModel={itinerariosViewModel}
       lugarPartida={lugarPartida}
+      onItinerarioActualizado={recargarViaje}
     />
     </>
   )

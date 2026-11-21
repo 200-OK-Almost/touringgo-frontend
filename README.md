@@ -2,6 +2,10 @@
 
 Catálogo de puntos de interés de CABA. Consume únicamente el **API Gateway** (nunca el microservicio directo).
 
+## Documentación
+
+- [Asistente RAG del viaje](docs/asistente-rag-chat.md)
+
 ## Stack
 
 - React 19 + Vite + TypeScript

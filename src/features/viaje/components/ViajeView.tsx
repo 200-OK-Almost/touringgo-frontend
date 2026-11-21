@@ -16,12 +16,14 @@ export interface ViajeViewProps {
   viaje: ViajeDto;
   itinerariosViewModel: ItinerarioViewModel[] | null;
   lugarPartida: LugarDetalleDto | null;
+  onItinerarioActualizado: () => Promise<void>;
 }
 
 export function ViajeView({
   viaje,
   itinerariosViewModel,
   lugarPartida,
+  onItinerarioActualizado,
 }: ViajeViewProps) {
   const [diaActual, setDiaActual] = useState(1);
   const [activeTab, setActiveTab] = useState<PanelTab>("chat");
@@ -96,7 +98,14 @@ export function ViajeView({
         return <AjustesTab viaje={viaje} />;
       case "chat":
       default:
-        return <ChatTab viaje={viaje} />;
+        return (
+          <ChatTab
+            viaje={viaje}
+            numeroDia={diaSeleccionado}
+            itinerarioActual={itinerarioActual}
+            onItinerarioActualizado={onItinerarioActualizado}
+          />
+        );
     }
   };
 
