@@ -60,27 +60,65 @@ function ModalSkeleton() {
 
 interface ModalContentProps {
   data: LugarDetalleDto;
+  onClose: () => void;
 }
 
-function ModalContent({ data }: ModalContentProps) {
+function ModalContent({ data, onClose }: ModalContentProps) {
+  const [copiado, setCopiado] = useState(false);
+  const [fotoActiva, setFotoActiva] = useState<string | null>(null);
+
   const puntuacion = formatearPuntuacion(data.puntuacion);
   const ubicacion = data.subzona ? `${barrioLabel(data.barrio)} • ${data.subzona}` : barrioLabel(data.barrio);
   const portada = data.fotos.find((f) => f.esPortada) ?? data.fotos[0];
+  const urlFotoMostrar = fotoActiva ?? portada?.url;
   const resenas = `${data.cantidadResenas} ${data.cantidadResenas === 1 ? "reseña" : "reseñas"}`;
+
+  const handleCopiarDireccion = async () => {
+    try {
+      await navigator.clipboard.writeText(data.direccion);
+      setCopiado(true);
+      setTimeout(() => setCopiado(false), 2000);
+    } catch {
+      // fallback
+    }
+  };
+
+  const urlGoogleMaps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    `${data.nombre}, ${data.direccion}`
+  )}`;
 
   return (
     <>
       <div className="modal__hero">
-        <SmartImage src={portada?.url} alt={data.nombre} />
+        <SmartImage src={urlFotoMostrar} alt={data.nombre} />
         <div className="modal__hero-overlay" />
         <div className="modal__hero-content">
           <div className="modal__hero-badges">
             <span className="modal__badge modal__badge--barrio">{ubicacion.toUpperCase()}</span>
             <span className="modal__badge modal__badge--precio">{precioLabel(data.nivelPrecio)}</span>
+            {data.tipoLugar === "Alojamiento" && (
+              <span className="modal__badge modal__badge--hotel">HOTEL / ALOJAMIENTO</span>
+            )}
           </div>
           <h2 className="modal__title">{data.nombre}</h2>
         </div>
       </div>
+
+      {data.fotos && data.fotos.length > 1 && (
+        <div className="modal__gallery">
+          {data.fotos.map((f, i) => (
+            <button
+              key={f.id || i}
+              type="button"
+              className={`modal__gallery-thumb ${urlFotoMostrar === f.url ? "modal__gallery-thumb--active" : ""}`}
+              onClick={() => setFotoActiva(f.url)}
+              aria-label={`Ver foto ${i + 1} de ${data.nombre}`}
+            >
+              <img src={f.url} alt={`${data.nombre} ${i + 1}`} loading="lazy" />
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="modal__body">
         <div className="modal__infobar">
@@ -95,7 +133,10 @@ function ModalContent({ data }: ModalContentProps) {
 
         <section className="modal__section">
           <h3 className="modal__section-title">ACERCA DEL LUGAR</h3>
-          <p className="modal__text">{data.descripcion ?? "Sin descripción disponible."}</p>
+          <p className="modal__text">
+            {data.descripcion ??
+              `Lugar emblemático ubicado en el barrio de ${barrioLabel(data.barrio)}, Buenos Aires.`}
+          </p>
         </section>
 
         <section className="modal__section">
@@ -104,18 +145,33 @@ function ModalContent({ data }: ModalContentProps) {
             <PinIcon />
             {data.direccion}
           </p>
-          <p className="modal__coords">
-            Coordenadas: {data.latitud}, {data.longitud}
-          </p>
+          <div className="modal__actions">
+            <a
+              href={urlGoogleMaps}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="modal__btn modal__btn--primary"
+            >
+              <PinIcon /> Abrir en Google Maps ↗
+            </a>
+            <button
+              type="button"
+              onClick={handleCopiarDireccion}
+              className="modal__btn modal__btn--secondary"
+            >
+              {copiado ? "✓ ¡Copiado!" : "📋 Copiar dirección"}
+            </button>
+          </div>
         </section>
 
         <section className="modal__section">
           <h3 className="modal__section-title">CARACTERÍSTICAS</h3>
           <div className="modal__chips">
-            {data.aptoNinos && <span className="feat-chip">Apto niños</span>}
-            {data.accesibleMovilidadReducida && <span className="feat-chip">Movilidad reducida</span>}
-            {data.esBajoTecho && <span className="feat-chip">Bajo techo (Modo lluvia)</span>}
-            {data.esAlAireLibre && <span className="feat-chip">Al aire libre</span>}
+            {data.tipoLugar === "Alojamiento" && <span className="feat-chip feat-chip--cat">🏨 Alojamiento</span>}
+            {data.aptoNinos && <span className="feat-chip">👶 Apto niños</span>}
+            {data.accesibleMovilidadReducida && <span className="feat-chip">♿ Movilidad reducida</span>}
+            {data.esBajoTecho && <span className="feat-chip">🌧️ Bajo techo (Modo lluvia)</span>}
+            {data.esAlAireLibre && <span className="feat-chip">🌳 Al aire libre</span>}
             {data.categorias.map((c) => (
               <span key={c.id} className="feat-chip feat-chip--cat">
                 {c.nombre}
@@ -126,8 +182,12 @@ function ModalContent({ data }: ModalContentProps) {
       </div>
 
       <footer className="modal__footer">
-        <span>ID: {data.id}</span>
-        <span>Origen: {origenLabel(data.origen)}</span>
+        <span className="modal__footer-meta">
+          {origenLabel(data.origen)} • CABA
+        </span>
+        <button type="button" onClick={onClose} className="modal__footer-close">
+          Cerrar ficha
+        </button>
       </footer>
     </>
   );
@@ -182,7 +242,7 @@ function PlaceDetail({ lugarId, onRetry, onClose }: PlaceDetailProps) {
     );
   }
 
-  return <ModalContent data={state.data} />;
+  return <ModalContent data={state.data} onClose={onClose} />;
 }
 
 export default function PlaceModal({ lugarId, onClose }: PlaceModalProps) {

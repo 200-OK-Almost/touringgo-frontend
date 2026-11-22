@@ -1,5 +1,5 @@
 import type { LugarResumenDto } from "../api/types";
-import { barrioLabel, formatearPuntuacion, precioLabel } from "../lib/format";
+import { barrioLabel, categoriaLabel, formatearPuntuacion, precioLabel } from "../lib/format";
 import SmartImage from "./SmartImage";
 import "./PlaceCard.css";
 
@@ -30,7 +30,11 @@ function PinIcon() {
 export default function PlaceCard({ lugar, onClick }: PlaceCardProps) {
   const puntuacion = formatearPuntuacion(lugar.puntuacion);
   const ubicacion = lugar.subzona ? `${barrioLabel(lugar.barrio)} • ${lugar.subzona}` : barrioLabel(lugar.barrio);
-  const categoria = lugar.categorias[0];
+  const categoria = lugar.categorias[0]
+    ? categoriaLabel(lugar.categorias[0])
+    : lugar.tipoLugar === "Alojamiento"
+    ? "Alojamiento / Hotel"
+    : "Punto de interés";
 
   return (
     <button type="button" className="place-card" onClick={onClick}>
@@ -56,11 +60,15 @@ export default function PlaceCard({ lugar, onClick }: PlaceCardProps) {
         </p>
 
         <div className="place-card__chips">
-          {lugar.aptoNinos && <span className="attr-chip attr-chip--ninos">Niños</span>}
-          {lugar.accesibleMovilidadReducida && (
-            <span className="attr-chip attr-chip--accesible">Accesible</span>
+          {lugar.tipoLugar === "Alojamiento" && (
+            <span className="attr-chip attr-chip--alojamiento">🏨 Alojamiento</span>
           )}
-          {lugar.esBajoTecho && <span className="attr-chip attr-chip--bajotecho">Bajo techo</span>}
+          {lugar.aptoNinos && <span className="attr-chip attr-chip--ninos">👶 Niños</span>}
+          {lugar.accesibleMovilidadReducida && (
+            <span className="attr-chip attr-chip--accesible">♿ Accesible</span>
+          )}
+          {lugar.esBajoTecho && <span className="attr-chip attr-chip--bajotecho">🌧️ Bajo techo</span>}
+          {lugar.esAlAireLibre && <span className="attr-chip attr-chip--aire">🌳 Aire libre</span>}
         </div>
 
         <span className="place-card__link">Ver detalle →</span>

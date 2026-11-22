@@ -1,9 +1,15 @@
 import { useEffect, useRef, useState } from "react";
+import type { TipoLugar } from "../api/types";
 import { useDebouncedValue } from "../hooks/useDebounce";
-import { BARRIOS, CATEGORIAS, type FiltroPanel } from "../lib/filtros";
+import { BARRIOS, CATEGORIAS, type ChipOption, type FiltroPanel } from "../lib/filtros";
 import ChipGroup from "./ChipGroup";
 import ToggleFilter from "./ToggleFilter";
 import "./FilterPanel.css";
+
+const TIPOS_LUGAR: readonly ChipOption<TipoLugar>[] = [
+  { value: "PuntoInteres", label: "Puntos de interés" },
+  { value: "Alojamiento", label: "Hoteles & Alojamientos" },
+];
 
 interface FilterPanelProps {
   filtro: FiltroPanel;
@@ -69,6 +75,17 @@ export default function FilterPanel({ filtro, onChange, total }: FilterPanelProp
       </div>
 
       <div className="filter-panel__group">
+        <span className="filter-panel__section-label">TIPO DE LUGAR</span>
+        <ChipGroup
+          variant="ink"
+          allLabel="Todos"
+          options={TIPOS_LUGAR}
+          value={filtro.tipoLugar ?? null}
+          onChange={(tipo) => onChange({ ...filtro, tipoLugar: tipo ?? undefined })}
+        />
+      </div>
+
+      <div className="filter-panel__group">
         <span className="filter-panel__section-label">BARRIO DE CABA</span>
         <ChipGroup
           variant="ink"
@@ -121,7 +138,7 @@ export default function FilterPanel({ filtro, onChange, total }: FilterPanelProp
         </div>
 
         <span className="filter-panel__count">
-          Mostrando {total} {total === 1 ? "lugar" : "lugares"}
+          {total.toLocaleString()} {total === 1 ? "lugar encontrado" : "lugares encontrados"}
         </span>
       </div>
     </section>
