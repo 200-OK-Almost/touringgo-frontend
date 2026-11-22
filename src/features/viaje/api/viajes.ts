@@ -50,3 +50,9 @@ export function construirViajeUpdateDto(viaje: ViajeDto, titulo: string): ViajeU
     parametrosFamilia: viaje.parametrosFamilia,
   }
 }
+
+export function unirseViaje(codigoInvitacion: string) {
+  return http.post<ViajeDto>(`${VIAJES_BASE}/unirse`, {
+    codigoInvitacion
+  })
+}
