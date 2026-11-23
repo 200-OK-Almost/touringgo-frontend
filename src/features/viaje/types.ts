@@ -37,6 +37,7 @@ export type ViajeDto = {
   longitudPartida?: number
   codigoInvitacion: string
   creadoPorUsuarioId: string
+  puedeEditar?: boolean
   fechaCreacion: string
   fechaActualizacion: string
   categoriaCodigos: CategoriaCodigo[]

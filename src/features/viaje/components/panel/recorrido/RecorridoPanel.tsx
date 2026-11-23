@@ -1,5 +1,5 @@
 import type { BarrioPorDia, DiaViaje } from "../../../lib/diasViaje";
-import type { ItinerarioViewModel } from "../../../types";
+import type { ItinerarioViewModel, ParadaViewModel } from "../../../types";
 import type { LugarDetalleDto } from "../../../../../api/types";
 import DiaSelector from "../../DiaSelector";
 import DiaRecorrido from "../../DiaRecorrido";
@@ -13,6 +13,8 @@ interface RecorridoPanelProps {
   itinerarioActual: ItinerarioViewModel | null;
   lugarPartida: LugarDetalleDto | null;
   barrioDiaActual?: BarrioPorDia
+  puedeEditar?: boolean
+  onEliminarParada?: (parada: ParadaViewModel) => Promise<void>
 }
 
 export function RecorridoPanel({
@@ -21,7 +23,9 @@ export function RecorridoPanel({
   onDiaChange,
   itinerarioActual,
   lugarPartida,
-  barrioDiaActual
+  barrioDiaActual,
+  puedeEditar = false,
+  onEliminarParada,
 }: RecorridoPanelProps) {
   return (
     <section className="viaje-recorrido">
@@ -47,6 +51,8 @@ export function RecorridoPanel({
             <DiaRecorrido
               paradasViewModel={itinerarioActual?.paradas ?? null}
               lugarPartida={lugarPartida}
+              puedeEditar={puedeEditar}
+              onEliminarParada={onEliminarParada}
             />
           </div>
         </div>

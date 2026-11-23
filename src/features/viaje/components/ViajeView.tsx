@@ -7,10 +7,11 @@ import AjustesTab from "./panel/tabs/AjustesTab";
 import RecorridoPanel from "./panel/recorrido/RecorridoPanel";
 import "./ViajeView.css";
 import { useState } from "react"
-import type { ItinerarioViewModel, ViajeDto } from "../types"
+import type { ItinerarioViewModel, ParadaViewModel, ViajeDto } from "../types"
 import ViajeMap from "./ViajeMap"
 import type { LugarDetalleDto } from "../../../api/types"
 import { construirDiasViaje, obtenerBarriosPorDia } from "../lib/diasViaje"
+import { eliminarParada } from "../api/viajes"
 
 export interface ViajeViewProps {
   viaje: ViajeDto;
@@ -67,6 +68,25 @@ export function ViajeView({
       (i) => i.itinerario.numeroDia === diaSeleccionado
     ) ?? null;
 
+  const puedeEditar = viaje.puedeEditar === true
+    && Boolean(itinerarioActual?.itinerario.version);
+
+  const handleEliminarParada = async (parada: ParadaViewModel) => {
+    const version = itinerarioActual?.itinerario.version;
+
+    if (!version || !itinerarioActual) {
+      throw new Error("No se pudo determinar la versión del itinerario.");
+    }
+
+    await eliminarParada(
+      viaje.id,
+      itinerarioActual.itinerario.numeroDia,
+      parada.parada.id,
+      version
+    );
+    await onItinerarioActualizado();
+  };
+
   // Calculamos el ancho ocupado por los paneles para el offset del mapa en desktop
   const primaryWidth = isChatOpen ? (isCompactPanel ? 420 : 480) : 54;
   const secondaryWidth = isCompactPanel ? 360 : 420;
@@ -87,6 +107,8 @@ export function ViajeView({
           itinerarioActual={itinerarioActual}
           lugarPartida={lugarPartida}
           barrioDiaActual={barrioDiaActual}
+          puedeEditar={puedeEditar}
+          onEliminarParada={handleEliminarParada}
         />
       );
     }
@@ -146,6 +168,8 @@ export function ViajeView({
             onDiaChange={setDiaActual}
             itinerarioActual={itinerarioActual}
             lugarPartida={lugarPartida}
+            puedeEditar={puedeEditar}
+            onEliminarParada={handleEliminarParada}
           />
         }
       />

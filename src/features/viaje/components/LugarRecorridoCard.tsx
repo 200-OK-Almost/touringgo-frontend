@@ -1,14 +1,18 @@
+import { useState } from "react"
 import { PinIcon } from "../../../components/SelectablePlaceCard"
 import SmartImage from "../../../components/SmartImage"
 import type { ParadaViewModel } from "../types";
 import "./LugarRecorridoCard.css"
-import { IoCalendarOutline, IoStar, IoTimeOutline } from "react-icons/io5";
+import { IoCalendarOutline, IoStar, IoTimeOutline, IoTrashOutline } from "react-icons/io5";
 import type { LugarDetalleDto } from "../../../api/types";
 import { formatearPuntuacion } from "../../../lib/format";
+import ConfirmarEliminarParadaModal from "./ConfirmarEliminarParadaModal";
 
 export interface LugarRecorridoCardProps {
   paradaViewModel?: ParadaViewModel;
   lugarPartida?: LugarDetalleDto | null
+  puedeEditar?: boolean
+  onEliminar?: (parada: ParadaViewModel) => Promise<void>
 }
 
 function formatearHora(hora: string | null): string {
@@ -27,14 +31,53 @@ function formatearDuracion(duracion: number | null): string {
 
 function LugarRecorridoCard({
   paradaViewModel,
-  lugarPartida = null
+  lugarPartida = null,
+  puedeEditar = false,
+  onEliminar,
 } : LugarRecorridoCardProps) {
-  
+  const [confirmando, setConfirmando] = useState(false);
+  const [eliminando, setEliminando] = useState(false);
+  const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
+
   const lugar = lugarPartida ? lugarPartida : paradaViewModel?.lugar
   const puntuacion = formatearPuntuacion(lugar?.puntuacion ?? null);
   const categoria = lugar?.categorias?.[0]?.nombre;
+  const puedeQuitar = Boolean(paradaViewModel && puedeEditar && onEliminar);
+
+  const abrirConfirmacion = () => {
+    setErrorEliminar(null);
+    setConfirmando(true);
+  };
+
+  const cerrarConfirmacion = () => {
+    if (!eliminando) {
+      setConfirmando(false);
+      setErrorEliminar(null);
+    }
+  };
+
+  const confirmarEliminacion = async () => {
+    if (!paradaViewModel || !onEliminar) return;
+
+    setEliminando(true);
+    setErrorEliminar(null);
+
+    try {
+      await onEliminar(paradaViewModel);
+      setConfirmando(false);
+    } catch (error) {
+      setErrorEliminar(
+        error instanceof Error
+          ? error.message
+          : "No se pudo quitar la parada."
+      );
+    } finally {
+      setEliminando(false);
+    }
+  };
 
   return (
+    <>
     <div className="lugar-recorrido-card">
 
       <div className="lugar-recorrido-card__body">
@@ -82,6 +125,17 @@ function LugarRecorridoCard({
               {formatearDuracion(paradaViewModel.parada.duracionMinutos)}
             </p>
           )}
+          {puedeQuitar && (
+            <button
+              type="button"
+              className="lugar-recorrido-card__quitar"
+              onClick={abrirConfirmacion}
+              aria-label={`Quitar ${lugar?.nombre ?? "parada"}`}
+            >
+              <IoTrashOutline className="lugar-recorrido-card__quitar-icon" />
+              Quitar
+            </button>
+          )}
           {/* {paradaViewModel &&
             <div className="place-card__chips">
             {lugar?.categorias && 
@@ -100,6 +154,18 @@ function LugarRecorridoCard({
       </div>
     </div>
 
+    {puedeQuitar && paradaViewModel && (
+      <ConfirmarEliminarParadaModal
+        isOpen={confirmando}
+        nombre={lugar?.nombre ?? "esta parada"}
+        turno={paradaViewModel.parada.turno}
+        eliminando={eliminando}
+        error={errorEliminar}
+        onClose={cerrarConfirmacion}
+        onConfirm={confirmarEliminacion}
+      />
+    )}
+    </>
   )
 }
 export default LugarRecorridoCard
