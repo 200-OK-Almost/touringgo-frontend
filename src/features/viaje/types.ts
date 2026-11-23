@@ -251,3 +251,11 @@ export type AsistenteCapacidadesDto = {
   limites: AsistenteLimitesDto
 }
 
+export type MiembroViajeDto = {
+  usuarioId: string
+  nombre: string
+  fotoUrl: string
+  rol: RolMiembro
+  fechaIncorporacion: string 
+}
+export type RolMiembro = "Administrador" | "Miembro"
