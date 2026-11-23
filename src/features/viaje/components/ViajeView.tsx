@@ -7,10 +7,11 @@ import AjustesTab from "./panel/tabs/AjustesTab";
 import RecorridoPanel from "./panel/recorrido/RecorridoPanel";
 import "./ViajeView.css";
 import { useState } from "react"
-import type { ItinerarioViewModel, ViajeDto } from "../types"
+import type { ItinerarioViewModel, ParadaViewModel, ReferenciaParada, ViajeDto } from "../types"
 import ViajeMap from "./ViajeMap"
 import type { LugarDetalleDto } from "../../../api/types"
 import { construirDiasViaje, obtenerBarriosPorDia } from "../lib/diasViaje"
+import { eliminarParada } from "../api/viajes"
 
 export interface ViajeViewProps {
   viaje: ViajeDto;
@@ -29,6 +30,7 @@ export function ViajeView({
   const [activeTab, setActiveTab] = useState<PanelTab>("chat");
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isRecorridoOpen, setIsRecorridoOpen] = useState(true);
+  const [referenciaParada, setReferenciaParada] = useState<ReferenciaParada | null>(null);
 
   const isMobile = useMediaQuery("(max-width: 900px)");
   const isCompactPanel = useMediaQuery("(min-width: 901px) and (max-width: 1100px)");
@@ -67,6 +69,38 @@ export function ViajeView({
       (i) => i.itinerario.numeroDia === diaSeleccionado
     ) ?? null;
 
+  const puedeEditar = viaje.puedeEditar === true
+    && Boolean(itinerarioActual?.itinerario.version);
+
+  const handleEliminarParada = async (parada: ParadaViewModel) => {
+    const version = itinerarioActual?.itinerario.version;
+
+    if (!version || !itinerarioActual) {
+      throw new Error("No se pudo determinar la versión del itinerario.");
+    }
+
+    await eliminarParada(
+      viaje.id,
+      itinerarioActual.itinerario.numeroDia,
+      parada.parada.id,
+      version
+    );
+
+    setReferenciaParada({
+      lugarId: parada.lugar.id,
+      nombre: parada.lugar.nombre,
+      turno: parada.parada.turno,
+      numeroDia: itinerarioActual.itinerario.numeroDia,
+    });
+
+    await onItinerarioActualizado();
+  };
+
+  const handleDiaChange = (dia: number) => {
+    setDiaActual(dia);
+    setReferenciaParada(null);
+  };
+
   // Calculamos el ancho ocupado por los paneles para el offset del mapa en desktop
   const primaryWidth = isChatOpen ? (isCompactPanel ? 420 : 480) : 54;
   const secondaryWidth = isCompactPanel ? 360 : 420;
@@ -83,10 +117,12 @@ export function ViajeView({
         <RecorridoPanel
           dias={dias}
           diaSeleccionado={diaSeleccionado}
-          onDiaChange={setDiaActual}
+          onDiaChange={handleDiaChange}
           itinerarioActual={itinerarioActual}
           lugarPartida={lugarPartida}
           barrioDiaActual={barrioDiaActual}
+          puedeEditar={puedeEditar}
+          onEliminarParada={handleEliminarParada}
         />
       );
     }
@@ -103,6 +139,8 @@ export function ViajeView({
             viaje={viaje}
             numeroDia={diaSeleccionado}
             itinerarioActual={itinerarioActual}
+            referenciaParada={referenciaParada}
+            onReferenciaUsada={() => setReferenciaParada(null)}
             onItinerarioActualizado={onItinerarioActualizado}
           />
         );
@@ -143,9 +181,11 @@ export function ViajeView({
             dias={dias}
             diaSeleccionado={diaSeleccionado}
             barrioDiaActual={barrioDiaActual}
-            onDiaChange={setDiaActual}
+            onDiaChange={handleDiaChange}
             itinerarioActual={itinerarioActual}
             lugarPartida={lugarPartida}
+            puedeEditar={puedeEditar}
+            onEliminarParada={handleEliminarParada}
           />
         }
       />

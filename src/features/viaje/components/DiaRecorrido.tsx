@@ -5,11 +5,15 @@ import LugarRecorridoCard from "./LugarRecorridoCard"
 interface DiaRecorridoProps {
   paradasViewModel: ParadaViewModel[] | null
   lugarPartida: LugarDetalleDto | null
+  puedeEditar?: boolean
+  onEliminarParada?: (parada: ParadaViewModel) => Promise<void>
 } 
 
 function DiaRecorrido({
   paradasViewModel,
-  lugarPartida
+  lugarPartida,
+  puedeEditar = false,
+  onEliminarParada,
 }: DiaRecorridoProps) {
 
   if (!paradasViewModel)
@@ -28,6 +32,8 @@ function DiaRecorrido({
       <LugarRecorridoCard
         key={parada.parada.id}
         paradaViewModel={parada}
+        puedeEditar={puedeEditar}
+        onEliminar={onEliminarParada}
       />
     )}
     </>
