@@ -26,8 +26,12 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   if (!response.ok) {
     let message = `Error ${response.status}`;
     try {
-      const body = (await response.json()) as { mensaje?: string; message?: string };
-      message = body?.mensaje ?? body?.message ?? message;
+      const body = (await response.json()) as {
+        mensaje?: string;
+        message?: string;
+        detail?: string;
+      };
+      message = body?.mensaje ?? body?.message ?? body?.detail ?? message;
     } catch {
       message = `Error ${response.status}`;
     }
