@@ -20,6 +20,7 @@ import {
   IoClose,
   IoLocationOutline,
   IoPaperPlane,
+  IoSparkles,
   IoStar,
 } from "react-icons/io5";
 import "./ChatTab.css";
@@ -622,8 +623,11 @@ export function ChatTab({
             onClick={handleSendMessage}
             disabled={enviando || bloqueado || !inputText.trim()}
             aria-label="Enviar mensaje"
+            title="Enviar mensaje al asistente IA"
           >
-            <IoPaperPlane />
+            <IoSparkles className="chat-tab__send-sparkle chat-tab__send-sparkle--top" aria-hidden="true" />
+            <IoPaperPlane className="chat-tab__send-plane" aria-hidden="true" />
+            <IoSparkles className="chat-tab__send-sparkle chat-tab__send-sparkle--bottom" aria-hidden="true" />
           </button>
         </div>
       </div>
