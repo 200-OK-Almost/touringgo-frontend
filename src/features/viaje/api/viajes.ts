@@ -1,6 +1,6 @@
 import { http } from "../../../api/client";
 import type { ResultadoPaginadoDto } from "../../../api/types";
-import type { CrearGastoRequestDto, ItinerarioDto, MiembroViajeDto, ViajeCreateDto, ViajeDto, ViajeUpdateDto } from "../types";
+import type { CrearGastoRequestDto, EstadoGastoFiltro, FiltroGastosDto, GastoDto, ItinerarioDto, MiembroViajeDto, ViajeCreateDto, ViajeDto, ViajeUpdateDto } from "../types";
 
 const VIAJES_BASE = "/itinerarios/api/viajes";
 
@@ -64,4 +64,26 @@ export function getMiembrosViaje(viajeId: string) {
 // gastos
 export function postGasto(viajeId: string, crearGastoRequestDto: CrearGastoRequestDto) {
   return http.post(`${VIAJES_BASE}/${viajeId}/gastos`, crearGastoRequestDto)
+}
+
+function buildQuery(filtro: FiltroGastosDto): string {
+  const params = new URLSearchParams();
+
+  if (filtro.estado) params.set("estado", filtro.estado);
+  if (filtro.usuarioId) params.set("usuarioId", filtro.usuarioId);
+  if (filtro.moneda) params.set("moneda", filtro.moneda);
+  if (filtro.fechaDesde) params.set("fechaDesde", filtro.fechaDesde);
+  if (filtro.fechaHasta) params.set("fechaHasta", filtro.fechaHasta);
+
+  params.set("pagina", String(filtro.pagina ?? 1));
+  params.set("tamano", String(filtro.tamano ?? 100));
+
+  const query = params.toString();
+  return query ? `?${query}` : "";
+}
+
+export function getGastos(
+  viajeId: string, filtro: FiltroGastosDto = {}): Promise<ResultadoPaginadoDto<GastoDto>> 
+{
+  return http.get(`${VIAJES_BASE}/${viajeId}/gastos${buildQuery(filtro)}`);
 }
