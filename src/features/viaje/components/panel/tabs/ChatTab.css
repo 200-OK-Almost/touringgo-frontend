@@ -164,46 +164,17 @@
 }
 
 .chat-tab__send-btn {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border: none;
   background-color: var(--primary);
   color: white;
   cursor: pointer;
   transition: opacity 0.15s ease, transform 0.1s ease;
-}
-
-.chat-tab__send-plane {
-  width: 15px;
-  height: 15px;
-  transform: translate(1px, 1px);
-}
-
-.chat-tab__send-sparkle {
-  position: absolute;
-  color: #fde68a;
-  pointer-events: none;
-  filter: drop-shadow(0 0 2px rgba(253, 230, 138, 0.55));
-}
-
-.chat-tab__send-sparkle--top {
-  top: 4px;
-  right: 4px;
-  width: 9px;
-  height: 9px;
-}
-
-.chat-tab__send-sparkle--bottom {
-  bottom: 5px;
-  left: 5px;
-  width: 7px;
-  height: 7px;
-  opacity: 0.85;
 }
 
 .chat-tab__send-btn:hover {
