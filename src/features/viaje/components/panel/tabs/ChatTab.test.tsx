@@ -200,6 +200,30 @@ beforeEach(() => {
 });
 
 describe("ChatTab", () => {
+  it("muestra que Turi está pensando mientras espera la respuesta", async () => {
+    let resolver: ((respuesta: AsistenteResponseDto) => void) | undefined;
+    enviarMensajeMock.mockReturnValue(
+      new Promise<AsistenteResponseDto>((resolve) => {
+        resolver = resolve;
+      })
+    );
+
+    renderChat();
+    await enviarTexto("cafe");
+
+    expect(
+      await screen.findByText("Turi está pensando...")
+    ).toBeInTheDocument();
+
+    resolver?.(crearRespuesta());
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText("Turi está pensando...")
+      ).not.toBeInTheDocument();
+    });
+  });
+
   it("envía el mensaje y muestra recomendaciones", async () => {
     enviarMensajeMock.mockResolvedValue(
       crearRespuesta({ advertencia: "Usé el catálogo filtrado." })

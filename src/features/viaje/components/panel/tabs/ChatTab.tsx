@@ -580,7 +580,7 @@ export function ChatTab({
         {enviando && (
           <div className="chat-message ai-message chat-message--loading">
             <div className="chat-message__body">
-              <p>Turi está buscando lugares...</p>
+              <p>Turi está pensando...</p>
             </div>
           </div>
         )}
