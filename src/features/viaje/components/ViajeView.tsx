@@ -11,12 +11,14 @@ import type { ItinerarioViewModel, MiembroViajeDto, ViajeDto } from "../types"
 import ViajeMap from "./ViajeMap"
 import type { LugarDetalleDto } from "../../../api/types"
 import { construirDiasViaje, obtenerBarriosPorDia } from "../lib/diasViaje"
+import GastosTab from "./panel/tabs/GastosTab";
 
 export interface ViajeViewProps {
   viaje: ViajeDto;
   itinerariosViewModel: ItinerarioViewModel[] | null;
   lugarPartida: LugarDetalleDto | null;
   miembros: MiembroViajeDto[]
+  miembrosPorId?: Map<string, MiembroViajeDto>
   onItinerarioActualizado: () => Promise<void>;
 }
 
@@ -25,6 +27,7 @@ export function ViajeView({
   itinerariosViewModel,
   lugarPartida,
   miembros,
+  miembrosPorId,
   onItinerarioActualizado,
 }: ViajeViewProps) {
   const [diaActual, setDiaActual] = useState(1);
@@ -94,6 +97,8 @@ export function ViajeView({
     }
 
     switch (currentTab) {
+      case "gastos":
+        return <GastosTab viaje={viaje} miembros={miembros} miembrosPorId={miembrosPorId}/>;
       case "miembros":
         return <MiembrosTab viaje={viaje} miembros={miembros}/>;
       case "ajustes":

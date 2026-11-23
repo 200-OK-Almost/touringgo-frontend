@@ -259,3 +259,88 @@ export type MiembroViajeDto = {
   fechaIncorporacion: string 
 }
 export type RolMiembro = "Administrador" | "Miembro"
+
+export type GastoDto = {
+  id : string
+  viajeId : string
+  concepto : string
+  monto : number
+  moneda : TipoMoneda
+  pagadoPorMiembroId : string
+  registradoPorMiembroId : string
+  fechaGasto : string
+  liquidacionId? : string
+  liquidado : boolean
+  divisiones : DivisionGastoDto[]
+}
+export type TipoMoneda = "ARS" | "USD"
+
+export type DivisionGastoDto = {
+  usuarioId: string
+  montoAsignado: number
+}
+
+export type TransferenciaLiquidacionDto = {
+  deParticipanteId: string
+  aParticipanteId: string
+  monto: number
+}
+
+export type LiquidarGastosRequestDto = {
+  gastoIds: string[]
+}
+export type LiquidacionDto = {
+  id : string
+  viajeId : string
+  realizadaPorUsuarioId : string
+  moneda : TipoMoneda
+  fechaLiquidacion : string
+  gastoIds : string[]
+  transferencias: TransferenciaLiquidacionDto[]
+}
+
+export type FiltroGastosDto = {
+  estado?: EstadoGastoFiltro 
+  usuarioId?: string
+  moneda?: TipoMoneda
+  fechaDesde?: string 
+  fechaHasta?: string 
+  pagina?: number
+  tamano?: number
+}
+
+export type EstadoGastoFiltro = 
+ | "Todos"
+ | "Pendientes"
+ | "Liquidados"
+
+export type CrearGastoRequestDto = {
+	concepto: string 
+	monto: number
+	moneda: TipoMoneda
+	pagadoPorUsuarioId: string
+	fechaGasto: string
+	ParticipantesIds: string[]
+}
+
+export type ActualizarGastoRequestDto = {
+	concepto: string 
+	monto: number
+	moneda: TipoMoneda
+	pagadoPorMiembroId: string
+	fechaGasto: string
+	ParticipantesIds: string[]
+}
+
+export type BalanceParticipanteDto = {
+  usuarioId: string
+  totalPagado: number
+  totalAsignado: number
+  balanceNeto: number
+}
+
+export type BalanceGastosDto = {
+  biajeId: string 
+  moneda: TipoMoneda
+  balances: string[]
+}

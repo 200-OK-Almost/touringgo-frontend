@@ -3,7 +3,7 @@ import "./DiaSelector.css";
 import "./panel/ViajePanel.css"
 import "./panel/PanelSidebarNav.css"
 
-import { IoChatbubblesOutline, IoMapOutline, IoPeopleOutline, IoSettingsOutline } from "react-icons/io5";
+import { IoChatbubblesOutline, IoMapOutline, IoPeopleOutline, IoSettingsOutline, IoWalletOutline } from "react-icons/io5";
 import { LugarRecorridoCardSkeleton } from "./LugarRecorridoCardSkeleton";
 import { useMediaQuery } from "../../../hooks/useMediaQuery";
 
@@ -172,6 +172,9 @@ export function ViajeViewSkeleton({ isGenerating = false }: ViajeViewSkeletonPro
               </div>
               <div className="panel-sidebar-nav__btn">
                 <IoPeopleOutline className="panel-sidebar-nav__icon" />
+              </div>
+              <div className="panel-sidebar-nav__btn">
+                <IoWalletOutline className="panel-sidebar-nav__icon" />
               </div>
             </div>
             <div className="panel-sidebar-nav__bottom">

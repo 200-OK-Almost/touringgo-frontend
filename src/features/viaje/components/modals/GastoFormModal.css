@@ -1,0 +1,210 @@
+.gasto-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  padding: 1rem;
+}
+
+.gasto-form__alert-error {
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--border-radius, 8px);
+  background-color: var(--danger-bg-subtle, #fee2e2);
+  color: var(--danger-text, #991b1b);
+  border: 1px solid var(--danger-border-subtle, #fca5a5);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.gasto-form__row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.gasto-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.gasto-form__field--flex-1 {
+  flex: 1;
+}
+
+.gasto-form__field--flex-2 {
+  flex: 2;
+}
+
+.gasto-form__label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.gasto-form__input,
+.gasto-form__select {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius, 8px);
+  background-color: var(--bg);
+  color: var(--text);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.gasto-form__input:focus,
+.gasto-form__select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+}
+
+.gasto-form__input:disabled,
+.gasto-form__select:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.gasto-form__participantes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gasto-form__select-all-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.gasto-form__select-all-btn:hover {
+  opacity: 0.8;
+}
+
+.gasto-form__multiselect-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius, 8px);
+  padding: 0.5rem;
+  background-color: var(--surface, #f8fafc);
+}
+
+.gasto-form__checkbox-card {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  user-select: none;
+}
+
+.gasto-form__checkbox-card:hover {
+  background-color: rgba(15, 118, 110, 0.06);
+}
+
+.gasto-form__checkbox-card.is-selected {
+  background-color: rgba(15, 118, 110, 0.1);
+}
+
+.gasto-form__checkbox-card input[type="checkbox"] {
+  accent-color: var(--primary);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.gasto-form__avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.gasto-form__avatar-placeholder {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.gasto-form__member-name {
+  font-size: 0.875rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.gasto-form__split-preview {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.gasto-form__empty-text {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.gasto-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.gasto-form__btn {
+  padding: 0.55rem 1.25rem;
+  border-radius: var(--border-radius, 8px);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: none;
+}
+
+.gasto-form__btn--cancel {
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.gasto-form__btn--cancel:hover {
+  background-color: var(--surface, #f8fafc);
+  color: var(--text);
+}
+
+.gasto-form__btn--submit {
+  background-color: var(--primary);
+  color: #ffffff;
+}
+
+.gasto-form__btn--submit:hover {
+  opacity: 0.9;
+}
+
+.gasto-form__btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

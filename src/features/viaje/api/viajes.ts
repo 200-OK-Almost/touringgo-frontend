@@ -1,6 +1,6 @@
 import { http } from "../../../api/client";
 import type { ResultadoPaginadoDto } from "../../../api/types";
-import type { ItinerarioDto, MiembroViajeDto, ViajeCreateDto, ViajeDto, ViajeUpdateDto } from "../types";
+import type { CrearGastoRequestDto, ItinerarioDto, MiembroViajeDto, ViajeCreateDto, ViajeDto, ViajeUpdateDto } from "../types";
 
 const VIAJES_BASE = "/itinerarios/api/viajes";
 
@@ -59,4 +59,9 @@ export function unirseViaje(codigoInvitacion: string) {
 
 export function getMiembrosViaje(viajeId: string) {
   return http.get<MiembroViajeDto[]>(`${VIAJES_BASE}/${viajeId}/miembros`)
+}
+
+// gastos
+export function postGasto(viajeId: string, crearGastoRequestDto: CrearGastoRequestDto) {
+  return http.post(`${VIAJES_BASE}/${viajeId}/gastos`, crearGastoRequestDto)
 }
