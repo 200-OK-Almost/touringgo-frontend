@@ -110,6 +110,13 @@ export type Turno =
   | "Tarde"
   | "Noche"
 
+export type ReferenciaParada = {
+  lugarId: string
+  nombre: string
+  turno: Turno
+  numeroDia: number
+}
+
 export type OrigenParada = 
   | "Ia"
   | "Refinamiento"
@@ -180,6 +187,7 @@ export type MensajeHistorialDto = {
 export type AsistenteRequestDto = {
   mensaje: string
   numeroDia?: number | null
+  referenciaLugarId?: string | null
   historial?: MensajeHistorialDto[]
 }
 

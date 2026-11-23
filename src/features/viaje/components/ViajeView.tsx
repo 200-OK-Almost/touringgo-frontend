@@ -7,7 +7,7 @@ import AjustesTab from "./panel/tabs/AjustesTab";
 import RecorridoPanel from "./panel/recorrido/RecorridoPanel";
 import "./ViajeView.css";
 import { useState } from "react"
-import type { ItinerarioViewModel, ParadaViewModel, ViajeDto } from "../types"
+import type { ItinerarioViewModel, ParadaViewModel, ReferenciaParada, ViajeDto } from "../types"
 import ViajeMap from "./ViajeMap"
 import type { LugarDetalleDto } from "../../../api/types"
 import { construirDiasViaje, obtenerBarriosPorDia } from "../lib/diasViaje"
@@ -30,6 +30,7 @@ export function ViajeView({
   const [activeTab, setActiveTab] = useState<PanelTab>("chat");
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isRecorridoOpen, setIsRecorridoOpen] = useState(true);
+  const [referenciaParada, setReferenciaParada] = useState<ReferenciaParada | null>(null);
 
   const isMobile = useMediaQuery("(max-width: 900px)");
   const isCompactPanel = useMediaQuery("(min-width: 901px) and (max-width: 1100px)");
@@ -84,7 +85,20 @@ export function ViajeView({
       parada.parada.id,
       version
     );
+
+    setReferenciaParada({
+      lugarId: parada.lugar.id,
+      nombre: parada.lugar.nombre,
+      turno: parada.parada.turno,
+      numeroDia: itinerarioActual.itinerario.numeroDia,
+    });
+
     await onItinerarioActualizado();
+  };
+
+  const handleDiaChange = (dia: number) => {
+    setDiaActual(dia);
+    setReferenciaParada(null);
   };
 
   // Calculamos el ancho ocupado por los paneles para el offset del mapa en desktop
@@ -103,7 +117,7 @@ export function ViajeView({
         <RecorridoPanel
           dias={dias}
           diaSeleccionado={diaSeleccionado}
-          onDiaChange={setDiaActual}
+          onDiaChange={handleDiaChange}
           itinerarioActual={itinerarioActual}
           lugarPartida={lugarPartida}
           barrioDiaActual={barrioDiaActual}
@@ -125,6 +139,8 @@ export function ViajeView({
             viaje={viaje}
             numeroDia={diaSeleccionado}
             itinerarioActual={itinerarioActual}
+            referenciaParada={referenciaParada}
+            onReferenciaUsada={() => setReferenciaParada(null)}
             onItinerarioActualizado={onItinerarioActualizado}
           />
         );
@@ -165,7 +181,7 @@ export function ViajeView({
             dias={dias}
             diaSeleccionado={diaSeleccionado}
             barrioDiaActual={barrioDiaActual}
-            onDiaChange={setDiaActual}
+            onDiaChange={handleDiaChange}
             itinerarioActual={itinerarioActual}
             lugarPartida={lugarPartida}
             puedeEditar={puedeEditar}
