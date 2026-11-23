@@ -1,5 +1,5 @@
 import {
-  IoChatbubblesOutline,
+  IoChatbubbleOutline,
   IoMapOutline,
   IoPeopleOutline,
   IoSettingsOutline,
@@ -31,12 +31,12 @@ export function PanelSidebarNav({
       <nav className="panel-sidebar-nav panel-sidebar-nav--mobile" aria-label="Navegación de secciones">
         <button
           type="button"
-          className={`panel-sidebar-nav__btn ${activeTab === "chat" ? "active" : ""}`}
+          className={`panel-sidebar-nav__btn panel-sidebar-nav__btn--chat ${activeTab === "chat" ? "active" : ""}`}
           onClick={() => onTabChange("chat")}
           title="Chat con Turi"
         >
           <span className="panel-sidebar-nav__chat-icon">
-            <IoChatbubblesOutline className="panel-sidebar-nav__icon" />
+            <IoChatbubbleOutline className="panel-sidebar-nav__icon" />
             <IoSparkles
               className="panel-sidebar-nav__ai-sparkle panel-sidebar-nav__ai-sparkle--top"
               aria-hidden="true"
@@ -46,7 +46,7 @@ export function PanelSidebarNav({
               aria-hidden="true"
             />
           </span>
-          <span>Chat</span>
+          <span className="panel-sidebar-nav__chat-label">Chat</span>
         </button>
 
         <button
@@ -87,12 +87,12 @@ export function PanelSidebarNav({
       <div className="panel-sidebar-nav__top">
         <button
           type="button"
-          className={`panel-sidebar-nav__btn ${activeTab === "chat" && isChatOpen ? "active" : ""}`}
+          className={`panel-sidebar-nav__btn panel-sidebar-nav__btn--chat ${activeTab === "chat" && isChatOpen ? "active" : ""}`}
           onClick={() => onTabChange("chat")}
           title={activeTab === "chat" && isChatOpen ? "Ocultar chat" : "Chat con Turi"}
         >
           <span className="panel-sidebar-nav__chat-icon">
-            <IoChatbubblesOutline className="panel-sidebar-nav__icon" />
+            <IoChatbubbleOutline className="panel-sidebar-nav__icon" />
             <IoSparkles
               className="panel-sidebar-nav__ai-sparkle panel-sidebar-nav__ai-sparkle--top"
               aria-hidden="true"
