@@ -7,6 +7,7 @@ import type { ResultadoPaginadoDto } from "../../../../../api/types"
 import { IoAddOutline, IoCheckmarkCircleOutline } from "react-icons/io5"
 import GastoCard from "../../GastoCard"
 import LiquidacionModal from "../../modals/LiquidacionModal"
+import GastoCardSkeleton from "../../GastoCardSkeleton"
 
 interface GastosTabProps {
   viaje: ViajeDto
@@ -108,7 +109,12 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
 
   function renderGastos() {
     if (isLoading)
-      return <p>Cargando gastos...</p>
+      return Array.from({ length: 3 }, (_, index) => (
+        <GastoCardSkeleton
+          key={index}
+          selectable={subTab === "pendientes"}
+        />
+       ));
 
     if (error)
       return <p className="gastos-tab__error">{error}</p>
@@ -137,6 +143,7 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
         onCancelDelete={handleCancelarEliminacion}
         onConfirmDelete={() => void handleEliminarGasto(gasto)}
       />
+
     )
   }
 
