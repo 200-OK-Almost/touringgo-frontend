@@ -36,10 +36,10 @@ describe("DiaSelector", () => {
 
     expect(screen.getAllByRole("button")).toHaveLength(4);
     expect(
-      screen.getByRole("button", { name: "Día 2 · mié 11/03" })
+      screen.getByRole("button", { name: "Día 2 · mié 11/03 · sin itinerario" })
     ).toHaveAttribute("aria-pressed", "true");
     expect(
-      screen.getByRole("button", { name: "Día 4 · vie 13/03" })
+      screen.getByRole("button", { name: "Día 4 · vie 13/03 · sin itinerario" })
     ).toHaveAttribute("aria-pressed", "false");
   });
 
@@ -69,6 +69,23 @@ describe("DiaSelector", () => {
     fireEvent.click(screen.getByRole("button", { name: "Día 3 · jue 12/03" }));
 
     expect(onDiaChange).toHaveBeenCalledWith(3);
+  });
+
+  it("marca los dias sin itinerario", () => {
+    render(
+      <DiaSelector
+        dias={crearDias(2)}
+        diaActual={1}
+        onDiaChange={() => undefined}
+      />
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Día 2 · mié 11/03 · sin itinerario" })
+    ).toHaveClass("dia-selector__item--sin-itinerario");
+    expect(
+      screen.getByRole("button", { name: "Día 1 · mar 10/03" })
+    ).not.toHaveClass("dia-selector__item--sin-itinerario");
   });
 
   it("omite la fecha si el viaje legacy no la tiene", () => {

@@ -65,6 +65,21 @@
   color: white;
 }
 
+.dia-selector__item--sin-itinerario {
+  border-color: var(--border);
+  border-style: dashed;
+  color: var(--text-soft);
+  opacity: 0.75;
+}
+
+.dia-selector__item--sin-itinerario.active {
+  opacity: 1;
+  border-style: solid;
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+}
+
 .dia-selector__numero {
   font-weight: 600;
 }

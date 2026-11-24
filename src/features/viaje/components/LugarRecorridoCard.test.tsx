@@ -32,6 +32,28 @@ function crearParada(): ParadaViewModel {
 }
 
 describe("LugarRecorridoCard", () => {
+  it("muestra el numero de parada", () => {
+    render(
+      <LugarRecorridoCard
+        paradaViewModel={crearParada()}
+        numero={2}
+      />
+    );
+
+    expect(screen.getByText("2")).toBeInTheDocument();
+  });
+
+  it("muestra el badge de punto de partida", () => {
+    render(
+      <LugarRecorridoCard
+        lugarPartida={crearLugar()}
+      />
+    );
+
+    expect(screen.getByText("Salida")).toBeInTheDocument();
+    expect(screen.getByText("Museo de prueba")).toBeInTheDocument();
+  });
+
   it("no muestra Quitar si el usuario no puede editar", () => {
     render(
       <LugarRecorridoCard

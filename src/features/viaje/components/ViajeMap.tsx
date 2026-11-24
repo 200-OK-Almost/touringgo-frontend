@@ -35,7 +35,7 @@ function ViajeMap({ itinerarioViewModel, panelWidth }: ViajeMapProps) {
     if (!itinerarioViewModel) {
       return (
         <div className="viaje-map-placeholder">
-          <p>Generando itinerario...</p>
+          <p>Este día todavía no tiene itinerario.</p>
         </div>
     )}
   
