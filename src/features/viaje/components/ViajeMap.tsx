@@ -4,6 +4,7 @@ import type { LatLngExpression } from "leaflet";
 import type { ItinerarioViewModel } from "../types";
 import "./ViajeMap.css"
 import MapBounds from "./MapBounds";
+import MapFocus from "./MapFocus";
 import CustomMarker from "./CustomMarker";
 import { CustomZoomControl } from "./CustomZoomControl";
 
@@ -39,6 +40,17 @@ function ViajeMap({
       return paradasPosiciones;
     }, [itinerarioViewModel]);
 
+    const posicionSeleccionada = useMemo<LatLngExpression | null>(() => {
+      if (!itinerarioViewModel || !paradaSeleccionadaId) return null;
+
+      const parada = itinerarioViewModel.paradas.find(
+        (parada) => parada.parada.id === paradaSeleccionadaId
+      );
+      if (!parada) return null;
+
+      return [parada.lugar.latitud, parada.lugar.longitud];
+    }, [itinerarioViewModel, paradaSeleccionadaId]);
+
     if (!itinerarioViewModel) {
       return (
         <div className="viaje-map-placeholder">
@@ -67,6 +79,9 @@ function ViajeMap({
           <MapBounds 
             panelWidth={panelWidth}
             positions={posiciones} 
+          />
+          <MapFocus
+            posicionSeleccionada={posicionSeleccionada}
           />
           
           {/* punto de partida */}

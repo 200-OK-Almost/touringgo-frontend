@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { PinIcon } from "../../../components/SelectablePlaceCard"
 import SmartImage from "../../../components/SmartImage"
 import type { ParadaViewModel } from "../types";
@@ -44,8 +44,17 @@ function LugarRecorridoCard({
   const [confirmando, setConfirmando] = useState(false);
   const [eliminando, setEliminando] = useState(false);
   const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
+  const tarjetaRef = useRef<HTMLDivElement>(null);
   const esPartida = Boolean(lugarPartida);
   const esSeleccionable = Boolean(onSeleccionar);
+
+  useEffect(() => {
+    if (!selected) return;
+    tarjetaRef.current?.scrollIntoView?.({
+      behavior: "smooth",
+      block: "nearest",
+    });
+  }, [selected]);
 
   const lugar = lugarPartida ? lugarPartida : paradaViewModel?.lugar
   const puntuacion = formatearPuntuacion(lugar?.puntuacion ?? null);
@@ -98,6 +107,7 @@ function LugarRecorridoCard({
   return (
     <>
     <div
+      ref={tarjetaRef}
       className={`lugar-recorrido-card ${
         selected ? "lugar-recorrido-card--selected" : ""
       } ${esSeleccionable ? "lugar-recorrido-card--seleccionable" : ""}`}
