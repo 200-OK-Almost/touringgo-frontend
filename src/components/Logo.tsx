@@ -1,4 +1,4 @@
-import logoColor from "../assets/logo/logo-touringgo.png";
+import logoColor from "../assets/logo/logo-touringgo-nuevo-navbar.png";
 import logoWhite from "../assets/logo/logo-touringgo-white.png";
 
 interface LogoProps {
