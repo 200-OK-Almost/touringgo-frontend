@@ -61,7 +61,11 @@ export function ViajePanel({
       </div>
 
       {secondaryContent && (
-        <div className="viaje-panel__secondary-wrapper" aria-hidden={!isRecorridoOpen}>
+        <div
+          className="viaje-panel__secondary-wrapper"
+          aria-hidden={!isRecorridoOpen}
+          inert={!isRecorridoOpen}
+        >
           {secondaryContent}
         </div>
       )}
