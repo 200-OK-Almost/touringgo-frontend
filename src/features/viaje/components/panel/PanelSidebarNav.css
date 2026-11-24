@@ -40,8 +40,7 @@
   box-shadow:
     0 0 0 1px rgba(15, 118, 110, 0.35),
     inset 0 1px 1px rgba(255, 255, 255, 0.55),
-    inset 0 -3px 8px rgba(0, 0, 0, 0.28),
-    0 8px 18px rgba(13, 148, 136, 0.35);
+    inset 0 -3px 8px rgba(0, 0, 0, 0.28);
   cursor: pointer;
   transition: all 0.15s ease;
   overflow: visible;
@@ -73,8 +72,7 @@
   box-shadow:
     0 0 0 1px rgba(153, 246, 228, 0.35),
     inset 0 1px 1px rgba(255, 255, 255, 0.65),
-    inset 0 -3px 8px rgba(0, 0, 0, 0.28),
-    0 10px 22px rgba(13, 148, 136, 0.45);
+    inset 0 -3px 8px rgba(0, 0, 0, 0.28);
   transform: translateY(-1px);
 }
 
@@ -118,8 +116,7 @@
   box-shadow:
     0 0 0 1px rgba(15, 118, 110, 0.35),
     inset 0 1px 1px rgba(255, 255, 255, 0.55),
-    inset 0 -3px 8px rgba(0, 0, 0, 0.28),
-    0 8px 18px rgba(13, 148, 136, 0.35);
+    inset 0 -3px 8px rgba(0, 0, 0, 0.28);
 }
 
 .panel-sidebar-nav--mobile .panel-sidebar-nav__btn.active,
@@ -133,8 +130,7 @@
   box-shadow:
     0 0 0 1px rgba(153, 246, 228, 0.35),
     inset 0 1px 1px rgba(255, 255, 255, 0.65),
-    inset 0 -3px 8px rgba(0, 0, 0, 0.28),
-    0 10px 22px rgba(13, 148, 136, 0.45);
+    inset 0 -3px 8px rgba(0, 0, 0, 0.28);
 }
 
 .panel-sidebar-nav--mobile .panel-sidebar-nav__btn.active .panel-sidebar-nav__icon,
