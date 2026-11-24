@@ -30,19 +30,16 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
   // Estado para los IDs de los gastos seleccionados
   const [selectedGastoIds, setSelectedGastoIds] = useState<Set<string>>(new Set())
 
-  useEffect(() => {
-    async function cargarGastos() {
+  async function cargarGastos() {
       try {
         setIsLoading(true)
         setError(null)
 
         if (subTab == "pendientes") {
           const gastosData = await getGastos(viaje.id, {estado: "Pendientes"})
-          console.log(gastosData)
           setGastosPendientes(gastosData)
         } else {
           const gastosData = await getGastos(viaje.id, {estado: "Liquidados"})
-          console.log(gastosData)
           setGastosHistorial(gastosData)
         }
       } catch (err: unknown) {
@@ -51,10 +48,10 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
         setIsLoading(false)
       }
     }
+
+  useEffect(() => {
     cargarGastos()
   }, [subTab, viaje.id])
-
-  const gastos: GastoDto[] | undefined = subTab == "pendientes" ? gastosPendientes?.items : gastosHistorial?.items
 
   const handleToggleSelectGasto = (gastoId: string, isSelected: boolean) => {
     setSelectedGastoIds((prev) => {
@@ -66,6 +63,33 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
       }
       return next
     })
+  }
+
+  const gastos: GastoDto[] | undefined = subTab == "pendientes" ? gastosPendientes?.items : gastosHistorial?.items
+
+  function renderGastos() {
+    if (isLoading)
+      return <p>Cargando gastos...</p>
+
+    if (error)
+      return <p className="gastos-tab__error">{error}</p>
+
+    if (!gastos)
+      return
+
+    if (gastos.length <= 0) {
+      return <p>{`No hay gastos ${subTab == "pendientes" ? "pendientes" : "liquidados"}`}</p>
+    }
+    return gastos && gastos.map(gasto => 
+      <GastoCard 
+        key={gasto.id}
+        gasto={gasto}
+        miembrosPorId={miembrosPorId}
+        selectable={gasto.liquidacionId ? false : true}
+        selected={selectedGastoIds.has(gasto.id)}
+        onSelectChange={(isSelected) => handleToggleSelectGasto(gasto.id, isSelected)}
+      />
+    )
   }
 
   return (
@@ -115,17 +139,7 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
             </button>
           </div>
           <div className="gastos-tab__gastos__list"> 
-            {isLoading && <p>Cargando gastos...</p>}
-            {error && <p className="gastos-tab__error">{error}</p>}
-            {!isLoading && gastos && gastos.map(gasto => 
-              <GastoCard 
-                key={gasto.id}
-                gasto={gasto}
-                miembrosPorId={miembrosPorId}
-                selected={selectedGastoIds.has(gasto.id)}
-                onSelectChange={(isSelected) => handleToggleSelectGasto(gasto.id, isSelected)}
-              />
-            )}
+            {renderGastos()}
           </div>
         </div>
 
@@ -135,7 +149,7 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
         <button
           type="button"
           className="gastos-tab__btn-liquidar"
-          disabled={selectedGastoIds.size === 0}
+          disabled={selectedGastoIds.size === 0 || subTab == "historial"}
           onClick={() => setLiquidacionModalOpen(true)}
         >
           <IoCheckmarkCircleOutline className="gastos-tab__btn-icon" />
@@ -154,6 +168,7 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
       viajeId={viaje.id}
       miembros={miembros}
       miembrosPorId={miembrosPorId}
+      onGastoCreado={() => cargarGastos()}
     />
 
     <LiquidacionModal 
@@ -164,12 +179,7 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
       miembrosPorId={miembrosPorId}
       onLiquidacionExitosa={() => {
         setSelectedGastoIds(new Set())
-        // Recargar gastos tras liquidar
-        if (subTab === "pendientes") {
-          getGastos(viaje.id, { estado: "Pendientes" }).then(setGastosPendientes)
-        } else {
-          getGastos(viaje.id, { estado: "Liquidados" }).then(setGastosHistorial)
-        }
+        cargarGastos()
       }}
     />
     </>
