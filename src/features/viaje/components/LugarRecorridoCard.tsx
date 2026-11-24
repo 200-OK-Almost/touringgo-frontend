@@ -10,9 +10,10 @@ import ConfirmarEliminarParadaModal from "./ConfirmarEliminarParadaModal";
 
 export interface LugarRecorridoCardProps {
   paradaViewModel?: ParadaViewModel;
-  lugarPartida?: LugarDetalleDto | null
-  puedeEditar?: boolean
-  onEliminar?: (parada: ParadaViewModel) => Promise<void>
+  lugarPartida?: LugarDetalleDto | null;
+  numero?: number;
+  puedeEditar?: boolean;
+  onEliminar?: (parada: ParadaViewModel) => Promise<void>;
 }
 
 function formatearHora(hora: string | null): string {
@@ -32,12 +33,14 @@ function formatearDuracion(duracion: number | null): string {
 function LugarRecorridoCard({
   paradaViewModel,
   lugarPartida = null,
+  numero,
   puedeEditar = false,
   onEliminar,
 } : LugarRecorridoCardProps) {
   const [confirmando, setConfirmando] = useState(false);
   const [eliminando, setEliminando] = useState(false);
   const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
+  const esPartida = Boolean(lugarPartida);
 
   const lugar = lugarPartida ? lugarPartida : paradaViewModel?.lugar
   const puntuacion = formatearPuntuacion(lugar?.puntuacion ?? null);
@@ -82,6 +85,11 @@ function LugarRecorridoCard({
 
       <div className="lugar-recorrido-card__body">
         <div className="lugar-recorrido-card__thumb">
+          {typeof numero === "number" && (
+            <span className="lugar-recorrido-card__numero">
+              {numero}
+            </span>
+          )}
           <SmartImage 
             src={lugar?.fotos?.[0]?.url} 
             alt={lugar?.nombre ?? ""} 
@@ -89,8 +97,13 @@ function LugarRecorridoCard({
         </div>
 
         <div className="lugar-recorrido-card__info">
+          {esPartida && (
+            <span className="lugar-recorrido-card__badge">
+              Salida
+            </span>
+          )}
           <h4 className="lugar-recorrido-card__nombre">
-            {lugarPartida && "Punto de partida - "}{lugar?.nombre}
+            {lugar?.nombre}
           </h4>
           {(puntuacion || categoria) && (
             <div className="lugar-recorrido-card__meta">
