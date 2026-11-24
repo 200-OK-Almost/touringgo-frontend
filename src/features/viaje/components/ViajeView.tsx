@@ -42,6 +42,10 @@ export function ViajeView({
   const currentTab = !isMobile && activeTab === "recorrido" ? "chat" : activeTab;
 
   const handleTabChange = (tab: PanelTab) => {
+    if (isMobile) {
+      setIsMobilePanelExpanded(true);
+    }
+
     if (tab === "recorrido") {
       setActiveTab(tab);
       return;

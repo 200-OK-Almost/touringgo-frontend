@@ -36,6 +36,7 @@
   padding-right: 0.75rem;
   padding-top: 0.75rem;
   padding-bottom: 1rem;
+  overscroll-behavior: contain;
 }
 
 .viaje-recorrido__group {
