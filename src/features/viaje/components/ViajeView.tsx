@@ -73,6 +73,13 @@ export function ViajeView({
   const puedeEditar = viaje.puedeEditar === true
     && Boolean(itinerarioActual?.itinerario.version);
 
+  const paradaSeleccionadaIdValida =
+    paradaSeleccionadaId && itinerarioActual?.paradas.some(
+      (parada) => parada.parada.id === paradaSeleccionadaId
+    )
+      ? paradaSeleccionadaId
+      : null;
+
   const handleEliminarParada = async (parada: ParadaViewModel) => {
     const version = itinerarioActual?.itinerario.version;
 
@@ -93,6 +100,10 @@ export function ViajeView({
       turno: parada.parada.turno,
       numeroDia: itinerarioActual.itinerario.numeroDia,
     });
+
+    if (paradaSeleccionadaId === parada.parada.id) {
+      setParadaSeleccionadaId(null);
+    }
 
     await onItinerarioActualizado();
   };
@@ -127,7 +138,7 @@ export function ViajeView({
           itinerarioActual={itinerarioActual}
           lugarPartida={lugarPartida}
           barrioDiaActual={barrioDiaActual}
-          paradaSeleccionadaId={paradaSeleccionadaId}
+          paradaSeleccionadaId={paradaSeleccionadaIdValida}
           onSeleccionarParada={handleSeleccionarParada}
           puedeEditar={puedeEditar}
           onEliminarParada={handleEliminarParada}
@@ -166,7 +177,7 @@ export function ViajeView({
         <ViajeMap
           itinerarioViewModel={itinerarioActual}
           panelWidth={panelWidth}
-          paradaSeleccionadaId={paradaSeleccionadaId}
+          paradaSeleccionadaId={paradaSeleccionadaIdValida}
           onSeleccionarParada={handleSeleccionarParada}
         />
       </section>
@@ -194,7 +205,7 @@ export function ViajeView({
             onDiaChange={handleDiaChange}
             itinerarioActual={itinerarioActual}
             lugarPartida={lugarPartida}
-            paradaSeleccionadaId={paradaSeleccionadaId}
+            paradaSeleccionadaId={paradaSeleccionadaIdValida}
             onSeleccionarParada={handleSeleccionarParada}
             puedeEditar={puedeEditar}
             onEliminarParada={handleEliminarParada}
