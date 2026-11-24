@@ -1,6 +1,8 @@
+import { Fragment } from "react"
 import type { LugarDetalleDto } from "../../../api/types"
 import type { ParadaViewModel } from "../types"
 import LugarRecorridoCard from "./LugarRecorridoCard"
+import TramoRecorrido from "./TramoRecorrido"
 
 interface DiaRecorridoProps {
   paradasViewModel: ParadaViewModel[] | null
@@ -17,7 +19,7 @@ function DiaRecorrido({
 }: DiaRecorridoProps) {
 
   if (!paradasViewModel)
-    return <p>No hay paradas para este día.</p>
+    return <p>Este día todavía no tiene paradas.</p>
 
   return (
     <>
@@ -28,14 +30,28 @@ function DiaRecorrido({
       />
     }
 
-    {paradasViewModel.map(parada => 
-      <LugarRecorridoCard
-        key={parada.parada.id}
-        paradaViewModel={parada}
-        puedeEditar={puedeEditar}
-        onEliminar={onEliminarParada}
-      />
-    )}
+    {paradasViewModel.map((parada, indice) => {
+      const mostrarTramoInicial = indice === 0 && Boolean(lugarPartida);
+      const mostrarTramo = mostrarTramoInicial || indice > 0;
+
+      return (
+        <Fragment key={parada.parada.id}>
+          {mostrarTramo && (
+            <TramoRecorrido
+              distanciaMetros={parada.parada.distanciaMetrosDesdeAnterior}
+              cuadras={parada.parada.cuadrasDesdeAnterior}
+              minutosAPie={parada.parada.minutosAPieDesdeAnterior}
+            />
+          )}
+          <LugarRecorridoCard
+            paradaViewModel={parada}
+            numero={indice + 1}
+            puedeEditar={puedeEditar}
+            onEliminar={onEliminarParada}
+          />
+        </Fragment>
+      );
+    })}
     </>
   )
 }

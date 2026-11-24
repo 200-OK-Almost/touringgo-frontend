@@ -1,6 +1,7 @@
 import type { BarrioPorDia, DiaViaje } from "../../../lib/diasViaje";
 import type { ItinerarioViewModel, ParadaViewModel } from "../../../types";
 import type { LugarDetalleDto } from "../../../../../api/types";
+import { formatearResumenDia, resumirDia } from "../../../lib/recorrido";
 import DiaSelector from "../../DiaSelector";
 import DiaRecorrido from "../../DiaRecorrido";
 import { barrioLabel } from "../../../../../lib/format";
@@ -27,6 +28,9 @@ export function RecorridoPanel({
   puedeEditar = false,
   onEliminarParada,
 }: RecorridoPanelProps) {
+  const resumenDia = resumirDia(itinerarioActual?.paradas ?? null);
+  const textoResumenDia = formatearResumenDia(resumenDia);
+
   return (
     <section className="viaje-recorrido">
       <div className="viaje-recorrido__header">
@@ -59,9 +63,7 @@ export function RecorridoPanel({
 
         <div className="viaje-recorrido__footer">
           <p>
-            {itinerarioActual?.paradas?.length
-              ? `${itinerarioActual.paradas.length} paradas planificadas para este día`
-              : "No hay paradas configuradas para este día"}
+            {textoResumenDia ?? "Este día todavía no tiene paradas"}
           </p>
         </div>
       </div>
