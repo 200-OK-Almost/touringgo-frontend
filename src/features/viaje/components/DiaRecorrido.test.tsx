@@ -10,7 +10,10 @@ interface MetricasParada {
   minutosAPieDesdeAnterior?: number | null;
 }
 
-function crearLugar(nombre: string): LugarDetalleDto {
+function crearLugar(
+  nombre: string,
+  coordenadas?: { latitud: number; longitud: number }
+): LugarDetalleDto {
   return {
     id: `lugar-${nombre}`,
     nombre,
@@ -19,13 +22,15 @@ function crearLugar(nombre: string): LugarDetalleDto {
     cantidadResenas: 10,
     categorias: [],
     fotos: [],
+    ...(coordenadas ?? {}),
   } as unknown as LugarDetalleDto;
 }
 
 function crearParada(
   id: string,
   nombre: string,
-  metricas: MetricasParada = {}
+  metricas: MetricasParada = {},
+  coordenadas?: { latitud: number; longitud: number }
 ): ParadaViewModel {
   return {
     parada: {
@@ -38,7 +43,7 @@ function crearParada(
       origenParada: "Manual",
       ...metricas,
     } as ParadaViewModel["parada"],
-    lugar: crearLugar(nombre),
+    lugar: crearLugar(nombre, coordenadas),
   };
 }
 
@@ -79,8 +84,8 @@ describe("DiaRecorrido", () => {
       />
     );
 
-    expect(screen.getByText("8 min a pie · 650 m")).toBeInTheDocument();
-    expect(screen.getByText("14 min a pie · 1.2 km")).toBeInTheDocument();
+    expect(screen.getByText("8 min a pie · 650 m · 7 cuadras")).toBeInTheDocument();
+    expect(screen.getByText("14 min a pie · 1.2 km · 12 cuadras")).toBeInTheDocument();
   });
 
   it("no muestra el tramo inicial sin punto de partida", () => {
@@ -99,7 +104,7 @@ describe("DiaRecorrido", () => {
     expect(document.querySelector(".tramo-recorrido")).toBeNull();
   });
 
-  it("no muestra tramos sin metricas", () => {
+  it("no muestra tramos sin metricas ni coordenadas", () => {
     render(
       <DiaRecorrido
         paradasViewModel={[
@@ -111,5 +116,19 @@ describe("DiaRecorrido", () => {
     );
 
     expect(document.querySelector(".tramo-recorrido")).toBeNull();
+  });
+
+  it("calcula el tramo entre paradas cuando faltan metricas", () => {
+    render(
+      <DiaRecorrido
+        paradasViewModel={[
+          crearParada("p1", "Museo", {}, { latitud: -34.6, longitud: -58.4 }),
+          crearParada("p2", "Cafe", {}, { latitud: -34.601, longitud: -58.4 }),
+        ]}
+        lugarPartida={null}
+      />
+    );
+
+    expect(screen.getByText("1 min a pie · 111 m · 1 cuadra")).toBeInTheDocument();
   });
 });

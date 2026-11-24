@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import "./ViajePanel.css";
 
 interface ViajePanelProps {
   isMobile: boolean;
   isChatOpen: boolean;
   isRecorridoOpen: boolean;
+  isMobilePanelExpanded?: boolean;
+  onToggleMobilePanel?: () => void;
   sidebarNav: React.ReactNode;
   primaryContent: React.ReactNode;
   secondaryContent?: React.ReactNode;
@@ -14,26 +16,26 @@ export function ViajePanel({
   isMobile,
   isChatOpen,
   isRecorridoOpen,
+  isMobilePanelExpanded = false,
+  onToggleMobilePanel,
   sidebarNav,
   primaryContent,
   secondaryContent,
 }: ViajePanelProps) {
-  const [isMobileExpanded, setIsMobileExpanded] = useState(false);
-
   if (isMobile) {
     return (
       <aside
         className={`viaje-panel viaje-panel--mobile ${
-          isMobileExpanded ? "viaje-panel--expanded" : "viaje-panel--collapsed"
+          isMobilePanelExpanded ? "viaje-panel--expanded" : "viaje-panel--collapsed"
         }`}
         aria-label="Panel de viaje móvil"
       >
         <button
           type="button"
           className="viaje-panel__handle-btn"
-          onClick={() => setIsMobileExpanded((prev) => !prev)}
+          onClick={() => onToggleMobilePanel?.()}
           aria-label={
-            isMobileExpanded ? "Minimizar panel inferior" : "Expandir panel inferior"
+            isMobilePanelExpanded ? "Minimizar panel inferior" : "Expandir panel inferior"
           }
         >
           <div className="viaje-panel__handle-bar" />

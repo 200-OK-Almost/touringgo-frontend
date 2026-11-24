@@ -33,6 +33,7 @@ export function ViajeView({
   const [referenciaParada, setReferenciaParada] = useState<ReferenciaParada | null>(null);
   const [paradaSeleccionadaId, setParadaSeleccionadaId] = useState<string | null>(null);
   const [paradaSeleccionadaOrigen, setParadaSeleccionadaOrigen] = useState<"mapa" | "lista" | null>(null);
+  const [isMobilePanelExpanded, setIsMobilePanelExpanded] = useState(false);
 
   const isMobile = useMediaQuery("(max-width: 900px)");
   const isCompactPanel = useMediaQuery("(min-width: 901px) and (max-width: 1100px)");
@@ -126,6 +127,10 @@ export function ViajeView({
   ) => {
     setParadaSeleccionadaId(paradaId);
     setParadaSeleccionadaOrigen(origen);
+
+    if (isMobile && origen === "lista") {
+      setIsMobilePanelExpanded(false);
+    }
   };
 
   // Calculamos el ancho ocupado por los paneles para el offset del mapa en desktop
@@ -197,6 +202,8 @@ export function ViajeView({
         isMobile={isMobile}
         isChatOpen={isChatOpen}
         isRecorridoOpen={isRecorridoOpen}
+        isMobilePanelExpanded={isMobilePanelExpanded}
+        onToggleMobilePanel={() => setIsMobilePanelExpanded(prev => !prev)}
         sidebarNav={
           <PanelSidebarNav
             activeTab={currentTab}

@@ -1,6 +1,7 @@
 import { Fragment } from "react"
 import type { LugarDetalleDto } from "../../../api/types"
 import type { ParadaViewModel } from "../types"
+import { obtenerTramoDesdePunto } from "../lib/recorrido"
 import LugarRecorridoCard from "./LugarRecorridoCard"
 import TramoRecorrido from "./TramoRecorrido"
 
@@ -25,6 +26,11 @@ function DiaRecorrido({
   if (!paradasViewModel)
     return <p>Este día todavía no tiene paradas.</p>
 
+  const primeraParada = paradasViewModel[0] ?? null;
+  const tramoDesdePartida = lugarPartida && primeraParada
+    ? obtenerTramoDesdePunto(lugarPartida, primeraParada)
+    : null;
+
   return (
     <>
     {lugarPartida &&
@@ -34,19 +40,22 @@ function DiaRecorrido({
       />
     }
 
+    {tramoDesdePartida && (
+      <TramoRecorrido
+        distanciaMetros={tramoDesdePartida.distanciaMetros}
+        cuadras={tramoDesdePartida.cuadras}
+        minutosAPie={tramoDesdePartida.minutosAPie}
+      />
+    )}
+
     {paradasViewModel.map((parada, indice) => {
-      const mostrarTramoInicial = indice === 0 && Boolean(lugarPartida);
-      const mostrarTramo = mostrarTramoInicial || indice > 0;
+      const siguiente = paradasViewModel[indice + 1] ?? null;
+      const tramo = siguiente
+        ? obtenerTramoDesdePunto(parada.lugar, siguiente)
+        : null;
 
       return (
         <Fragment key={parada.parada.id}>
-          {mostrarTramo && (
-            <TramoRecorrido
-              distanciaMetros={parada.parada.distanciaMetrosDesdeAnterior}
-              cuadras={parada.parada.cuadrasDesdeAnterior}
-              minutosAPie={parada.parada.minutosAPieDesdeAnterior}
-            />
-          )}
           <LugarRecorridoCard
             paradaViewModel={parada}
             numero={indice + 1}
@@ -59,6 +68,13 @@ function DiaRecorrido({
             puedeEditar={puedeEditar}
             onEliminar={onEliminarParada}
           />
+          {tramo && (
+            <TramoRecorrido
+              distanciaMetros={tramo.distanciaMetros}
+              cuadras={tramo.cuadras}
+              minutosAPie={tramo.minutosAPie}
+            />
+          )}
         </Fragment>
       );
     })}

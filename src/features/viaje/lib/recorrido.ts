@@ -6,10 +6,84 @@ export interface TramoRecorridoDatos {
   minutosAPie?: number | null;
 }
 
+export interface PuntoRecorrido {
+  latitud: number;
+  longitud: number;
+}
+
 export interface ResumenDia {
   totalParadas: number;
   totalMinutosAPie: number;
   totalMetros: number;
+}
+
+const RADIO_TIERRA_METROS = 6371000;
+const METROS_POR_CUADRA = 100;
+const METROS_POR_MINUTO_A_PIE = 80;
+
+function aRadianes(valor: number): number {
+  return valor * Math.PI / 180;
+}
+
+export function distanciaMetrosEntrePuntos(
+  puntoA: PuntoRecorrido,
+  puntoB: PuntoRecorrido
+): number {
+  const deltaLatitud = aRadianes(puntoB.latitud - puntoA.latitud);
+  const deltaLongitud = aRadianes(puntoB.longitud - puntoA.longitud);
+
+  const a =
+    Math.sin(deltaLatitud / 2) * Math.sin(deltaLatitud / 2) +
+    Math.cos(aRadianes(puntoA.latitud)) *
+      Math.cos(aRadianes(puntoB.latitud)) *
+      Math.sin(deltaLongitud / 2) *
+      Math.sin(deltaLongitud / 2);
+
+  return RADIO_TIERRA_METROS * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+export function obtenerTramoDesdePunto(
+  puntoAnterior: PuntoRecorrido | null | undefined,
+  paradaActual: ParadaViewModel | null | undefined
+): TramoRecorridoDatos | null {
+  if (!puntoAnterior || !paradaActual) {
+    return null;
+  }
+
+  const metricas = paradaActual.parada;
+  const tieneCoordenadas =
+    paradaActual.lugar.latitud != null &&
+    paradaActual.lugar.longitud != null;
+
+  const distanciaMetros =
+    metricas.distanciaMetrosDesdeAnterior ??
+    (tieneCoordenadas
+      ? Math.round(
+          distanciaMetrosEntrePuntos(puntoAnterior, paradaActual.lugar)
+        )
+      : null);
+
+  const cuadras =
+    metricas.cuadrasDesdeAnterior ??
+    (distanciaMetros != null
+      ? Math.round(distanciaMetros / METROS_POR_CUADRA)
+      : null);
+
+  const minutosAPie =
+    metricas.minutosAPieDesdeAnterior ??
+    (distanciaMetros != null
+      ? Math.round(distanciaMetros / METROS_POR_MINUTO_A_PIE)
+      : null);
+
+  if (
+    distanciaMetros == null &&
+    cuadras == null &&
+    minutosAPie == null
+  ) {
+    return null;
+  }
+
+  return { distanciaMetros, cuadras, minutosAPie };
 }
 
 export function formatearMetros(
