@@ -1,6 +1,5 @@
-import { useEffect, useRef } from "react";
-import { Marker, Popup } from "react-leaflet";
-import { divIcon, type Marker as LeafletMarker } from "leaflet";
+import { Marker } from "react-leaflet";
+import { divIcon } from "leaflet";
 import type { LatLngExpression } from "leaflet";
 import "./CustomMarker.css";
 
@@ -10,7 +9,6 @@ interface CustomMarkerProps {
   variant?: "numbered" | "origin";
   selected?: boolean;
   onSelect?: () => void;
-  children?: React.ReactNode;
 }
 
 const ORIGIN_HTML = `
@@ -28,19 +26,7 @@ const CustomMarker = ({
   variant = "numbered",
   selected = false,
   onSelect,
-  children,
 }: CustomMarkerProps) => {
-  const markerRef = useRef<LeafletMarker>(null);
-
-  useEffect(() => {
-    if (selected) {
-      markerRef.current?.openPopup();
-      return;
-    }
-
-    markerRef.current?.closePopup?.();
-  }, [selected]);
-
   const html =
     variant === "origin"
       ? ORIGIN_HTML
@@ -59,16 +45,11 @@ const CustomMarker = ({
 
   return (
     <Marker
-      ref={markerRef}
       position={position}
       icon={icon}
       zIndexOffset={selected ? 1000 : 0}
       eventHandlers={onSelect ? { click: onSelect } : undefined}
-    >
-      <Popup offset={[0, -24]}>
-        {children}
-      </Popup>
-    </Marker>
+    />
   );
 };
 

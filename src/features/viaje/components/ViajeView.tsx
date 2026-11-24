@@ -32,6 +32,7 @@ export function ViajeView({
   const [isRecorridoOpen, setIsRecorridoOpen] = useState(true);
   const [referenciaParada, setReferenciaParada] = useState<ReferenciaParada | null>(null);
   const [paradaSeleccionadaId, setParadaSeleccionadaId] = useState<string | null>(null);
+  const [paradaSeleccionadaOrigen, setParadaSeleccionadaOrigen] = useState<"mapa" | "lista" | null>(null);
 
   const isMobile = useMediaQuery("(max-width: 900px)");
   const isCompactPanel = useMediaQuery("(min-width: 901px) and (max-width: 1100px)");
@@ -80,6 +81,9 @@ export function ViajeView({
       ? paradaSeleccionadaId
       : null;
 
+  const paradaSeleccionadaOrigenValida =
+    paradaSeleccionadaIdValida ? paradaSeleccionadaOrigen : null;
+
   const handleEliminarParada = async (parada: ParadaViewModel) => {
     const version = itinerarioActual?.itinerario.version;
 
@@ -103,6 +107,7 @@ export function ViajeView({
 
     if (paradaSeleccionadaId === parada.parada.id) {
       setParadaSeleccionadaId(null);
+      setParadaSeleccionadaOrigen(null);
     }
 
     await onItinerarioActualizado();
@@ -112,10 +117,15 @@ export function ViajeView({
     setDiaActual(dia);
     setReferenciaParada(null);
     setParadaSeleccionadaId(null);
+    setParadaSeleccionadaOrigen(null);
   };
 
-  const handleSeleccionarParada = (paradaId: string) => {
+  const handleSeleccionarParada = (
+    paradaId: string,
+    origen: "mapa" | "lista"
+  ) => {
     setParadaSeleccionadaId(paradaId);
+    setParadaSeleccionadaOrigen(origen);
   };
 
   // Calculamos el ancho ocupado por los paneles para el offset del mapa en desktop
@@ -178,6 +188,7 @@ export function ViajeView({
           itinerarioViewModel={itinerarioActual}
           panelWidth={panelWidth}
           paradaSeleccionadaId={paradaSeleccionadaIdValida}
+          paradaSeleccionadaOrigen={paradaSeleccionadaOrigenValida}
           onSeleccionarParada={handleSeleccionarParada}
         />
       </section>
@@ -205,8 +216,8 @@ export function ViajeView({
             onDiaChange={handleDiaChange}
             itinerarioActual={itinerarioActual}
             lugarPartida={lugarPartida}
-            paradaSeleccionadaId={paradaSeleccionadaIdValida}
-            onSeleccionarParada={handleSeleccionarParada}
+          paradaSeleccionadaId={paradaSeleccionadaIdValida}
+          onSeleccionarParada={handleSeleccionarParada}
             puedeEditar={puedeEditar}
             onEliminarParada={handleEliminarParada}
           />

@@ -14,13 +14,15 @@ interface ViajeMapProps {
   itinerarioViewModel: ItinerarioViewModel | null;
   panelWidth: number;
   paradaSeleccionadaId?: string | null;
-  onSeleccionarParada?: (paradaId: string) => void;
+  paradaSeleccionadaOrigen?: "mapa" | "lista" | null;
+  onSeleccionarParada?: (paradaId: string, origen: "mapa") => void;
 }
 
 function ViajeMap({
   itinerarioViewModel,
   panelWidth,
   paradaSeleccionadaId = null,
+  paradaSeleccionadaOrigen = null,
   onSeleccionarParada,
 }: ViajeMapProps) {
     const posiciones = useMemo<LatLngExpression[]>(() => {
@@ -41,7 +43,7 @@ function ViajeMap({
     }, [itinerarioViewModel]);
 
     const posicionSeleccionada = useMemo<LatLngExpression | null>(() => {
-      if (!itinerarioViewModel || !paradaSeleccionadaId) return null;
+      if (!itinerarioViewModel || !paradaSeleccionadaId || paradaSeleccionadaOrigen !== "lista") return null;
 
       const parada = itinerarioViewModel.paradas.find(
         (parada) => parada.parada.id === paradaSeleccionadaId
@@ -49,7 +51,7 @@ function ViajeMap({
       if (!parada) return null;
 
       return [parada.lugar.latitud, parada.lugar.longitud];
-    }, [itinerarioViewModel, paradaSeleccionadaId]);
+    }, [itinerarioViewModel, paradaSeleccionadaId, paradaSeleccionadaOrigen]);
 
     if (!itinerarioViewModel) {
       return (
@@ -94,11 +96,7 @@ function ViajeMap({
                   Number(itinerarioViewModel.itinerario.origenLongitud),
                 ]}
                 variant="origin"
-              >
-                <strong>Punto de partida</strong>
-                <br />
-                {itinerarioViewModel.itinerario.origenDescripcion}
-              </CustomMarker>
+              />
             )}
           {paradas.map((parada, index) => (
             <CustomMarker
@@ -111,14 +109,10 @@ function ViajeMap({
               selected={parada.parada.id === paradaSeleccionadaId}
               onSelect={
                 onSeleccionarParada
-                  ? () => onSeleccionarParada(parada.parada.id)
+                  ? () => onSeleccionarParada(parada.parada.id, "mapa")
                   : undefined
               }
-            >
-              <strong>{index + 1}. {parada.lugar.nombre}</strong>
-              <br />
-              {parada.lugar.direccion}
-            </CustomMarker>
+            />
           ))}
 
           <Polyline

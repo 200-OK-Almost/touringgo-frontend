@@ -8,7 +8,7 @@ interface DiaRecorridoProps {
   paradasViewModel: ParadaViewModel[] | null;
   lugarPartida: LugarDetalleDto | null;
   paradaSeleccionadaId?: string | null;
-  onSeleccionarParada?: (paradaId: string) => void;
+  onSeleccionarParada?: (paradaId: string, origen: "lista") => void;
   puedeEditar?: boolean;
   onEliminarParada?: (parada: ParadaViewModel) => Promise<void>;
 }
@@ -53,7 +53,7 @@ function DiaRecorrido({
             selected={parada.parada.id === paradaSeleccionadaId}
             onSeleccionar={
               onSeleccionarParada
-                ? () => onSeleccionarParada(parada.parada.id)
+                ? () => onSeleccionarParada(parada.parada.id, "lista")
                 : undefined
             }
             puedeEditar={puedeEditar}
