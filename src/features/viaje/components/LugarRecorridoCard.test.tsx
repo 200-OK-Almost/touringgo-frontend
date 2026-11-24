@@ -54,6 +54,40 @@ describe("LugarRecorridoCard", () => {
     expect(screen.getByText("Museo de prueba")).toBeInTheDocument();
   });
 
+  it("permite seleccionar la tarjeta", () => {
+    const onSeleccionar = vi.fn();
+
+    render(
+      <LugarRecorridoCard
+        paradaViewModel={crearParada()}
+        selected
+        onSeleccionar={onSeleccionar}
+      />
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Ver Museo de prueba en el mapa" })
+    );
+    expect(onSeleccionar).toHaveBeenCalledTimes(1);
+  });
+
+  it("no selecciona al abrir el modal de eliminación", () => {
+    const onSeleccionar = vi.fn();
+
+    render(
+      <LugarRecorridoCard
+        paradaViewModel={crearParada()}
+        selected={false}
+        onSeleccionar={onSeleccionar}
+        puedeEditar
+        onEliminar={vi.fn().mockResolvedValue(undefined)}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Quitar Museo de prueba" }));
+    expect(onSeleccionar).not.toHaveBeenCalled();
+  });
+
   it("no muestra Quitar si el usuario no puede editar", () => {
     render(
       <LugarRecorridoCard

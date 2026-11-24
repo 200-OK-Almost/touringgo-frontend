@@ -5,15 +5,19 @@ import LugarRecorridoCard from "./LugarRecorridoCard"
 import TramoRecorrido from "./TramoRecorrido"
 
 interface DiaRecorridoProps {
-  paradasViewModel: ParadaViewModel[] | null
-  lugarPartida: LugarDetalleDto | null
-  puedeEditar?: boolean
-  onEliminarParada?: (parada: ParadaViewModel) => Promise<void>
-} 
+  paradasViewModel: ParadaViewModel[] | null;
+  lugarPartida: LugarDetalleDto | null;
+  paradaSeleccionadaId?: string | null;
+  onSeleccionarParada?: (paradaId: string) => void;
+  puedeEditar?: boolean;
+  onEliminarParada?: (parada: ParadaViewModel) => Promise<void>;
+}
 
 function DiaRecorrido({
   paradasViewModel,
   lugarPartida,
+  paradaSeleccionadaId = null,
+  onSeleccionarParada,
   puedeEditar = false,
   onEliminarParada,
 }: DiaRecorridoProps) {
@@ -46,6 +50,12 @@ function DiaRecorrido({
           <LugarRecorridoCard
             paradaViewModel={parada}
             numero={indice + 1}
+            selected={parada.parada.id === paradaSeleccionadaId}
+            onSeleccionar={
+              onSeleccionarParada
+                ? () => onSeleccionarParada(parada.parada.id)
+                : undefined
+            }
             puedeEditar={puedeEditar}
             onEliminar={onEliminarParada}
           />

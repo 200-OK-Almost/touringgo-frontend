@@ -7,6 +7,8 @@ interface CustomMarkerProps {
   position: LatLngExpression;
   number?: number;
   variant?: "numbered" | "origin";
+  selected?: boolean;
+  onSelect?: () => void;
   children?: React.ReactNode;
 }
 
@@ -23,19 +25,21 @@ const CustomMarker = ({
   position,
   number,
   variant = "numbered",
+  selected = false,
+  onSelect,
   children,
 }: CustomMarkerProps) => {
   const html =
     variant === "origin"
       ? ORIGIN_HTML
       : `
-        <div class="marker-content">
+        <div class="marker-content${selected ? " marker-content--selected" : ""}">
             <span>${number ?? ""}</span>
         </div>
     `;
 
   const icon = divIcon({
-    className: "custom-marker",
+    className: `custom-marker${selected ? " custom-marker--selected" : ""}`,
     html,
     iconSize: [36, 36],
     iconAnchor: [18, 36],
@@ -45,6 +49,8 @@ const CustomMarker = ({
     <Marker
       position={position}
       icon={icon}
+      zIndexOffset={selected ? 1000 : 0}
+      eventHandlers={onSelect ? { click: onSelect } : undefined}
     >
       <Popup offset={[0, -24]}>
         {children}

@@ -11,10 +11,17 @@ const ROUTE_COLOR = "#059669";
 
 interface ViajeMapProps {
   itinerarioViewModel: ItinerarioViewModel | null;
-  panelWidth: number
+  panelWidth: number;
+  paradaSeleccionadaId?: string | null;
+  onSeleccionarParada?: (paradaId: string) => void;
 }
 
-function ViajeMap({ itinerarioViewModel, panelWidth }: ViajeMapProps) {
+function ViajeMap({
+  itinerarioViewModel,
+  panelWidth,
+  paradaSeleccionadaId = null,
+  onSeleccionarParada,
+}: ViajeMapProps) {
     const posiciones = useMemo<LatLngExpression[]>(() => {
       if (!itinerarioViewModel) return [];
 
@@ -80,12 +87,18 @@ function ViajeMap({ itinerarioViewModel, panelWidth }: ViajeMapProps) {
             )}
           {paradas.map((parada, index) => (
             <CustomMarker
-              key={parada.lugar.id}
+              key={parada.parada.id}
               position={[
                   parada.lugar.latitud,
                   parada.lugar.longitud
               ]}
               number={index + 1}
+              selected={parada.parada.id === paradaSeleccionadaId}
+              onSelect={
+                onSeleccionarParada
+                  ? () => onSeleccionarParada(parada.parada.id)
+                  : undefined
+              }
             >
               <strong>{index + 1}. {parada.lugar.nombre}</strong>
               <br />

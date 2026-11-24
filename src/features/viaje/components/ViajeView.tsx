@@ -31,6 +31,7 @@ export function ViajeView({
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isRecorridoOpen, setIsRecorridoOpen] = useState(true);
   const [referenciaParada, setReferenciaParada] = useState<ReferenciaParada | null>(null);
+  const [paradaSeleccionadaId, setParadaSeleccionadaId] = useState<string | null>(null);
 
   const isMobile = useMediaQuery("(max-width: 900px)");
   const isCompactPanel = useMediaQuery("(min-width: 901px) and (max-width: 1100px)");
@@ -99,6 +100,11 @@ export function ViajeView({
   const handleDiaChange = (dia: number) => {
     setDiaActual(dia);
     setReferenciaParada(null);
+    setParadaSeleccionadaId(null);
+  };
+
+  const handleSeleccionarParada = (paradaId: string) => {
+    setParadaSeleccionadaId(paradaId);
   };
 
   // Calculamos el ancho ocupado por los paneles para el offset del mapa en desktop
@@ -121,6 +127,8 @@ export function ViajeView({
           itinerarioActual={itinerarioActual}
           lugarPartida={lugarPartida}
           barrioDiaActual={barrioDiaActual}
+          paradaSeleccionadaId={paradaSeleccionadaId}
+          onSeleccionarParada={handleSeleccionarParada}
           puedeEditar={puedeEditar}
           onEliminarParada={handleEliminarParada}
         />
@@ -158,6 +166,8 @@ export function ViajeView({
         <ViajeMap
           itinerarioViewModel={itinerarioActual}
           panelWidth={panelWidth}
+          paradaSeleccionadaId={paradaSeleccionadaId}
+          onSeleccionarParada={handleSeleccionarParada}
         />
       </section>
 
@@ -184,6 +194,8 @@ export function ViajeView({
             onDiaChange={handleDiaChange}
             itinerarioActual={itinerarioActual}
             lugarPartida={lugarPartida}
+            paradaSeleccionadaId={paradaSeleccionadaId}
+            onSeleccionarParada={handleSeleccionarParada}
             puedeEditar={puedeEditar}
             onEliminarParada={handleEliminarParada}
           />

@@ -12,6 +12,8 @@ export interface LugarRecorridoCardProps {
   paradaViewModel?: ParadaViewModel;
   lugarPartida?: LugarDetalleDto | null;
   numero?: number;
+  selected?: boolean;
+  onSeleccionar?: () => void;
   puedeEditar?: boolean;
   onEliminar?: (parada: ParadaViewModel) => Promise<void>;
 }
@@ -34,6 +36,8 @@ function LugarRecorridoCard({
   paradaViewModel,
   lugarPartida = null,
   numero,
+  selected = false,
+  onSeleccionar,
   puedeEditar = false,
   onEliminar,
 } : LugarRecorridoCardProps) {
@@ -41,6 +45,7 @@ function LugarRecorridoCard({
   const [eliminando, setEliminando] = useState(false);
   const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
   const esPartida = Boolean(lugarPartida);
+  const esSeleccionable = Boolean(onSeleccionar);
 
   const lugar = lugarPartida ? lugarPartida : paradaViewModel?.lugar
   const puntuacion = formatearPuntuacion(lugar?.puntuacion ?? null);
@@ -79,9 +84,30 @@ function LugarRecorridoCard({
     }
   };
 
+  const manejarSeleccion = () => {
+    onSeleccionar?.();
+  };
+
+  const manejarTeclaSeleccion = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      manejarSeleccion();
+    }
+  };
+
   return (
     <>
-    <div className="lugar-recorrido-card">
+    <div
+      className={`lugar-recorrido-card ${
+        selected ? "lugar-recorrido-card--selected" : ""
+      } ${esSeleccionable ? "lugar-recorrido-card--seleccionable" : ""}`}
+      role={esSeleccionable ? "button" : undefined}
+      tabIndex={esSeleccionable ? 0 : undefined}
+      aria-pressed={esSeleccionable ? selected : undefined}
+      aria-label={esSeleccionable ? `Ver ${lugar?.nombre ?? "parada"} en el mapa` : undefined}
+      onClick={esSeleccionable ? manejarSeleccion : undefined}
+      onKeyDown={esSeleccionable ? manejarTeclaSeleccion : undefined}
+    >
 
       <div className="lugar-recorrido-card__body">
         <div className="lugar-recorrido-card__thumb">
@@ -142,7 +168,10 @@ function LugarRecorridoCard({
             <button
               type="button"
               className="lugar-recorrido-card__quitar"
-              onClick={abrirConfirmacion}
+              onClick={(event) => {
+                event.stopPropagation();
+                abrirConfirmacion();
+              }}
               aria-label={`Quitar ${lugar?.nombre ?? "parada"}`}
             >
               <IoTrashOutline className="lugar-recorrido-card__quitar-icon" />

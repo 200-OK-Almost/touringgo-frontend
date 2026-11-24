@@ -13,9 +13,11 @@ interface RecorridoPanelProps {
   onDiaChange: (dia: number) => void;
   itinerarioActual: ItinerarioViewModel | null;
   lugarPartida: LugarDetalleDto | null;
-  barrioDiaActual?: BarrioPorDia
-  puedeEditar?: boolean
-  onEliminarParada?: (parada: ParadaViewModel) => Promise<void>
+  barrioDiaActual?: BarrioPorDia;
+  paradaSeleccionadaId?: string | null;
+  onSeleccionarParada?: (paradaId: string) => void;
+  puedeEditar?: boolean;
+  onEliminarParada?: (parada: ParadaViewModel) => Promise<void>;
 }
 
 export function RecorridoPanel({
@@ -25,6 +27,8 @@ export function RecorridoPanel({
   itinerarioActual,
   lugarPartida,
   barrioDiaActual,
+  paradaSeleccionadaId = null,
+  onSeleccionarParada,
   puedeEditar = false,
   onEliminarParada,
 }: RecorridoPanelProps) {
@@ -55,6 +59,8 @@ export function RecorridoPanel({
             <DiaRecorrido
               paradasViewModel={itinerarioActual?.paradas ?? null}
               lugarPartida={lugarPartida}
+              paradaSeleccionadaId={paradaSeleccionadaId}
+              onSeleccionarParada={onSeleccionarParada}
               puedeEditar={puedeEditar}
               onEliminarParada={onEliminarParada}
             />
