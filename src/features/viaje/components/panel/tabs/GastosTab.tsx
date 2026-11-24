@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import type { GastoDto, MiembroViajeDto, ViajeDto } from "../../../types"
 import "./GastosTab.css"
 import GastoFormModal from "../../modals/GastoFormModal"
-import { getGastos } from "../../../api/viajes"
+import { eliminarGasto, getGastos } from "../../../api/viajes"
 import type { ResultadoPaginadoDto } from "../../../../../api/types"
 import { IoAddOutline, IoCheckmarkCircleOutline } from "react-icons/io5"
 import GastoCard from "../../GastoCard"
@@ -30,6 +30,10 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
 
   // Estado para los IDs de los gastos seleccionados
   const [selectedGastoIds, setSelectedGastoIds] = useState<Set<string>>(new Set())
+
+  // Estado para confirmación y eliminación de gastos
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   async function cargarGastos() {
       try {
@@ -66,6 +70,40 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
     })
   }
 
+  function handleSolicitarEliminacion(gasto: GastoDto) {
+    setConfirmDeleteId(gasto.id)
+    setError(null)
+  }
+
+  function handleCancelarEliminacion() {
+    if (deletingId) return
+    setConfirmDeleteId(null)
+    setError(null)
+  }
+
+  async function handleEliminarGasto(gasto: GastoDto) {
+    setDeletingId(gasto.id)
+    setError(null)
+
+    try {
+      await eliminarGasto(viaje.id, gasto.id)
+      setSelectedGastoIds((prev) => {
+        if (!prev.has(gasto.id)) return prev
+        const next = new Set(prev)
+        next.delete(gasto.id)
+        return next
+      })
+      setConfirmDeleteId(null)
+      await cargarGastos()
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error ? err.message : "No se pudo eliminar el gasto."
+      )
+    } finally {
+      setDeletingId(null)
+    }
+  }
+
   const gastos: GastoDto[] | undefined = subTab == "pendientes" ? gastosPendientes?.items : gastosHistorial?.items
 
   function renderGastos() {
@@ -93,6 +131,11 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
           setGastoEnEdicion(gasto)
           setGastoFormOpen(true)
         }}
+        isConfirmingDelete={confirmDeleteId === gasto.id}
+        isDeleting={deletingId === gasto.id}
+        onDelete={() => handleSolicitarEliminacion(gasto)}
+        onCancelDelete={handleCancelarEliminacion}
+        onConfirmDelete={() => void handleEliminarGasto(gasto)}
       />
     )
   }

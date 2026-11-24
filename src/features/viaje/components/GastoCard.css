@@ -64,8 +64,8 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background-color: #ecfdf5; 
-  border: 1px solid #a5d0b9; 
+  background-color: #ecfdf5;
+  border: 1px solid #a5d0b9;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -149,6 +149,8 @@
   display: flex;
   align-items: center;
   gap: 0.35rem;
+  height: 28px;
+  /* Altura fija para evitar saltos */
 }
 
 .gasto-card__action-btn {
@@ -163,6 +165,10 @@
   align-items: center;
   justify-content: center;
   transition: all 0.15s ease;
+
+  width: 28px;
+  /* Mismo ancho y alto */
+  height: 28px;
 }
 
 .gasto-card__action-btn:hover {
@@ -173,4 +179,48 @@
 .gasto-card__action-btn--delete:hover {
   color: #ef4444;
   background-color: #fee2e2;
+}
+
+.gasto-card__confirm-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.gasto-card__confirm-btn {
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.775rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+
+  height: 28px;
+  /* Exactamente la misma altura que botones de acción */
+}
+
+.gasto-card__confirm-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.gasto-card__confirm-btn--danger {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+.gasto-card__confirm-btn--danger:hover:not(:disabled) {
+  background-color: #dc2626;
+}
+
+.gasto-card__confirm-btn--cancel {
+  background-color: #ffffff;
+  color: #475569;
+  border-color: #cbd5e1;
+}
+
+.gasto-card__confirm-btn--cancel:hover:not(:disabled) {
+  background-color: #f1f5f9;
+  color: #0f172a;
 }

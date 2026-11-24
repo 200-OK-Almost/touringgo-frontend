@@ -16,6 +16,10 @@ export interface GastoCardProps {
   onSelectChange?: (selected: boolean) => void;
   onEdit?: () => void;
   onDelete?: () => void;
+  isConfirmingDelete?: boolean;
+  isDeleting?: boolean;
+  onConfirmDelete?: () => void;
+  onCancelDelete?: () => void;
 }
 
 export function GastoCard({
@@ -26,6 +30,10 @@ export function GastoCard({
   onSelectChange,
   onEdit,
   onDelete,
+  isConfirmingDelete = false,
+  isDeleting = false,
+  onConfirmDelete,
+  onCancelDelete,
 }: GastoCardProps) {
   const handleToggleSelect = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -117,28 +125,49 @@ export function GastoCard({
         </div>
 
         <div className="gasto-card__actions" onClick={(e) => e.stopPropagation()}>
-          {!gasto.liquidacionId &&
-          <button
-            type="button"
-            className="gasto-card__action-btn"
-            title="Editar gasto"
-            onClick={onEdit}
-            aria-label="Editar gasto"
-          >
-            <IoPencilOutline />
-          </button>
-          }
-          {!gasto.liquidacionId &&
-          <button
-            type="button"
-            className="gasto-card__action-btn gasto-card__action-btn--delete"
-            title="Eliminar gasto"
-            onClick={onDelete}
-            aria-label="Eliminar gasto"
-          >
-            <IoTrashOutline />
-          </button>
-          }
+          {!gasto.liquidacionId && (
+            isConfirmingDelete ? (
+              <div className="gasto-card__confirm-actions">
+                <button
+                  type="button"
+                  className="gasto-card__confirm-btn gasto-card__confirm-btn--danger"
+                  onClick={onConfirmDelete}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? "Eliminando..." : "Eliminar"}
+                </button>
+                <button
+                  type="button"
+                  className="gasto-card__confirm-btn gasto-card__confirm-btn--cancel"
+                  onClick={onCancelDelete}
+                  disabled={isDeleting}
+                >
+                  Cancelar
+                </button>
+              </div>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="gasto-card__action-btn"
+                  title="Editar gasto"
+                  onClick={onEdit}
+                  aria-label="Editar gasto"
+                >
+                  <IoPencilOutline />
+                </button>
+                <button
+                  type="button"
+                  className="gasto-card__action-btn gasto-card__action-btn--delete"
+                  title="Eliminar gasto"
+                  onClick={onDelete}
+                  aria-label="Eliminar gasto"
+                >
+                  <IoTrashOutline />
+                </button>
+              </>
+            )
+          )}
         </div>
       </div>
     </div>

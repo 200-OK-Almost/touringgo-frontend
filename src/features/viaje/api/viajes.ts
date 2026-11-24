@@ -117,3 +117,10 @@ export function editarGasto(
     actualizarGastoRequestDto
   )
 }
+
+export function eliminarGasto(
+  viajeId: string, 
+  gastoId: string,
+) {
+  return http.delete(`${VIAJES_BASE}/${viajeId}/gastos/${gastoId}`)
+}
