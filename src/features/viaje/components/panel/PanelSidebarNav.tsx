@@ -1,8 +1,9 @@
 import {
-  IoChatbubblesOutline,
+  IoChatbubbleOutline,
   IoMapOutline,
   IoPeopleOutline,
   IoSettingsOutline,
+  IoSparkles,
 } from "react-icons/io5";
 import "./PanelSidebarNav.css";
 
@@ -30,12 +31,22 @@ export function PanelSidebarNav({
       <nav className="panel-sidebar-nav panel-sidebar-nav--mobile" aria-label="Navegación de secciones">
         <button
           type="button"
-          className={`panel-sidebar-nav__btn ${activeTab === "chat" ? "active" : ""}`}
+          className={`panel-sidebar-nav__btn panel-sidebar-nav__btn--chat ${activeTab === "chat" ? "active" : ""}`}
           onClick={() => onTabChange("chat")}
           title="Chat con Turi"
         >
-          <IoChatbubblesOutline className="panel-sidebar-nav__icon" />
-          <span>Chat</span>
+          <span className="panel-sidebar-nav__chat-icon">
+            <IoChatbubbleOutline className="panel-sidebar-nav__icon" />
+            <IoSparkles
+              className="panel-sidebar-nav__ai-sparkle panel-sidebar-nav__ai-sparkle--top"
+              aria-hidden="true"
+            />
+            <IoSparkles
+              className="panel-sidebar-nav__ai-sparkle panel-sidebar-nav__ai-sparkle--bottom"
+              aria-hidden="true"
+            />
+          </span>
+          <span className="panel-sidebar-nav__chat-label">Chat</span>
         </button>
 
         <button
@@ -76,11 +87,21 @@ export function PanelSidebarNav({
       <div className="panel-sidebar-nav__top">
         <button
           type="button"
-          className={`panel-sidebar-nav__btn ${activeTab === "chat" && isChatOpen ? "active" : ""}`}
+          className={`panel-sidebar-nav__btn panel-sidebar-nav__btn--chat ${activeTab === "chat" && isChatOpen ? "active" : ""}`}
           onClick={() => onTabChange("chat")}
           title={activeTab === "chat" && isChatOpen ? "Ocultar chat" : "Chat con Turi"}
         >
-          <IoChatbubblesOutline className="panel-sidebar-nav__icon" />
+          <span className="panel-sidebar-nav__chat-icon">
+            <IoChatbubbleOutline className="panel-sidebar-nav__icon" />
+            <IoSparkles
+              className="panel-sidebar-nav__ai-sparkle panel-sidebar-nav__ai-sparkle--top"
+              aria-hidden="true"
+            />
+            <IoSparkles
+              className="panel-sidebar-nav__ai-sparkle panel-sidebar-nav__ai-sparkle--bottom"
+              aria-hidden="true"
+            />
+          </span>
         </button>
 
         <button
