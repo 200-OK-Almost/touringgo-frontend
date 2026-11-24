@@ -1,6 +1,6 @@
 import { http } from "../../../api/client";
 import type { ResultadoPaginadoDto } from "../../../api/types";
-import type { CrearGastoRequestDto, EstadoGastoFiltro, FiltroGastosDto, GastoDto, ItinerarioDto, LiquidacionDto, LiquidarGastosRequestDto, MiembroViajeDto, PrevisualizacionLiquidacionDto, ViajeCreateDto, ViajeDto, ViajeUpdateDto } from "../types";
+import type { ActualizarGastoRequestDto, CrearGastoRequestDto, EstadoGastoFiltro, FiltroGastosDto, GastoDto, ItinerarioDto, LiquidacionDto, LiquidarGastosRequestDto, MiembroViajeDto, PrevisualizacionLiquidacionDto, ViajeCreateDto, ViajeDto, ViajeUpdateDto } from "../types";
 
 const VIAJES_BASE = "/itinerarios/api/viajes";
 
@@ -104,4 +104,16 @@ export function postLiquidacion(
     `${VIAJES_BASE}/${viajeId}/gastos/liquidaciones`,
     liquidarGastosRequestDto
   );
+}
+
+// PUT /api/viajes/{viajeId}/gastos/{gastoId}
+export function editarGasto(
+  viajeId: string, 
+  gastoId: string,
+  actualizarGastoRequestDto: ActualizarGastoRequestDto
+) {
+  return http.put(
+    `${VIAJES_BASE}/${viajeId}/gastos/${gastoId}`,
+    actualizarGastoRequestDto
+  )
 }

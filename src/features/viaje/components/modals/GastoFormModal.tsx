@@ -1,24 +1,29 @@
 import { useState, useEffect, type FormEvent } from "react";
 import { Modal } from "../../../../components/Modal";
-import type { MiembroViajeDto, TipoMoneda, CrearGastoRequestDto } from "../../types";
-import { postGasto } from "../../api/viajes";
+import type { MiembroViajeDto, TipoMoneda, CrearGastoRequestDto, GastoDto, ActualizarGastoRequestDto } from "../../types";
+import { editarGasto, postGasto } from "../../api/viajes";
 import "./GastoFormModal.css";
 
-export interface GastoFormModalProps {
+interface GastoFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   viajeId: string;
   miembros: MiembroViajeDto[];
   miembrosPorId?: Map<string, MiembroViajeDto>;
-  onGastoCreado?: () => void;
+  mode: "crear" | "editar";
+  gasto: GastoDto | null;
+  onGastoGuardado?: () => void;
 }
+
 
 export function GastoFormModal({
   isOpen,
   onClose,
   viajeId,
   miembros,
-  onGastoCreado,
+  onGastoGuardado,
+  mode,
+  gasto = null
 }: GastoFormModalProps) {
   const [concepto, setConcepto] = useState("");
   const [monto, setMonto] = useState("");
@@ -30,24 +35,25 @@ export function GastoFormModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Inicializar o resetear formulario al abrir o cuando cambian los miembros
-  useEffect(() => {
-    if (isOpen) {
-      setConcepto("");
-      setMonto("");
-      setMoneda("ARS");
-      setError(null);
-      setIsSubmitting(false);
 
-      if (miembros.length > 0) {
-        setPagadoPorUsuarioId(miembros[0].usuarioId);
-        // Por defecto todos los miembros participan de la división
-        setParticipantesIds(miembros.map((m) => m.usuarioId));
-      } else {
-        setPagadoPorUsuarioId("");
-        setParticipantesIds([]);
-      }
+  useEffect(() => {
+    if (!isOpen) return 
+    
+    setConcepto(gasto?.concepto ?? "");
+    setMonto(gasto ? String(gasto.monto) : "");
+    setMoneda(gasto?.moneda ?? "ARS");
+    setError(null);
+    setIsSubmitting(false);
+
+    if (gasto) {
+      setPagadoPorUsuarioId(gasto.pagadoPorMiembroId);
+      setParticipantesIds(gasto.divisiones.map(x => x.usuarioId));
+    } else {
+      // Por defecto todos los miembros participan de la división
+      setPagadoPorUsuarioId(miembros[0]?.usuarioId ?? "");
+      setParticipantesIds(miembros.map((m) => m.usuarioId));
     }
-  }, [isOpen, miembros]);
+  }, [isOpen, gasto, miembros]);
 
   const handleToggleParticipante = (usuarioId: string) => {
     setParticipantesIds((prev) =>
@@ -91,19 +97,32 @@ export function GastoFormModal({
       return;
     }
 
-    const requestDto: CrearGastoRequestDto = {
+    const datos = {
       concepto: conceptoTrimmed,
       monto: montoNum,
       moneda,
       pagadoPorUsuarioId,
-      fechaGasto: new Date().toISOString(),
       ParticipantesIds: participantesIds,
-    };
-
+    }
+    
+    
     try {
       setIsSubmitting(true);
-      await postGasto(viajeId, requestDto);
-      onGastoCreado?.();
+      if (mode == "crear" && gasto == null) {
+        const requestDto: CrearGastoRequestDto = {
+          ... datos,
+          fechaGasto: new Date().toISOString(),
+        };
+        await postGasto(viajeId, requestDto);
+      } else if (mode == "editar" && gasto != null) {
+        const actualizarRequestDto: ActualizarGastoRequestDto = {
+          ... datos,
+          fechaGasto: gasto.fechaGasto
+        }
+        await editarGasto(viajeId, gasto.id, actualizarRequestDto)
+      }
+      
+      onGastoGuardado?.();
       onClose();
     } catch (err: unknown) {
       const message =
@@ -120,7 +139,7 @@ export function GastoFormModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Cargar gasto"
+      title={mode == "editar" ? "Editar gasto" : "Cargar gasto"}      
       size="md"
       className="gasto-form-modal"
     >
@@ -282,7 +301,11 @@ export function GastoFormModal({
             className="gasto-form__btn gasto-form__btn--submit"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Guardando..." : "Guardar gasto"}
+            {isSubmitting
+              ? "Guardando..."
+              : mode == "editar"
+                ? "Guardar cambios"
+                : "Guardar gasto"}
           </button>
         </div>
       </form>

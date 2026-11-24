@@ -334,7 +334,7 @@ export type ActualizarGastoRequestDto = {
 	concepto: string 
 	monto: number
 	moneda: TipoMoneda
-	pagadoPorMiembroId: string
+	pagadoPorUsuarioId: string
 	fechaGasto: string
 	ParticipantesIds: string[]
 }

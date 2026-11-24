@@ -22,6 +22,7 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
   const [error, setError] = useState<string | null>(null)
 
   const [gastoFormOpen, setGastoFormOpen] = useState(false)
+  const [gastoEnEdicion, setGastoEnEdicion] = useState<GastoDto | null>(null);
   const [liquidacionModalOpen, setLiquidacionModalOpen] = useState(false)
   
   const [gastosPendientes, setGastosPendientes] = useState<ResultadoPaginadoDto<GastoDto> | null>(null)
@@ -88,6 +89,10 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
         selectable={gasto.liquidacionId ? false : true}
         selected={selectedGastoIds.has(gasto.id)}
         onSelectChange={(isSelected) => handleToggleSelectGasto(gasto.id, isSelected)}
+        onEdit={() => {
+          setGastoEnEdicion(gasto)
+          setGastoFormOpen(true)
+        }}
       />
     )
   }
@@ -114,7 +119,10 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
             <button
               type="button"
               className="gastos-tab__btn-agregar"
-              onClick={() => setGastoFormOpen(true)}
+              onClick={() => {
+                setGastoEnEdicion(null)
+                setGastoFormOpen(true)
+              }}
             >
               <IoAddOutline className="gastos-tab__btn-icon" />
               <span>Agregar gasto</span>
@@ -168,9 +176,10 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
       viajeId={viaje.id}
       miembros={miembros}
       miembrosPorId={miembrosPorId}
-      onGastoCreado={() => cargarGastos()}
+      mode={gastoEnEdicion ? "editar" : "crear"}
+      gasto={gastoEnEdicion ? gastoEnEdicion : null}
+      onGastoGuardado={() => cargarGastos()}
     />
-
     <LiquidacionModal 
       isOpen={liquidacionModalOpen}
       onClose={() => setLiquidacionModalOpen(false)}

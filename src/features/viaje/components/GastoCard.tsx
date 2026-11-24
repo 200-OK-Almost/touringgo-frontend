@@ -11,6 +11,7 @@ import "./GastoCard.css";
 export interface GastoCardProps {
   gasto: GastoDto;
   miembrosPorId?: Map<string, MiembroViajeDto>;
+  selectable: boolean;
   selected: boolean;
   onSelectChange?: (selected: boolean) => void;
   onEdit?: () => void;
@@ -20,6 +21,7 @@ export interface GastoCardProps {
 export function GastoCard({
   gasto,
   miembrosPorId,
+  selectable,
   selected,
   onSelectChange,
   onEdit,
@@ -27,6 +29,7 @@ export function GastoCard({
 }: GastoCardProps) {
   const handleToggleSelect = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (selectable == false) return
     onSelectChange?.(!selected);
   };
 
@@ -76,16 +79,18 @@ export function GastoCard({
     >
       {/* Fila superior: Checkbox, Icono, Concepto + Subtítulo, Monto */}
       <div className="gasto-card__top">
-        <button
-          type="button"
-          className={`gasto-card__checkbox ${
-            selected ? "gasto-card__checkbox--checked" : ""
-          }`}
-          onClick={handleToggleSelect}
-          aria-label={selected ? "Deseleccionar gasto" : "Seleccionar gasto"}
-        >
-          {selected && <IoCheckmark className="gasto-card__check-icon" />}
-        </button>
+        { selectable && 
+          <button
+            type="button"
+            className={`gasto-card__checkbox ${
+              selected ? "gasto-card__checkbox--checked" : ""
+            }`}
+            onClick={handleToggleSelect}
+            aria-label={selected ? "Deseleccionar gasto" : "Seleccionar gasto"}
+          >
+            {selected && <IoCheckmark className="gasto-card__check-icon" />}
+          </button>
+        }
 
         <div className="gasto-card__icon-wrapper">
           <IoCashOutline className="gasto-card__icon" />
@@ -112,6 +117,7 @@ export function GastoCard({
         </div>
 
         <div className="gasto-card__actions" onClick={(e) => e.stopPropagation()}>
+          {!gasto.liquidacionId &&
           <button
             type="button"
             className="gasto-card__action-btn"
@@ -121,6 +127,8 @@ export function GastoCard({
           >
             <IoPencilOutline />
           </button>
+          }
+          {!gasto.liquidacionId &&
           <button
             type="button"
             className="gasto-card__action-btn gasto-card__action-btn--delete"
@@ -130,6 +138,7 @@ export function GastoCard({
           >
             <IoTrashOutline />
           </button>
+          }
         </div>
       </div>
     </div>
