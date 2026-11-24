@@ -1,6 +1,6 @@
 import { http } from "../../../api/client";
 import type { ResultadoPaginadoDto } from "../../../api/types";
-import type { CrearGastoRequestDto, EstadoGastoFiltro, FiltroGastosDto, GastoDto, ItinerarioDto, MiembroViajeDto, ViajeCreateDto, ViajeDto, ViajeUpdateDto } from "../types";
+import type { CrearGastoRequestDto, EstadoGastoFiltro, FiltroGastosDto, GastoDto, ItinerarioDto, LiquidacionDto, LiquidarGastosRequestDto, MiembroViajeDto, PrevisualizacionLiquidacionDto, ViajeCreateDto, ViajeDto, ViajeUpdateDto } from "../types";
 
 const VIAJES_BASE = "/itinerarios/api/viajes";
 
@@ -86,4 +86,22 @@ export function getGastos(
   viajeId: string, filtro: FiltroGastosDto = {}): Promise<ResultadoPaginadoDto<GastoDto>> 
 {
   return http.get(`${VIAJES_BASE}/${viajeId}/gastos${buildQuery(filtro)}`);
+}
+
+export function getLiquidacionPreview(
+  viajeId: string, liquidarGastosRequestDto: LiquidarGastosRequestDto
+) {
+  return http.post<PrevisualizacionLiquidacionDto>(
+    `${VIAJES_BASE}/${viajeId}/gastos/liquidaciones/previsualizacion`,
+    liquidarGastosRequestDto
+  );
+}
+
+export function postLiquidacion(
+  viajeId: string, liquidarGastosRequestDto: LiquidarGastosRequestDto
+) {
+  return http.post<LiquidacionDto>(
+    `${VIAJES_BASE}/${viajeId}/gastos/liquidaciones`,
+    liquidarGastosRequestDto
+  );
 }

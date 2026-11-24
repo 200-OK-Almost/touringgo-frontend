@@ -6,6 +6,7 @@ import { getGastos } from "../../../api/viajes"
 import type { ResultadoPaginadoDto } from "../../../../../api/types"
 import { IoAddOutline, IoCheckmarkCircleOutline } from "react-icons/io5"
 import GastoCard from "../../GastoCard"
+import LiquidacionModal from "../../modals/LiquidacionModal"
 
 interface GastosTabProps {
   viaje: ViajeDto
@@ -21,6 +22,7 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
   const [error, setError] = useState<string | null>(null)
 
   const [gastoFormOpen, setGastoFormOpen] = useState(false)
+  const [liquidacionModalOpen, setLiquidacionModalOpen] = useState(false)
   
   const [gastosPendientes, setGastosPendientes] = useState<ResultadoPaginadoDto<GastoDto> | null>(null)
   const [gastosHistorial, setGastosHistorial] = useState<ResultadoPaginadoDto<GastoDto> | null>(null)
@@ -134,7 +136,7 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
           type="button"
           className="gastos-tab__btn-liquidar"
           disabled={selectedGastoIds.size === 0}
-          // onClick={}
+          onClick={() => setLiquidacionModalOpen(true)}
         >
           <IoCheckmarkCircleOutline className="gastos-tab__btn-icon" />
           <span>
@@ -152,6 +154,23 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
       viajeId={viaje.id}
       miembros={miembros}
       miembrosPorId={miembrosPorId}
+    />
+
+    <LiquidacionModal 
+      isOpen={liquidacionModalOpen}
+      onClose={() => setLiquidacionModalOpen(false)}
+      viajeId={viaje.id}
+      gastoIds={Array.from(selectedGastoIds)}
+      miembrosPorId={miembrosPorId}
+      onLiquidacionExitosa={() => {
+        setSelectedGastoIds(new Set())
+        // Recargar gastos tras liquidar
+        if (subTab === "pendientes") {
+          getGastos(viaje.id, { estado: "Pendientes" }).then(setGastosPendientes)
+        } else {
+          getGastos(viaje.id, { estado: "Liquidados" }).then(setGastosHistorial)
+        }
+      }}
     />
     </>
   )

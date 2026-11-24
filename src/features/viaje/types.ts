@@ -298,6 +298,13 @@ export type LiquidacionDto = {
   gastoIds : string[]
   transferencias: TransferenciaLiquidacionDto[]
 }
+export type PrevisualizacionLiquidacionDto = {
+  viajeId : string
+  moneda : TipoMoneda
+  gastoIds : string[]
+  transferencias: TransferenciaLiquidacionDto[]
+}
+
 
 export type FiltroGastosDto = {
   estado?: EstadoGastoFiltro 
