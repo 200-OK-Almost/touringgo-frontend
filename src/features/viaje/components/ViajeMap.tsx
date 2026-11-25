@@ -13,6 +13,8 @@ const ROUTE_COLOR = "#059669";
 interface ViajeMapProps {
   itinerarioViewModel: ItinerarioViewModel | null;
   panelWidth: number;
+  isMobile?: boolean;
+  isMobilePanelExpanded?: boolean;
   paradaSeleccionadaId?: string | null;
   paradaSeleccionadaOrigen?: "mapa" | "lista" | null;
   onSeleccionarParada?: (paradaId: string, origen: "mapa") => void;
@@ -21,6 +23,8 @@ interface ViajeMapProps {
 function ViajeMap({
   itinerarioViewModel,
   panelWidth,
+  isMobile = false,
+  isMobilePanelExpanded = false,
   paradaSeleccionadaId = null,
   paradaSeleccionadaOrigen = null,
   onSeleccionarParada,
@@ -78,9 +82,11 @@ function ViajeMap({
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          <MapBounds 
+          <MapBounds
             panelWidth={panelWidth}
-            positions={posiciones} 
+            positions={posiciones}
+            isMobile={isMobile}
+            isMobilePanelExpanded={isMobilePanelExpanded}
           />
           <MapFocus
             posicionSeleccionada={posicionSeleccionada}

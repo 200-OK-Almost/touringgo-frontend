@@ -196,6 +196,8 @@ export function ViajeView({
         <ViajeMap
           itinerarioViewModel={itinerarioActual}
           panelWidth={panelWidth}
+          isMobile={isMobile}
+          isMobilePanelExpanded={isMobilePanelExpanded}
           paradaSeleccionadaId={paradaSeleccionadaIdValida}
           paradaSeleccionadaOrigen={paradaSeleccionadaOrigenValida}
           onSeleccionarParada={handleSeleccionarParada}
