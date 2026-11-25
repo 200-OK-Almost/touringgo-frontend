@@ -46,9 +46,14 @@
 }
 
 .viaje-recorrido__day-title {
+  position: sticky;
+  top: 0;
+  z-index: 3;
   margin: 0;
+  padding: 0.35rem 0 0.5rem 0;
+  background: var(--bg);
   font-size: 1.05rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text);
 }
 
@@ -72,12 +77,35 @@
 }
 
 .viaje-recorrido__footer {
-  padding-top: 1rem;
-  border-top: 1px dashed var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-subtle);
 }
 
 .viaje-recorrido__footer p {
   margin: 0;
+}
+
+.viaje-recorrido__footer-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.viaje-recorrido__footer-valor {
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text);
+}
+
+.viaje-recorrido__footer-vacio {
   font-size: 0.825rem;
   color: var(--text-muted);
 }

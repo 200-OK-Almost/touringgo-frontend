@@ -11,6 +11,7 @@
   transition: all 0.15s ease;
   position: relative;
   flex-shrink: 0;
+  scroll-margin-top: 3rem;
 
   box-shadow: var(--shadow-sm);
 }
@@ -27,6 +28,14 @@
 
 .lugar-recorrido-card--seleccionable {
   cursor: pointer;
+}
+
+@media (hover: hover) {
+  .lugar-recorrido-card--seleccionable:hover:not(.lugar-recorrido-card--selected) {
+    border-color: var(--primary);
+    background-color: var(--bg-subtle);
+    box-shadow: var(--shadow-md);
+  }
 }
 
 .lugar-recorrido-card--selected {
@@ -186,7 +195,7 @@
   position: absolute;
   top: 0.45rem;
   right: 0.45rem;
-  z-index: 2;
+  z-index: 5;
 }
 
 .dropdown-trigger.lugar-recorrido-card__menu-trigger {

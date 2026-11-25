@@ -63,6 +63,7 @@ describe("RecorridoPanel", () => {
       />
     );
 
+    expect(screen.getByText("Resumen del día")).toBeInTheDocument();
     expect(
       screen.getByText("1 parada · 6 min a pie · 500 m")
     ).toBeInTheDocument();

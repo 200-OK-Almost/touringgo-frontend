@@ -72,9 +72,20 @@ export function RecorridoPanel({
         </div>
 
         <div className="viaje-recorrido__footer">
-          <p>
-            {textoResumenDia ?? "Este día todavía no tiene paradas"}
-          </p>
+          {textoResumenDia ? (
+            <>
+              <span className="viaje-recorrido__footer-label">
+                Resumen del día
+              </span>
+              <p className="viaje-recorrido__footer-valor">
+                {textoResumenDia}
+              </p>
+            </>
+          ) : (
+            <p className="viaje-recorrido__footer-vacio">
+              Este día todavía no tiene paradas
+            </p>
+          )}
         </div>
       </div>
     </section>
