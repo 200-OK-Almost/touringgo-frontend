@@ -132,6 +132,12 @@ function ViajeMap({
             position="bottomRight"
           />
       </MapContainer>
+      {posiciones.length > 1 && (
+        <p className="viaje-map__leyenda-ruta">
+          <span className="viaje-map__leyenda-ruta-linea" aria-hidden="true" />
+          Tramos aproximados en línea recta
+        </p>
+      )}
       </div>
     );
 }

@@ -3,6 +3,38 @@
   width: 100%;
   height: 100%;
 }
+
+.viaje-map-wrapper {
+  position: relative;
+}
+
+.viaje-map__leyenda-ruta {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: calc(100% - 1rem);
+  margin: 0;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.2;
+  pointer-events: none;
+}
+
+.viaje-map__leyenda-ruta-linea {
+  flex-shrink: 0;
+  width: 18px;
+  border-top: 2px dashed var(--emerald-600);
+}
 .viaje-map-placeholder {
   display: flex;
   align-items: center;
