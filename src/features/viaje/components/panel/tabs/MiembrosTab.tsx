@@ -1,13 +1,14 @@
 import { useState } from "react";
-import type { ViajeDto } from "../../../types";
+import type { MiembroViajeDto, ViajeDto } from "../../../types";
 import { IoCheckmarkOutline, IoCopyOutline, IoPersonCircleOutline, IoShareSocialOutline } from "react-icons/io5";
 import "./MiembrosTab.css";
 
 interface MiembrosTabProps {
   viaje: ViajeDto;
+  miembros: MiembroViajeDto[]
 }
 
-export function MiembrosTab({ viaje }: MiembrosTabProps) {
+export function MiembrosTab({ viaje, miembros }: MiembrosTabProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopyCode = async () => {
@@ -55,13 +56,21 @@ export function MiembrosTab({ viaje }: MiembrosTabProps) {
         <div className="miembros-tab__section">
           <h3>Participantes</h3>
           <ul className="miembros-tab__list">
-            <li className="miembros-tab__item">
-              <IoPersonCircleOutline className="miembros-tab__avatar" />
-              <div className="miembros-tab__info">
-                <span className="miembros-tab__name">Organizador</span>
-                <span className="miembros-tab__role">Creador del viaje</span>
-              </div>
-            </li>
+            {miembros && miembros.map(miembro => 
+              <li className="miembros-tab__item">
+                <IoPersonCircleOutline className="miembros-tab__avatar" />
+                
+                <div className="miembros-tab__info">
+                  <span className="miembros-tab__name">{miembro.nombre}</span>
+                  <span className="miembros-tab__role">
+                    {miembro.rol == "Administrador" ? 
+                      "Creador del viaje" :
+                      "Miembro"
+                    }
+                  </span>
+                </div>
+              </li>
+            )}
           </ul>
         </div>
       </div>

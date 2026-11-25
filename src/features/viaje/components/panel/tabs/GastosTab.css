@@ -1,0 +1,177 @@
+.gastos-tab {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background-color: var(--bg);
+}
+
+.gastos-tab__header {
+  flex-shrink: 0;
+  padding: 0.85rem 1rem 0.65rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.gastos-tab__header h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.gastos-tab__subtitle {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.825rem;
+  color: var(--text-muted);
+}
+
+.gastos-tab__body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1rem 0.75rem 1rem 1rem;
+}
+
+.gastos-tab__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.gastos-tab__section__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gastos-tab__section h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Botón Agregar Gasto en el header de la sección */
+.gastos-tab__btn-agregar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--border-radius, 8px);
+  background-color: var(--primary-subtle, rgba(15, 118, 110, 0.1));
+  color: var(--primary, #0f766e);
+  border: 1px solid rgba(15, 118, 110, 0.2);
+  font-size: 0.825rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.gastos-tab__btn-agregar:hover {
+  background-color: var(--primary, #0f766e);
+  color: #ffffff;
+  border-color: var(--primary, #0f766e);
+  transform: translateY(-1px);
+}
+
+.gastos-tab__btn-agregar:active {
+  transform: translateY(0);
+}
+
+.gastos-tab__btn-icon {
+  font-size: 1.1rem;
+}
+
+/* Switcher Pendientes / Historial */
+.gastos-tab__subtab__switcher {
+  display: flex;
+  gap: 0.25rem;
+  width: fit-content;
+  padding: 0.25rem;
+  background-color: var(--bg-subtle, #f1f5f9);
+  border-radius: var(--border-radius, 8px);
+  font-size: 0.85rem;
+  border: 1px solid var(--border, #e2e8f0);
+}
+
+.gastos-tab__subtab__switcher__btn {
+  padding: 0.3rem 0.85rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--text-muted, #64748b);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.gastos-tab__subtab__switcher__btn p {
+  margin: 0;
+}
+
+.gastos-tab__subtab__switcher__btn:hover {
+  color: var(--text, #0f172a);
+}
+
+.gastos-tab__subtab__switcher__btn.subtab-selected {
+  background-color: #ffffff;
+  color: var(--primary, #0f766e);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.gastos-tab__gastos__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.gastos-tab__error {
+  margin: 0;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--danger-text, #ef4444);
+}
+
+/* Footer & Botón Liquidar Gastos */
+.gastos-tab__footer {
+  flex-shrink: 0;
+  padding: 0.85rem 1rem;
+  border-top: 1px solid var(--border);
+  background-color: var(--bg);
+}
+
+.gastos-tab__btn-liquidar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.65rem;
+  border-radius: var(--border-radius, 10px);
+  border: none;
+  background-color: var(--primary, #0f766e);
+  color: #ffffff;
+  font-size: 0.90rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 4px rgba(15, 118, 110, 0.15);
+}
+
+.gastos-tab__btn-liquidar:hover:not(:disabled) {
+  opacity: 0.92;
+  box-shadow: 0 4px 10px rgba(15, 118, 110, 0.25);
+}
+
+.gastos-tab__btn-liquidar:disabled {
+  background-color: var(--border, #e2e8f0);
+  color: var(--text-muted, #94a3b8);
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
