@@ -11,12 +11,9 @@ import { useState } from "react"
 import ViajeMap from "./ViajeMap"
 import type { LugarDetalleDto } from "../../../api/types"
 import { construirDiasViaje, obtenerBarriosPorDia } from "../lib/diasViaje"
-<<<<<<< HEAD
 import { calcularAnchosPanel } from "../lib/panelLayout"
-=======
 import GastosTab from "./panel/tabs/GastosTab";
 import type { ItinerarioViewModel, MiembroViajeDto, ParadaViewModel, ReferenciaParada, ViajeDto } from "../types"
->>>>>>> origin/main
 import { eliminarParada } from "../api/viajes"
 
 export interface ViajeViewProps {
