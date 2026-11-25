@@ -1,4 +1,5 @@
 import { useMediaQuery } from "../../../hooks/useMediaQuery";
+import { useViewportWidth } from "../../../hooks/useViewportWidth";
 import ViajePanel from "./panel/ViajePanel";
 import PanelSidebarNav, { type PanelTab } from "./panel/PanelSidebarNav";
 import ChatTab from "./panel/tabs/ChatTab";
@@ -10,8 +11,12 @@ import { useState } from "react"
 import ViajeMap from "./ViajeMap"
 import type { LugarDetalleDto } from "../../../api/types"
 import { construirDiasViaje, obtenerBarriosPorDia } from "../lib/diasViaje"
+<<<<<<< HEAD
+import { calcularAnchosPanel } from "../lib/panelLayout"
+=======
 import GastosTab from "./panel/tabs/GastosTab";
 import type { ItinerarioViewModel, MiembroViajeDto, ParadaViewModel, ReferenciaParada, ViajeDto } from "../types"
+>>>>>>> origin/main
 import { eliminarParada } from "../api/viajes"
 
 export interface ViajeViewProps {
@@ -36,14 +41,21 @@ export function ViajeView({
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isRecorridoOpen, setIsRecorridoOpen] = useState(true);
   const [referenciaParada, setReferenciaParada] = useState<ReferenciaParada | null>(null);
+  const [paradaSeleccionadaId, setParadaSeleccionadaId] = useState<string | null>(null);
+  const [paradaSeleccionadaOrigen, setParadaSeleccionadaOrigen] = useState<"mapa" | "lista" | null>(null);
+  const [isMobilePanelExpanded, setIsMobilePanelExpanded] = useState(false);
 
   const isMobile = useMediaQuery("(max-width: 900px)");
-  const isCompactPanel = useMediaQuery("(min-width: 901px) and (max-width: 1100px)");
+  const viewportWidth = useViewportWidth();
 
   // En desktop, si la pestaña quedó en 'recorrido' (por venir de móvil), volvemos a 'chat'
   const currentTab = !isMobile && activeTab === "recorrido" ? "chat" : activeTab;
 
   const handleTabChange = (tab: PanelTab) => {
+    if (isMobile) {
+      setIsMobilePanelExpanded(true);
+    }
+
     if (tab === "recorrido") {
       setActiveTab(tab);
       return;
@@ -77,6 +89,16 @@ export function ViajeView({
   const puedeEditar = viaje.puedeEditar === true
     && Boolean(itinerarioActual?.itinerario.version);
 
+  const paradaSeleccionadaIdValida =
+    paradaSeleccionadaId && itinerarioActual?.paradas.some(
+      (parada) => parada.parada.id === paradaSeleccionadaId
+    )
+      ? paradaSeleccionadaId
+      : null;
+
+  const paradaSeleccionadaOrigenValida =
+    paradaSeleccionadaIdValida ? paradaSeleccionadaOrigen : null;
+
   const handleEliminarParada = async (parada: ParadaViewModel) => {
     const version = itinerarioActual?.itinerario.version;
 
@@ -98,20 +120,43 @@ export function ViajeView({
       numeroDia: itinerarioActual.itinerario.numeroDia,
     });
 
+    if (paradaSeleccionadaId === parada.parada.id) {
+      setParadaSeleccionadaId(null);
+      setParadaSeleccionadaOrigen(null);
+    }
+
     await onItinerarioActualizado();
   };
 
   const handleDiaChange = (dia: number) => {
     setDiaActual(dia);
     setReferenciaParada(null);
+    setParadaSeleccionadaId(null);
+    setParadaSeleccionadaOrigen(null);
   };
 
-  // Calculamos el ancho ocupado por los paneles para el offset del mapa en desktop
-  const primaryWidth = isChatOpen ? (isCompactPanel ? 420 : 480) : 54;
-  const secondaryWidth = isCompactPanel ? 360 : 420;
-  const recorridoVisibleWidth = isChatOpen ? secondaryWidth - 24 : secondaryWidth;
-  const recorridoWidth = isRecorridoOpen ? recorridoVisibleWidth : 0;
-  const panelWidth = isMobile ? 0 : primaryWidth + recorridoWidth;
+  const handleSeleccionarParada = (
+    paradaId: string,
+    origen: "mapa" | "lista"
+  ) => {
+    setParadaSeleccionadaId(paradaId);
+    setParadaSeleccionadaOrigen(origen);
+
+    if (isMobile && origen === "lista") {
+      setIsMobilePanelExpanded(false);
+    }
+  };
+
+  const {
+    primaryWidth,
+    secondaryWidth,
+    panelWidth,
+  } = calcularAnchosPanel({
+    viewportWidth,
+    isMobile,
+    isChatOpen,
+    isRecorridoOpen,
+  });
 
   const toggleRecorridoPanel = () => setIsRecorridoOpen((prev) => !prev)
 
@@ -126,6 +171,8 @@ export function ViajeView({
           itinerarioActual={itinerarioActual}
           lugarPartida={lugarPartida}
           barrioDiaActual={barrioDiaActual}
+          paradaSeleccionadaId={paradaSeleccionadaIdValida}
+          onSeleccionarParada={handleSeleccionarParada}
           puedeEditar={puedeEditar}
           onEliminarParada={handleEliminarParada}
         />
@@ -165,6 +212,11 @@ export function ViajeView({
         <ViajeMap
           itinerarioViewModel={itinerarioActual}
           panelWidth={panelWidth}
+          isMobile={isMobile}
+          isMobilePanelExpanded={isMobilePanelExpanded}
+          paradaSeleccionadaId={paradaSeleccionadaIdValida}
+          paradaSeleccionadaOrigen={paradaSeleccionadaOrigenValida}
+          onSeleccionarParada={handleSeleccionarParada}
         />
       </section>
 
@@ -172,6 +224,10 @@ export function ViajeView({
         isMobile={isMobile}
         isChatOpen={isChatOpen}
         isRecorridoOpen={isRecorridoOpen}
+        primaryWidth={primaryWidth}
+        secondaryWidth={secondaryWidth}
+        isMobilePanelExpanded={isMobilePanelExpanded}
+        onToggleMobilePanel={() => setIsMobilePanelExpanded(prev => !prev)}
         sidebarNav={
           <PanelSidebarNav
             activeTab={currentTab}
@@ -191,6 +247,8 @@ export function ViajeView({
             onDiaChange={handleDiaChange}
             itinerarioActual={itinerarioActual}
             lugarPartida={lugarPartida}
+          paradaSeleccionadaId={paradaSeleccionadaIdValida}
+          onSeleccionarParada={handleSeleccionarParada}
             puedeEditar={puedeEditar}
             onEliminarParada={handleEliminarParada}
           />

@@ -87,6 +87,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg-page);
 }
 
@@ -106,6 +107,17 @@ button {
   background: none;
 }
 
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 img,
 svg {
   display: block;
@@ -114,6 +126,7 @@ svg {
 
 #root {
   min-height: 100vh;
+  min-height: 100dvh;
   height: 100%;
   /* para poder usar flex:1 en componentes y centrar verticalmente */
   display: flex;

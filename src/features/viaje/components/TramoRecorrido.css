@@ -1,0 +1,26 @@
+.tramo-recorrido {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  align-self: flex-start;
+  position: relative;
+  z-index: 1;
+  margin-left: calc(
+    0.75rem + var(--lugar-thumb-size, 56px) / 2 + 0.35rem
+  );
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.tramo-recorrido__icon {
+  font-size: 1rem;
+  color: var(--primary);
+  flex-shrink: 0;
+}

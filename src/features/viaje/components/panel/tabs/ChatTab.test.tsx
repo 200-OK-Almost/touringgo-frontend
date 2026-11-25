@@ -185,9 +185,7 @@ function renderChat({
 }
 
 async function enviarTexto(texto: string) {
-  const input = await screen.findByPlaceholderText(
-    "Escribe una consulta a tu asistente de viaje..."
-  );
+  const input = await screen.findByPlaceholderText("Escribe tu consulta...");
 
   fireEvent.change(input, { target: { value: texto } });
   fireEvent.click(screen.getByRole("button", { name: "Enviar mensaje" }));
@@ -435,7 +433,7 @@ describe("ChatTab", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByPlaceholderText(
-        "Escribe una consulta a tu asistente de viaje..."
+        "Escribe tu consulta..."
       )
     ).toHaveValue("café");
   });
@@ -527,5 +525,77 @@ describe("ChatTab", () => {
 
     expect(await screen.findByText("fallo de prueba")).toBeInTheDocument();
     expect(onReferenciaUsada).not.toHaveBeenCalled();
+  });
+
+  it("ajusta la altura del textarea y respeta el maximo", async () => {
+    renderChat();
+
+    const input = await screen.findByLabelText(
+      "Escribe una consulta a tu asistente de viaje"
+    );
+    await waitFor(() => expect(input).not.toBeDisabled());
+
+    let scrollHeight = 120;
+    Object.defineProperty(input, "scrollHeight", {
+      configurable: true,
+      get: () => scrollHeight,
+    });
+
+    fireEvent.change(input, {
+      target: { value: "linea 1\nlinea 2\nlinea 3" },
+    });
+
+    await waitFor(() => {
+      expect(input.style.height).toBe("120px");
+      expect(input.style.overflowY).toBe("hidden");
+    });
+
+    scrollHeight = 300;
+    fireEvent.change(input, {
+      target: { value: "linea 1\nlinea 2\nlinea 3\nlinea 4\nlinea 5" },
+    });
+
+    await waitFor(() => {
+      expect(input.style.height).toBe("144px");
+      expect(input.style.overflowY).toBe("auto");
+    });
+  });
+
+  it("resetea el textarea al enviar y mantiene el boton al costado", async () => {
+    enviarMensajeMock.mockResolvedValue(crearRespuesta());
+    renderChat();
+
+    const input = await screen.findByLabelText(
+      "Escribe una consulta a tu asistente de viaje"
+    );
+    const send = screen.getByRole("button", { name: "Enviar mensaje" });
+
+    await waitFor(() => expect(input).not.toBeDisabled());
+
+    expect(input.parentElement).toHaveClass("chat-tab__input-box");
+    expect(input.parentElement?.parentElement).toHaveClass("chat-tab__input-row");
+    expect(send.parentElement).toBe(input.parentElement?.parentElement);
+    expect(send.closest(".chat-tab__input-box")).toBeNull();
+    expect(send).toBeDisabled();
+
+    Object.defineProperty(input, "scrollHeight", {
+      configurable: true,
+      get: () => 120,
+    });
+
+    fireEvent.change(input, { target: { value: "cafe" } });
+
+    await waitFor(() => {
+      expect(input.style.height).toBe("120px");
+      expect(send).not.toBeDisabled();
+    });
+
+    fireEvent.click(send);
+
+    await waitFor(() => {
+      expect(input).toHaveValue("");
+      expect(input.style.height).toBe("");
+      expect(input.style.overflowY).toBe("hidden");
+    });
   });
 });

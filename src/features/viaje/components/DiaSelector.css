@@ -65,6 +65,21 @@
   color: white;
 }
 
+.dia-selector__item--sin-itinerario {
+  border-color: var(--border);
+  border-style: dashed;
+  color: var(--text-soft);
+  opacity: 0.75;
+}
+
+.dia-selector__item--sin-itinerario.active {
+  opacity: 1;
+  border-style: solid;
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+}
+
 .dia-selector__numero {
   font-weight: 600;
 }
@@ -77,4 +92,20 @@
 
 .dia-selector__item.active .dia-selector__fecha {
   opacity: 0.9;
+}
+
+@media (max-width: 900px) {
+  .dia-selector {
+    padding: 0.25rem 0.35rem;
+  }
+
+  .dia-selector__item {
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .dia-selector__single {
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+  }
 }

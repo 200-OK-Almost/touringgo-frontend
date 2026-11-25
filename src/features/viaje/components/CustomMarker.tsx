@@ -1,4 +1,4 @@
-import { Marker, Popup } from "react-leaflet";
+import { Marker } from "react-leaflet";
 import { divIcon } from "leaflet";
 import type { LatLngExpression } from "leaflet";
 import "./CustomMarker.css";
@@ -7,7 +7,8 @@ interface CustomMarkerProps {
   position: LatLngExpression;
   number?: number;
   variant?: "numbered" | "origin";
-  children?: React.ReactNode;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
 const ORIGIN_HTML = `
@@ -23,19 +24,20 @@ const CustomMarker = ({
   position,
   number,
   variant = "numbered",
-  children,
+  selected = false,
+  onSelect,
 }: CustomMarkerProps) => {
   const html =
     variant === "origin"
       ? ORIGIN_HTML
       : `
-        <div class="marker-content">
+        <div class="marker-content${selected ? " marker-content--selected" : ""}">
             <span>${number ?? ""}</span>
         </div>
     `;
 
   const icon = divIcon({
-    className: "custom-marker",
+    className: `custom-marker${selected ? " custom-marker--selected" : ""}`,
     html,
     iconSize: [36, 36],
     iconAnchor: [18, 36],
@@ -45,11 +47,9 @@ const CustomMarker = ({
     <Marker
       position={position}
       icon={icon}
-    >
-      <Popup offset={[0, -24]}>
-        {children}
-      </Popup>
-    </Marker>
+      zIndexOffset={selected ? 1000 : 0}
+      eventHandlers={onSelect ? { click: onSelect } : undefined}
+    />
   );
 };
 

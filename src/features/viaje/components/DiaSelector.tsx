@@ -30,14 +30,15 @@ function DiaSelector({dias, diaActual, onDiaChange}: DiaSelectorProps) {
       <div className="dia-selector">
         {dias.map(dia => {
           const fecha = dia.fecha ? formatearFechaConDia(dia.fecha) : null;
-          const etiqueta = `Día ${dia.numeroDia}${fecha ? ` · ${fecha}` : ""}`;
+          const tieneItinerario = dia.tieneItinerario;
+          const etiqueta = `Día ${dia.numeroDia}${fecha ? ` · ${fecha}` : ""}${tieneItinerario ? "" : " · sin itinerario"}`;
           const activo = dia.numeroDia === diaActual;
 
           return (
             <button
               key={dia.numeroDia}
               type="button"
-              className={`dia-selector__item ${activo ? "active" : ""}`}
+              className={`dia-selector__item ${activo ? "active" : ""} ${tieneItinerario ? "" : "dia-selector__item--sin-itinerario"}`}
               aria-label={etiqueta}
               aria-pressed={activo}
               title={etiqueta}

@@ -4,6 +4,7 @@ import type { LatLngExpression } from "leaflet";
 import type { ItinerarioViewModel } from "../types";
 import "./ViajeMap.css"
 import MapBounds from "./MapBounds";
+import MapFocus from "./MapFocus";
 import CustomMarker from "./CustomMarker";
 import { CustomZoomControl } from "./CustomZoomControl";
 
@@ -11,10 +12,23 @@ const ROUTE_COLOR = "#059669";
 
 interface ViajeMapProps {
   itinerarioViewModel: ItinerarioViewModel | null;
-  panelWidth: number
+  panelWidth: number;
+  isMobile?: boolean;
+  isMobilePanelExpanded?: boolean;
+  paradaSeleccionadaId?: string | null;
+  paradaSeleccionadaOrigen?: "mapa" | "lista" | null;
+  onSeleccionarParada?: (paradaId: string, origen: "mapa") => void;
 }
 
-function ViajeMap({ itinerarioViewModel, panelWidth }: ViajeMapProps) {
+function ViajeMap({
+  itinerarioViewModel,
+  panelWidth,
+  isMobile = false,
+  isMobilePanelExpanded = false,
+  paradaSeleccionadaId = null,
+  paradaSeleccionadaOrigen = null,
+  onSeleccionarParada,
+}: ViajeMapProps) {
     const posiciones = useMemo<LatLngExpression[]>(() => {
       if (!itinerarioViewModel) return [];
 
@@ -32,10 +46,21 @@ function ViajeMap({ itinerarioViewModel, panelWidth }: ViajeMapProps) {
       return paradasPosiciones;
     }, [itinerarioViewModel]);
 
+    const posicionSeleccionada = useMemo<LatLngExpression | null>(() => {
+      if (!itinerarioViewModel || !paradaSeleccionadaId || paradaSeleccionadaOrigen !== "lista") return null;
+
+      const parada = itinerarioViewModel.paradas.find(
+        (parada) => parada.parada.id === paradaSeleccionadaId
+      );
+      if (!parada) return null;
+
+      return [parada.lugar.latitud, parada.lugar.longitud];
+    }, [itinerarioViewModel, paradaSeleccionadaId, paradaSeleccionadaOrigen]);
+
     if (!itinerarioViewModel) {
       return (
         <div className="viaje-map-placeholder">
-          <p>Generando itinerario...</p>
+          <p>Este día todavía no tiene itinerario.</p>
         </div>
     )}
   
@@ -57,9 +82,14 @@ function ViajeMap({ itinerarioViewModel, panelWidth }: ViajeMapProps) {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          <MapBounds 
+          <MapBounds
             panelWidth={panelWidth}
-            positions={posiciones} 
+            positions={posiciones}
+            isMobile={isMobile}
+            isMobilePanelExpanded={isMobilePanelExpanded}
+          />
+          <MapFocus
+            posicionSeleccionada={posicionSeleccionada}
           />
           
           {/* punto de partida */}
@@ -72,25 +102,23 @@ function ViajeMap({ itinerarioViewModel, panelWidth }: ViajeMapProps) {
                   Number(itinerarioViewModel.itinerario.origenLongitud),
                 ]}
                 variant="origin"
-              >
-                <strong>Punto de partida</strong>
-                <br />
-                {itinerarioViewModel.itinerario.origenDescripcion}
-              </CustomMarker>
+              />
             )}
           {paradas.map((parada, index) => (
             <CustomMarker
-              key={parada.lugar.id}
+              key={parada.parada.id}
               position={[
                   parada.lugar.latitud,
                   parada.lugar.longitud
               ]}
               number={index + 1}
-            >
-              <strong>{index + 1}. {parada.lugar.nombre}</strong>
-              <br />
-              {parada.lugar.direccion}
-            </CustomMarker>
+              selected={parada.parada.id === paradaSeleccionadaId}
+              onSelect={
+                onSeleccionarParada
+                  ? () => onSeleccionarParada(parada.parada.id, "mapa")
+                  : undefined
+              }
+            />
           ))}
 
           <Polyline
@@ -104,6 +132,12 @@ function ViajeMap({ itinerarioViewModel, panelWidth }: ViajeMapProps) {
             position="bottomRight"
           />
       </MapContainer>
+      {posiciones.length > 1 && (
+        <p className="viaje-map__leyenda-ruta">
+          <span className="viaje-map__leyenda-ruta-linea" aria-hidden="true" />
+          Tramos aproximados en línea recta
+        </p>
+      )}
       </div>
     );
 }

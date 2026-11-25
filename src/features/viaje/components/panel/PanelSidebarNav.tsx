@@ -35,6 +35,8 @@ export function PanelSidebarNav({
           className={`panel-sidebar-nav__btn panel-sidebar-nav__btn--chat ${activeTab === "chat" ? "active" : ""}`}
           onClick={() => onTabChange("chat")}
           title="Chat con Turi"
+          aria-label="Chat con Turi"
+          aria-current={activeTab === "chat" ? "page" : undefined}
         >
           <span className="panel-sidebar-nav__chat-icon">
             <IoChatbubbleOutline className="panel-sidebar-nav__icon" />
@@ -47,7 +49,7 @@ export function PanelSidebarNav({
               aria-hidden="true"
             />
           </span>
-          <span className="panel-sidebar-nav__chat-label">Chat</span>
+          <span className="panel-sidebar-nav__chat-label panel-sidebar-nav__label">Chat</span>
         </button>
 
         <button
@@ -55,9 +57,11 @@ export function PanelSidebarNav({
           className={`panel-sidebar-nav__btn ${activeTab === "recorrido" ? "active" : ""}`}
           onClick={() => onTabChange("recorrido")}
           title="Itinerario y paradas"
+          aria-label="Itinerario y paradas"
+          aria-current={activeTab === "recorrido" ? "page" : undefined}
         >
           <IoMapOutline className="panel-sidebar-nav__icon" />
-          <span>Recorrido</span>
+          <span className="panel-sidebar-nav__label">Recorrido</span>
         </button>
 
         <button
@@ -65,9 +69,11 @@ export function PanelSidebarNav({
           className={`panel-sidebar-nav__btn ${activeTab === "miembros" ? "active" : ""}`}
           onClick={() => onTabChange("miembros")}
           title="Miembros del viaje"
+          aria-label="Miembros del viaje"
+          aria-current={activeTab === "miembros" ? "page" : undefined}
         >
           <IoPeopleOutline className="panel-sidebar-nav__icon" />
-          <span>Miembros</span>
+          <span className="panel-sidebar-nav__label">Miembros</span>
         </button>
 
         <button
@@ -85,9 +91,11 @@ export function PanelSidebarNav({
           className={`panel-sidebar-nav__btn ${activeTab === "ajustes" ? "active" : ""}`}
           onClick={() => onTabChange("ajustes")}
           title="Ajustes"
+          aria-label="Ajustes"
+          aria-current={activeTab === "ajustes" ? "page" : undefined}
         >
           <IoSettingsOutline className="panel-sidebar-nav__icon" />
-          <span>Ajustes</span>
+          <span className="panel-sidebar-nav__label">Ajustes</span>
         </button>
       </nav>
     );
@@ -101,6 +109,8 @@ export function PanelSidebarNav({
           className={`panel-sidebar-nav__btn panel-sidebar-nav__btn--chat ${activeTab === "chat" && isChatOpen ? "active" : ""}`}
           onClick={() => onTabChange("chat")}
           title={activeTab === "chat" && isChatOpen ? "Ocultar chat" : "Chat con Turi"}
+          aria-label={activeTab === "chat" && isChatOpen ? "Ocultar chat" : "Chat con Turi"}
+          aria-pressed={activeTab === "chat" && isChatOpen}
         >
           <span className="panel-sidebar-nav__chat-icon">
             <IoChatbubbleOutline className="panel-sidebar-nav__icon" />
@@ -120,6 +130,8 @@ export function PanelSidebarNav({
           className={`panel-sidebar-nav__btn ${activeTab === "miembros" && isChatOpen ? "active" : ""}`}
           onClick={() => onTabChange("miembros")}
           title={activeTab === "miembros" && isChatOpen ? "Ocultar miembros" : "Miembros del viaje"}
+          aria-label={activeTab === "miembros" && isChatOpen ? "Ocultar miembros" : "Miembros del viaje"}
+          aria-pressed={activeTab === "miembros" && isChatOpen}
         >
           <IoPeopleOutline className="panel-sidebar-nav__icon" />
         </button>
@@ -141,6 +153,8 @@ export function PanelSidebarNav({
             className={`panel-sidebar-nav__btn ${isRecorridoOpen ? "active-recorrido" : ""}`}
             onClick={onToggleRecorrido}
             title={isRecorridoOpen ? "Ocultar panel de recorrido" : "Mostrar panel de recorrido"}
+            aria-label={isRecorridoOpen ? "Ocultar panel de recorrido" : "Mostrar panel de recorrido"}
+            aria-pressed={isRecorridoOpen}
           >
             <IoMapOutline className="panel-sidebar-nav__icon" />
           </button>
@@ -151,6 +165,8 @@ export function PanelSidebarNav({
           className={`panel-sidebar-nav__btn ${activeTab === "ajustes" && isChatOpen ? "active" : ""}`}
           onClick={() => onTabChange("ajustes")}
           title={activeTab === "ajustes" && isChatOpen ? "Ocultar ajustes" : "Ajustes del viaje"}
+          aria-label={activeTab === "ajustes" && isChatOpen ? "Ocultar ajustes" : "Ajustes del viaje"}
+          aria-pressed={activeTab === "ajustes" && isChatOpen}
         >
           <IoSettingsOutline className="panel-sidebar-nav__icon" />
         </button>
