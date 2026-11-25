@@ -1,9 +1,9 @@
 import { Link, useParams } from "react-router-dom";
 import Navbar from "../components/layout/Navbar"
 import ViajeView from "../features/viaje/components/ViajeView";
-import { useState, useEffect } from "react";
-import type { ItinerarioDto, ItinerarioViewModel, ParadaItinerarioDto, ParadaViewModel, ViajeDto } from "../features/viaje/types";
-import { generateViaje, getViaje } from "../features/viaje/api/viajes";
+import { useState, useEffect, useMemo } from "react";
+import type { ItinerarioDto, ItinerarioViewModel, MiembroViajeDto, ParadaItinerarioDto, ParadaViewModel, ViajeDto } from "../features/viaje/types";
+import { generateViaje, getMiembrosViaje, getViaje } from "../features/viaje/api/viajes";
 import type { LugarDetalleDto } from "../api/types";
 import { getLugar, getLugaresDetalle } from "../api/lugares";
 import { ViajeViewSkeleton } from "../features/viaje/components/ViajeViewSkeleton";
@@ -32,6 +32,14 @@ function ViajePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [lugarPartida, setLugarPartida] = useState<LugarDetalleDto | null>(null)
+    const [miembros, setMiembros] = useState<MiembroViajeDto[]>([])
+
+    const miembrosPorId = useMemo(
+      () => new Map(
+        miembros.map(m => [m.usuarioId, m])
+      ),
+      [miembros]
+    );
 
     useEffect(() => {
       const controller = new AbortController();
@@ -71,6 +79,11 @@ function ViajePage() {
           const lugarPartidaData = await getLugar(viajeData.lugarPartidaId)
           setLugarPartida(lugarPartidaData)
         }
+
+        // Obtener miembros
+        // El usuario creador se agrega como administrador al momento de crear el viaje
+        const miembrosData = await getMiembrosViaje(viajeData.id)
+        setMiembros(miembrosData)
 
         if (controller.signal.aborted) return;
         setViaje(viajeData);
@@ -207,6 +220,8 @@ function ViajePage() {
       viaje={viaje}
       itinerariosViewModel={itinerariosViewModel}
       lugarPartida={lugarPartida}
+      miembros={miembros}
+      miembrosPorId={miembrosPorId}
       onItinerarioActualizado={recargarViaje}
     />
     </>

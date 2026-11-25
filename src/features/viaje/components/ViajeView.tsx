@@ -8,17 +8,23 @@ import AjustesTab from "./panel/tabs/AjustesTab";
 import RecorridoPanel from "./panel/recorrido/RecorridoPanel";
 import "./ViajeView.css";
 import { useState } from "react"
-import type { ItinerarioViewModel, ParadaViewModel, ReferenciaParada, ViajeDto } from "../types"
 import ViajeMap from "./ViajeMap"
 import type { LugarDetalleDto } from "../../../api/types"
 import { construirDiasViaje, obtenerBarriosPorDia } from "../lib/diasViaje"
+<<<<<<< HEAD
 import { calcularAnchosPanel } from "../lib/panelLayout"
+=======
+import GastosTab from "./panel/tabs/GastosTab";
+import type { ItinerarioViewModel, MiembroViajeDto, ParadaViewModel, ReferenciaParada, ViajeDto } from "../types"
+>>>>>>> origin/main
 import { eliminarParada } from "../api/viajes"
 
 export interface ViajeViewProps {
   viaje: ViajeDto;
   itinerariosViewModel: ItinerarioViewModel[] | null;
   lugarPartida: LugarDetalleDto | null;
+  miembros: MiembroViajeDto[]
+  miembrosPorId?: Map<string, MiembroViajeDto>
   onItinerarioActualizado: () => Promise<void>;
 }
 
@@ -26,6 +32,8 @@ export function ViajeView({
   viaje,
   itinerariosViewModel,
   lugarPartida,
+  miembros,
+  miembrosPorId,
   onItinerarioActualizado,
 }: ViajeViewProps) {
   const [diaActual, setDiaActual] = useState(1);
@@ -172,8 +180,10 @@ export function ViajeView({
     }
 
     switch (currentTab) {
+      case "gastos":
+        return <GastosTab viaje={viaje} miembros={miembros} miembrosPorId={miembrosPorId}/>;
       case "miembros":
-        return <MiembrosTab viaje={viaje} />;
+        return <MiembrosTab viaje={viaje} miembros={miembros}/>;
       case "ajustes":
         return <AjustesTab viaje={viaje} />;
       case "chat":

@@ -3,11 +3,12 @@ import {
   IoMapOutline,
   IoPeopleOutline,
   IoSettingsOutline,
+  IoWalletOutline,
   IoSparkles,
 } from "react-icons/io5";
 import "./PanelSidebarNav.css";
 
-export type PanelTab = "chat" | "miembros" | "ajustes" | "recorrido";
+export type PanelTab = "chat" | "miembros" | "gastos" | "ajustes" | "recorrido";
 
 interface PanelSidebarNavProps {
   activeTab: PanelTab;
@@ -77,6 +78,16 @@ export function PanelSidebarNav({
 
         <button
           type="button"
+          className={`panel-sidebar-nav__btn ${activeTab === "gastos" ? "active" : ""}`}
+          onClick={() => onTabChange("gastos")}
+          title="Gastos compartidos"
+        >
+          <IoWalletOutline className="panel-sidebar-nav__icon" />
+          <span>Gastos</span>
+        </button>
+
+        <button
+          type="button"
           className={`panel-sidebar-nav__btn ${activeTab === "ajustes" ? "active" : ""}`}
           onClick={() => onTabChange("ajustes")}
           title="Ajustes"
@@ -123,6 +134,15 @@ export function PanelSidebarNav({
           aria-pressed={activeTab === "miembros" && isChatOpen}
         >
           <IoPeopleOutline className="panel-sidebar-nav__icon" />
+        </button>
+
+        <button
+          type="button"
+          className={`panel-sidebar-nav__btn ${activeTab === "gastos" && isChatOpen ? "active" : ""}`}
+          onClick={() => onTabChange("gastos")}
+          title={activeTab === "gastos" && isChatOpen ? "Ocultar gastos" : "Gastos compartidos"}
+        >
+          <IoWalletOutline className="panel-sidebar-nav__icon" />
         </button>
       </div>
 
