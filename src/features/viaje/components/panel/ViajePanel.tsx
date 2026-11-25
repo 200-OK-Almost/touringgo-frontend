@@ -5,6 +5,8 @@ interface ViajePanelProps {
   isMobile: boolean;
   isChatOpen: boolean;
   isRecorridoOpen: boolean;
+  primaryWidth?: number;
+  secondaryWidth?: number;
   isMobilePanelExpanded?: boolean;
   onToggleMobilePanel?: () => void;
   sidebarNav: React.ReactNode;
@@ -16,6 +18,8 @@ export function ViajePanel({
   isMobile,
   isChatOpen,
   isRecorridoOpen,
+  primaryWidth,
+  secondaryWidth,
   isMobilePanelExpanded = false,
   onToggleMobilePanel,
   sidebarNav,
@@ -48,11 +52,20 @@ export function ViajePanel({
     );
   }
 
+  const panelStyle =
+    primaryWidth != null && secondaryWidth != null
+      ? ({
+          "--panel-primary-width": `${primaryWidth}px`,
+          "--panel-secondary-width": `${secondaryWidth}px`,
+        } as React.CSSProperties)
+      : undefined;
+
   return (
     <aside
       className={`viaje-panel viaje-panel--desktop ${
         isRecorridoOpen ? "with-recorrido" : "without-recorrido"
       } ${isChatOpen ? "" : "chat-collapsed"}`}
+      style={panelStyle}
       aria-label="Panel de control del viaje"
     >
       <div className="viaje-panel__primary-card">

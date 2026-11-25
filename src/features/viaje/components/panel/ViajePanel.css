@@ -8,8 +8,8 @@
    DESKTOP (Flotante sobre el mapa)
    ========================================= */
 .viaje-panel--desktop {
-  --panel-primary-width: 480px;
-  --panel-secondary-width: 420px;
+  --panel-primary-width: clamp(360px, 36vw, 480px);
+  --panel-secondary-width: clamp(360px, 32vw, 420px);
 
   position: absolute;
   top: 0.5rem;
@@ -135,14 +135,6 @@
   width: 100%;
   min-width: 0;
   height: 100%;
-}
-
-/* Breakpoint intermedio: reduce los paneles para dejar más espacio al mapa */
-@media (min-width: 901px) and (max-width: 1100px) {
-  .viaje-panel--desktop {
-    --panel-primary-width: 420px;
-    --panel-secondary-width: 360px;
-  }
 }
 
 /* =========================================
