@@ -194,3 +194,11 @@
 .lugar-recorrido-card__quitar-icon {
   font-size: 0.95rem;
 }
+
+@media (max-width: 900px) {
+  .lugar-recorrido-card__quitar {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.5rem 0.75rem;
+  }
+}

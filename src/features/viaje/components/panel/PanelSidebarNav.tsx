@@ -34,6 +34,7 @@ export function PanelSidebarNav({
           className={`panel-sidebar-nav__btn panel-sidebar-nav__btn--chat ${activeTab === "chat" ? "active" : ""}`}
           onClick={() => onTabChange("chat")}
           title="Chat con Turi"
+          aria-label="Chat con Turi"
         >
           <span className="panel-sidebar-nav__chat-icon">
             <IoChatbubbleOutline className="panel-sidebar-nav__icon" />
@@ -46,7 +47,7 @@ export function PanelSidebarNav({
               aria-hidden="true"
             />
           </span>
-          <span className="panel-sidebar-nav__chat-label">Chat</span>
+          <span className="panel-sidebar-nav__chat-label panel-sidebar-nav__label">Chat</span>
         </button>
 
         <button
@@ -54,9 +55,10 @@ export function PanelSidebarNav({
           className={`panel-sidebar-nav__btn ${activeTab === "recorrido" ? "active" : ""}`}
           onClick={() => onTabChange("recorrido")}
           title="Itinerario y paradas"
+          aria-label="Itinerario y paradas"
         >
           <IoMapOutline className="panel-sidebar-nav__icon" />
-          <span>Recorrido</span>
+          <span className="panel-sidebar-nav__label">Recorrido</span>
         </button>
 
         <button
@@ -64,9 +66,10 @@ export function PanelSidebarNav({
           className={`panel-sidebar-nav__btn ${activeTab === "miembros" ? "active" : ""}`}
           onClick={() => onTabChange("miembros")}
           title="Miembros del viaje"
+          aria-label="Miembros del viaje"
         >
           <IoPeopleOutline className="panel-sidebar-nav__icon" />
-          <span>Miembros</span>
+          <span className="panel-sidebar-nav__label">Miembros</span>
         </button>
 
         <button
@@ -74,9 +77,10 @@ export function PanelSidebarNav({
           className={`panel-sidebar-nav__btn ${activeTab === "ajustes" ? "active" : ""}`}
           onClick={() => onTabChange("ajustes")}
           title="Ajustes"
+          aria-label="Ajustes"
         >
           <IoSettingsOutline className="panel-sidebar-nav__icon" />
-          <span>Ajustes</span>
+          <span className="panel-sidebar-nav__label">Ajustes</span>
         </button>
       </nav>
     );

@@ -93,3 +93,19 @@
 .dia-selector__item.active .dia-selector__fecha {
   opacity: 0.9;
 }
+
+@media (max-width: 900px) {
+  .dia-selector {
+    padding: 0.25rem 0.35rem;
+  }
+
+  .dia-selector__item {
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .dia-selector__single {
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+  }
+}

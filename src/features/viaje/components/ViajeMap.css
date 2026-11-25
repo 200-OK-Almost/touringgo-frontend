@@ -78,6 +78,14 @@
   background-color: var(--white-active);
 }
 
+@media (max-width: 900px) {
+  .map-zoom-btn {
+    width: 44px;
+    height: 44px;
+    padding: 0.25rem;
+  }
+}
+
 @media (max-width: 640px) {
   .map-zoom-btn-container {
     gap: .35rem;
