@@ -28,6 +28,22 @@ export function eliminarViaje(id: string): Promise<void> {
   return http.delete<void>(`${VIAJES_BASE}/${id}`)
 }
 
+export function eliminarParada(
+  viajeId: string,
+  numeroDia: number,
+  paradaId: string,
+  version: string
+): Promise<ItinerarioDto[]> {
+  const parametros = new URLSearchParams({
+    numeroDia: String(numeroDia),
+    version,
+  })
+
+  return http.delete<ItinerarioDto[]>(
+    `${VIAJES_BASE}/${viajeId}/itinerario/paradas/${paradaId}?${parametros.toString()}`
+  )
+}
+
 export function construirViajeUpdateDto(viaje: ViajeDto, titulo: string): ViajeUpdateDto {
   return {
     titulo,

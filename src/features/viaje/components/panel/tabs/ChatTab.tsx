@@ -5,6 +5,7 @@ import type {
   AsistenteCapacidadesDto,
   ItinerarioViewModel,
   RecomendacionLugarDto,
+  ReferenciaParada,
   ViajeDto,
 } from "../../../types";
 import {
@@ -16,6 +17,7 @@ import { ApiError } from "../../../../../api/client";
 import SmartImage from "../../../../../components/SmartImage";
 import { formatearPuntuacion } from "../../../../../lib/format";
 import {
+  IoClose,
   IoLocationOutline,
   IoPaperPlane,
   IoStar,
@@ -27,6 +29,8 @@ interface ChatTabProps {
   viaje: ViajeDto;
   numeroDia: number;
   itinerarioActual: ItinerarioViewModel | null;
+  referenciaParada?: ReferenciaParada | null;
+  onReferenciaUsada?: () => void;
   onItinerarioActualizado: () => Promise<void>;
 }
 
@@ -252,6 +256,8 @@ export function ChatTab({
   viaje,
   numeroDia,
   itinerarioActual,
+  referenciaParada = null,
+  onReferenciaUsada,
   onItinerarioActualizado,
 }: ChatTabProps) {
   const [inputText, setInputText] = useState("");
@@ -304,6 +310,8 @@ export function ChatTab({
   const asistenteHabilitado = capacidades?.habilitado === true;
   const asistenteNoDisponible = !cargandoCapacidades && !asistenteHabilitado;
   const bloqueado = cargandoCapacidades || asistenteNoDisponible;
+  const referenciaActiva =
+    referenciaParada?.numeroDia === numeroDia ? referenciaParada : null;
 
   const handleRecargar = async () => {
     if (recargando) {
@@ -345,8 +353,13 @@ export function ChatTab({
       const respuesta = await enviarMensajeAsistente(viaje.id, {
         mensaje: texto,
         numeroDia,
+        referenciaLugarId: referenciaActiva?.lugarId ?? null,
         historial,
       });
+
+      if (referenciaActiva) {
+        onReferenciaUsada?.();
+      }
 
       setMensajes((prev) => [
         ...prev,
@@ -567,13 +580,29 @@ export function ChatTab({
         {enviando && (
           <div className="chat-message ai-message chat-message--loading">
             <div className="chat-message__body">
-              <p>Turi está buscando lugares...</p>
+              <p>Turi está pensando...</p>
             </div>
           </div>
         )}
       </div>
 
       <div className="chat-tab__input-box">
+        {referenciaActiva && (
+          <div className="chat-tab__referencia">
+            <span className="chat-tab__referencia-texto">
+              <IoLocationOutline />
+              Cerca de {referenciaActiva.nombre}
+            </span>
+            <button
+              type="button"
+              className="chat-tab__referencia-quitar"
+              onClick={onReferenciaUsada}
+              aria-label="Quitar referencia de cercanía"
+            >
+              <IoClose />
+            </button>
+          </div>
+        )}
         <textarea
           className="chat-tab__input"
           placeholder={

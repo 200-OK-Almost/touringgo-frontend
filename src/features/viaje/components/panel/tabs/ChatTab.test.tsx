@@ -7,6 +7,7 @@ import type {
   AsistenteResponseDto,
   ItinerarioViewModel,
   RecomendacionLugarDto,
+  ReferenciaParada,
   ViajeDto,
 } from "../../../types";
 import {
@@ -158,11 +159,15 @@ function crearRespuesta(
 
 interface RenderOptions {
   itinerarioActual?: ItinerarioViewModel | null;
+  referenciaParada?: ReferenciaParada | null;
+  onReferenciaUsada?: () => void;
   onItinerarioActualizado?: () => Promise<void>;
 }
 
 function renderChat({
   itinerarioActual = crearItinerario(),
+  referenciaParada = null,
+  onReferenciaUsada = vi.fn(),
   onItinerarioActualizado = vi.fn().mockResolvedValue(undefined),
 }: RenderOptions = {}) {
   render(
@@ -170,11 +175,13 @@ function renderChat({
       viaje={crearViaje()}
       numeroDia={1}
       itinerarioActual={itinerarioActual}
+      referenciaParada={referenciaParada}
+      onReferenciaUsada={onReferenciaUsada}
       onItinerarioActualizado={onItinerarioActualizado}
     />
   );
 
-  return { onItinerarioActualizado };
+  return { onItinerarioActualizado, onReferenciaUsada };
 }
 
 async function enviarTexto(texto: string) {
@@ -193,6 +200,30 @@ beforeEach(() => {
 });
 
 describe("ChatTab", () => {
+  it("muestra que Turi está pensando mientras espera la respuesta", async () => {
+    let resolver: ((respuesta: AsistenteResponseDto) => void) | undefined;
+    enviarMensajeMock.mockReturnValue(
+      new Promise<AsistenteResponseDto>((resolve) => {
+        resolver = resolve;
+      })
+    );
+
+    renderChat();
+    await enviarTexto("cafe");
+
+    expect(
+      await screen.findByText("Turi está pensando...")
+    ).toBeInTheDocument();
+
+    resolver?.(crearRespuesta());
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText("Turi está pensando...")
+      ).not.toBeInTheDocument();
+    });
+  });
+
   it("envía el mensaje y muestra recomendaciones", async () => {
     enviarMensajeMock.mockResolvedValue(
       crearRespuesta({ advertencia: "Usé el catálogo filtrado." })
@@ -407,5 +438,94 @@ describe("ChatTab", () => {
         "Escribe una consulta a tu asistente de viaje..."
       )
     ).toHaveValue("café");
+  });
+
+  it("muestra la referencia de cercanía y la envía en el próximo mensaje", async () => {
+    enviarMensajeMock.mockResolvedValue(crearRespuesta());
+    const referencia: ReferenciaParada = {
+      lugarId: LUGAR_ID,
+      nombre: "Museo eliminado",
+      turno: "Tarde",
+      numeroDia: 1,
+    };
+    const { onReferenciaUsada } = renderChat({
+      referenciaParada: referencia,
+    });
+
+    expect(screen.getByText(/Cerca de Museo eliminado/)).toBeInTheDocument();
+
+    await enviarTexto("Recomendame un bar cerca");
+
+    await waitFor(() => {
+      expect(enviarMensajeMock).toHaveBeenCalledWith(
+        VIAJE_ID,
+        expect.objectContaining({ referenciaLugarId: LUGAR_ID })
+      );
+      expect(onReferenciaUsada).toHaveBeenCalled();
+    });
+  });
+
+  it("permite quitar la referencia desde el chip", () => {
+    const onReferenciaUsada = vi.fn();
+
+    renderChat({
+      referenciaParada: {
+        lugarId: LUGAR_ID,
+        nombre: "Museo eliminado",
+        turno: "Tarde",
+        numeroDia: 1,
+      },
+      onReferenciaUsada,
+    });
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Quitar referencia de cercanía" })
+    );
+
+    expect(onReferenciaUsada).toHaveBeenCalled();
+  });
+
+  it("ignora una referencia de otro día", async () => {
+    enviarMensajeMock.mockResolvedValue(crearRespuesta());
+
+    renderChat({
+      referenciaParada: {
+        lugarId: LUGAR_ID,
+        nombre: "Museo eliminado",
+        turno: "Tarde",
+        numeroDia: 2,
+      },
+    });
+
+    expect(screen.queryByText(/Cerca de Museo eliminado/)).not.toBeInTheDocument();
+
+    await enviarTexto("café");
+
+    await waitFor(() => {
+      expect(enviarMensajeMock).toHaveBeenCalledWith(
+        VIAJE_ID,
+        expect.objectContaining({ referenciaLugarId: null })
+      );
+    });
+  });
+
+  it("mantiene la referencia si falla el envío", async () => {
+    enviarMensajeMock.mockRejectedValue(new ApiError(500, "fallo de prueba"));
+    const onReferenciaUsada = vi.fn();
+
+    renderChat({
+      referenciaParada: {
+        lugarId: LUGAR_ID,
+        nombre: "Museo eliminado",
+        turno: "Tarde",
+        numeroDia: 1,
+      },
+      onReferenciaUsada,
+    });
+
+    await enviarTexto("café");
+
+    expect(await screen.findByText("fallo de prueba")).toBeInTheDocument();
+    expect(onReferenciaUsada).not.toHaveBeenCalled();
   });
 });

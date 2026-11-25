@@ -1,9 +1,15 @@
 import { useEffect, useRef, useState } from "react";
+import type { TipoLugar } from "../api/types";
 import { useDebouncedValue } from "../hooks/useDebounce";
-import { BARRIOS, CATEGORIAS, type FiltroPanel } from "../lib/filtros";
+import { BARRIOS, CATEGORIAS, type ChipOption, type FiltroPanel } from "../lib/filtros";
 import ChipGroup from "./ChipGroup";
 import ToggleFilter from "./ToggleFilter";
 import "./FilterPanel.css";
+
+const TIPOS_LUGAR: readonly ChipOption<TipoLugar>[] = [
+  { value: "PuntoInteres", label: "Puntos de interés" },
+  { value: "Alojamiento", label: "Hoteles & Alojamientos" },
+];
 
 interface FilterPanelProps {
   filtro: FiltroPanel;
@@ -34,20 +40,27 @@ export default function FilterPanel({ filtro, onChange, total }: FilterPanelProp
   const [busqueda, setBusqueda] = useState(filtro.busqueda ?? "");
   const debounced = useDebouncedValue(busqueda, 300);
   const emittedRef = useRef(filtro.busqueda ?? "");
+  const filtroRef = useRef(filtro);
+  filtroRef.current = filtro;
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
 
+  // 1. Emitir hacia el padre cuando cambia el debounced ingresado por el usuario
   useEffect(() => {
     if (debounced !== emittedRef.current) {
       emittedRef.current = debounced;
-      onChange({ ...filtro, busqueda: debounced || undefined });
+      onChangeRef.current({ ...filtroRef.current, busqueda: debounced || undefined });
     }
-  }, [debounced, filtro, onChange]);
+  }, [debounced]);
 
+  // 2. Sincronizar el input si el padre cambia el filtro desde afuera (ej: botón "Limpiar filtros")
   useEffect(() => {
     const incoming = filtro.busqueda ?? "";
-    if (incoming !== emittedRef.current && incoming !== debounced) {
+    if (incoming !== emittedRef.current) {
+      emittedRef.current = incoming;
       setBusqueda(incoming);
     }
-  }, [filtro.busqueda, debounced]);
+  }, [filtro.busqueda]);
 
   return (
     <section className="filter-panel" aria-label="Filtros de búsqueda">
@@ -66,6 +79,17 @@ export default function FilterPanel({ filtro, onChange, total }: FilterPanelProp
             aria-label="Buscar lugares"
           />
         </div>
+      </div>
+
+      <div className="filter-panel__group">
+        <span className="filter-panel__section-label">TIPO DE LUGAR</span>
+        <ChipGroup
+          variant="ink"
+          allLabel="Todos"
+          options={TIPOS_LUGAR}
+          value={filtro.tipoLugar ?? null}
+          onChange={(tipo) => onChange({ ...filtro, tipoLugar: tipo ?? undefined })}
+        />
       </div>
 
       <div className="filter-panel__group">
@@ -121,7 +145,7 @@ export default function FilterPanel({ filtro, onChange, total }: FilterPanelProp
         </div>
 
         <span className="filter-panel__count">
-          Mostrando {total} {total === 1 ? "lugar" : "lugares"}
+          {total.toLocaleString()} {total === 1 ? "lugar encontrado" : "lugares encontrados"}
         </span>
       </div>
     </section>

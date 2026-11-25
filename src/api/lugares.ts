@@ -23,7 +23,7 @@ function buildQuery(filtro: LugarFiltro): string {
   if (filtro.busqueda) params.set("busqueda", filtro.busqueda);
 
   params.set("pagina", String(filtro.pagina ?? 1));
-  params.set("tamano", String(filtro.tamano ?? 100));
+  params.set("tamano", String(filtro.tamano ?? 24));
 
   const query = params.toString();
   return query ? `?${query}` : "";

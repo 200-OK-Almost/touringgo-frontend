@@ -85,6 +85,60 @@
   border-color: var(--primary);
 }
 
+.chat-tab__referencia {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+  padding: 0.35rem 0.45rem 0.35rem 0.6rem;
+  border-radius: 999px;
+  background: var(--primary-subtle);
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.chat-tab__referencia-texto {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-tab__referencia-texto svg {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+}
+
+.chat-tab__referencia-quitar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.chat-tab__referencia-quitar:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.chat-tab__referencia-quitar svg {
+  width: 14px;
+  height: 14px;
+}
+
 .chat-tab__input {
   width: 100%;
   height: 60px;
