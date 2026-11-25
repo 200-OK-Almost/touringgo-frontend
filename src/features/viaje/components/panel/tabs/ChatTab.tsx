@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type {
   AclaracionDto,
   AplicarAccionAsistenteDto,
@@ -60,6 +60,8 @@ const MENSAJE_BIENVENIDA: ChatMessage = {
   contenido:
     "¡Hola! Soy Turi. Contame qué tipo de lugar buscás para este día y te recomiendo opciones del catálogo.",
 };
+
+const ALTURA_MAXIMA_INPUT = 144;
 
 function crearIdMensaje(): string {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -272,6 +274,7 @@ export function ChatTab({
   const [errorCapacidades, setErrorCapacidades] = useState<string | null>(null);
   const [intentoCapacidades, setIntentoCapacidades] = useState(0);
   const bodyRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     let activo = true;
@@ -306,6 +309,23 @@ export function ChatTab({
       bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
     }
   }, [mensajes, enviando]);
+
+  useLayoutEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    if (!inputText) {
+      textarea.style.height = "";
+      textarea.style.overflowY = "hidden";
+      return;
+    }
+
+    textarea.style.height = "auto";
+    const altura = Math.min(textarea.scrollHeight, ALTURA_MAXIMA_INPUT);
+    textarea.style.height = `${altura}px`;
+    textarea.style.overflowY =
+      textarea.scrollHeight > ALTURA_MAXIMA_INPUT ? "auto" : "hidden";
+  }, [inputText]);
 
   const asistenteHabilitado = capacidades?.habilitado === true;
   const asistenteNoDisponible = !cargandoCapacidades && !asistenteHabilitado;
@@ -466,6 +486,10 @@ export function ChatTab({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.nativeEvent.isComposing) {
+      return;
+    }
+
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
@@ -586,7 +610,7 @@ export function ChatTab({
         )}
       </div>
 
-      <div className="chat-tab__input-box">
+      <div className="chat-tab__composer">
         {referenciaActiva && (
           <div className="chat-tab__referencia">
             <span className="chat-tab__referencia-texto">
@@ -603,19 +627,24 @@ export function ChatTab({
             </button>
           </div>
         )}
-        <textarea
-          className="chat-tab__input"
-          placeholder={
-            bloqueado
-              ? "Asistente no disponible"
-              : "Escribe una consulta a tu asistente de viaje..."
-          }
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          onKeyDown={handleKeyDown}
-          disabled={enviando || bloqueado}
-        />
-        <div className="chat-tab__input-bottom">
+        <div className="chat-tab__input-row">
+          <div className="chat-tab__input-box">
+            <textarea
+              ref={textareaRef}
+              className="chat-tab__input"
+              rows={1}
+              aria-label="Escribe una consulta a tu asistente de viaje"
+              placeholder={
+                bloqueado
+                  ? "Asistente no disponible"
+                  : "Escribe tu consulta..."
+              }
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyDown={handleKeyDown}
+              disabled={enviando || bloqueado}
+            />
+          </div>
           <button
             type="button"
             className="chat-tab__send-btn"
