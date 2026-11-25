@@ -53,22 +53,22 @@ export function CustomZoomControl({ position = 'topRight' } : CustomZoomControlP
       >
         <button
           type="button"
-          title="Zoom out"
-          aria-label="Zoom out"
+          title="Alejar mapa"
+          aria-label="Alejar mapa"
           onClick={() => map.zoomOut()}
           className='map-zoom-btn'
         >
           <IoRemove />
         </button>
 
-        <div title="Current zoom level" className='map-zoom-value'>
+        <div title="Nivel de zoom actual" className='map-zoom-value'>
           <p>{percentage}%</p>
         </div>
 
         <button
           type="button"
-          title="Zoom in"
-          aria-label="Zoom in"
+          title="Acercar mapa"
+          aria-label="Acercar mapa"
           onClick={() => map.zoomIn()}
           className='map-zoom-btn'
         >
