@@ -1,8 +1,6 @@
 .lugar-recorrido-card {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
-  padding: .75rem;
   box-sizing: border-box;
   width: 100%;
 
@@ -17,6 +15,16 @@
   box-shadow: var(--shadow-sm);
 }
 
+.lugar-recorrido-card__seleccion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  width: 100%;
+  padding: .75rem;
+  border-radius: inherit;
+  text-align: left;
+}
+
 .lugar-recorrido-card--seleccionable {
   cursor: pointer;
 }
@@ -27,7 +35,7 @@
   box-shadow: 0 0 0 1px var(--primary);
 }
 
-.lugar-recorrido-card--seleccionable:focus-visible {
+.lugar-recorrido-card__seleccion[role="button"]:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
@@ -95,6 +103,10 @@
   gap: 0.25rem;
   flex: 1;
   min-width: 0;
+}
+
+.lugar-recorrido-card--con-acciones .lugar-recorrido-card__info {
+  padding-right: 2rem;
 }
 
 .lugar-recorrido-card__nombre {
@@ -170,35 +182,45 @@
   flex-shrink: 0;
 }
 
-.lugar-recorrido-card__quitar {
+.dropdown-container.lugar-recorrido-card__acciones {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  z-index: 2;
+}
+
+.dropdown-trigger.lugar-recorrido-card__menu-trigger {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  align-self: flex-start;
-  margin-top: 0.15rem;
-  padding: 0.25rem 0.45rem;
-  border: none;
-  border-radius: 0.4rem;
-  background: transparent;
-  color: #b91c1c;
-  font-size: 0.78rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: var(--text-muted);
+  font-size: 1.15rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.lugar-recorrido-card__quitar:hover {
-  background: #fef2f2;
+.dropdown-trigger.lugar-recorrido-card__menu-trigger:hover {
+  background-color: var(--bg-subtle);
+  color: var(--text);
 }
 
-.lugar-recorrido-card__quitar-icon {
-  font-size: 0.95rem;
+.lugar-recorrido-card__menu {
+  min-width: 170px;
 }
 
 @media (max-width: 900px) {
-  .lugar-recorrido-card__quitar {
+  .dropdown-trigger.lugar-recorrido-card__menu-trigger {
+    width: 44px;
+    height: 44px;
+  }
+
+  .lugar-recorrido-card--con-acciones .lugar-recorrido-card__info {
+    padding-right: 3rem;
+  }
+
+  .lugar-recorrido-card__menu .dropdown-item {
     min-height: 44px;
-    min-width: 44px;
-    padding: 0.5rem 0.75rem;
   }
 }

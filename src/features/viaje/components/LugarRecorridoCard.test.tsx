@@ -31,6 +31,16 @@ function crearParada(): ParadaViewModel {
   };
 }
 
+function abrirAcciones(nombre = "Museo de prueba") {
+  fireEvent.click(
+    screen.getByRole("button", { name: `Acciones de ${nombre}` })
+  );
+}
+
+function elegirQuitarParada() {
+  fireEvent.click(screen.getByRole("menuitem", { name: "Quitar parada" }));
+}
+
 describe("LugarRecorridoCard", () => {
   it("muestra el numero de parada", () => {
     render(
@@ -84,11 +94,26 @@ describe("LugarRecorridoCard", () => {
       />
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Quitar Museo de prueba" }));
+    const seleccion = screen.getByRole("button", {
+      name: "Ver Museo de prueba en el mapa",
+    });
+    const acciones = screen.getByRole("button", {
+      name: "Acciones de Museo de prueba",
+    });
+
+    expect(seleccion).not.toContainElement(acciones);
+
+    fireEvent.click(acciones);
     expect(onSeleccionar).not.toHaveBeenCalled();
+
+    elegirQuitarParada();
+    expect(onSeleccionar).not.toHaveBeenCalled();
+    expect(
+      screen.getByRole("dialog", { name: "Quitar parada" })
+    ).toBeInTheDocument();
   });
 
-  it("no muestra Quitar si el usuario no puede editar", () => {
+  it("no muestra acciones si el usuario no puede editar", () => {
     render(
       <LugarRecorridoCard
         paradaViewModel={crearParada()}
@@ -98,11 +123,14 @@ describe("LugarRecorridoCard", () => {
     );
 
     expect(
-      screen.queryByRole("button", { name: "Quitar Museo de prueba" })
+      screen.queryByRole("button", { name: /Acciones de/ })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("menuitem", { name: /Quitar/ })
     ).not.toBeInTheDocument();
   });
 
-  it("no muestra Quitar en el punto de partida", () => {
+  it("no muestra acciones en el punto de partida", () => {
     render(
       <LugarRecorridoCard
         lugarPartida={crearLugar()}
@@ -111,7 +139,12 @@ describe("LugarRecorridoCard", () => {
       />
     );
 
-    expect(screen.queryByRole("button", { name: /Quitar/ })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /Acciones de/ })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("menuitem", { name: /Quitar/ })
+    ).not.toBeInTheDocument();
   });
 
   it("abre el modal, permite cancelar y no elimina", () => {
@@ -125,9 +158,8 @@ describe("LugarRecorridoCard", () => {
       />
     );
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Quitar Museo de prueba" })
-    );
+    abrirAcciones();
+    elegirQuitarParada();
 
     const modal = screen.getByRole("dialog", { name: "Quitar parada" });
     expect(within(modal).getByText("Museo de prueba")).toBeInTheDocument();
@@ -150,9 +182,8 @@ describe("LugarRecorridoCard", () => {
       />
     );
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Quitar Museo de prueba" })
-    );
+    abrirAcciones();
+    elegirQuitarParada();
 
     const modal = screen.getByRole("dialog", { name: "Quitar parada" });
     fireEvent.click(within(modal).getByRole("button", { name: "Quitar" }));
@@ -176,9 +207,8 @@ describe("LugarRecorridoCard", () => {
       />
     );
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Quitar Museo de prueba" })
-    );
+    abrirAcciones();
+    elegirQuitarParada();
 
     const modal = screen.getByRole("dialog", { name: "Quitar parada" });
     fireEvent.click(within(modal).getByRole("button", { name: "Quitar" }));
