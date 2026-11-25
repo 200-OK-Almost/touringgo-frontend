@@ -158,11 +158,6 @@ function GastosTab({viaje, miembros, miembrosPorId} : GastosTabProps) {
       </div>
 
       <div className="gastos-tab__body">
-
-        <div className="gastos-tab__section">
-          <h2>Balance</h2>
-        </div>
-
         <div className="gastos-tab__section">
           <div className="gastos-tab__section__header">
             <h2>Gastos</h2>
