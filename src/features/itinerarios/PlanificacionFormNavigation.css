@@ -1,6 +1,8 @@
 .form-navigation {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .form-navigation-button {
@@ -9,6 +11,7 @@
   justify-content: center;
   gap: .5rem;
 
+  min-height: 44px;
   padding: .5rem 2rem;
   border-radius: var(--border-radius);
 }
@@ -58,5 +61,19 @@
   opacity: .5;
 }
 .form-confirm-button-loading {
-  cursor:progress;
+  cursor: progress;
+}
+
+@media (max-width: 520px) {
+  .form-navigation {
+    flex-direction: column-reverse;
+  }
+
+  .form-navigation-button {
+    width: 100%;
+  }
+
+  .form-confirm-button {
+    min-width: 0;
+  }
 }

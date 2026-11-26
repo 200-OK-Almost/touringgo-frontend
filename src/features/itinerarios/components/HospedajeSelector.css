@@ -240,3 +240,14 @@
   }
 }
 
+@media (pointer: coarse) {
+  .hospedaje-selector__clear-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .hospedaje-selector__retry-btn {
+    min-height: 44px;
+  }
+}
+
