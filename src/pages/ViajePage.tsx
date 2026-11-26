@@ -177,18 +177,20 @@ function ViajePage() {
 
   if (loading) {
     const generando = estaGenerando(viaje);
+
+    if (generando && viaje) {
+      return (
+        <>
+          <Navbar />
+          <GeneracionItinerarioOverlay estado={viaje.estado} />
+        </>
+      );
+    }
+
     return (
       <>
         <Navbar />
-        <div
-          inert={generando || undefined}
-          aria-hidden={generando || undefined}
-        >
-          <ViajeViewSkeleton isGenerating={generando} />
-        </div>
-        {generando && viaje && (
-          <GeneracionItinerarioOverlay estado={viaje.estado} />
-        )}
+        <ViajeViewSkeleton />
       </>
     );
   }
