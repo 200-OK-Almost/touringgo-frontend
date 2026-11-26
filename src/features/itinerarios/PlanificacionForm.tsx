@@ -24,10 +24,10 @@ import { construirViajeCreateDto } from "./lib/viajePayload";
 import { crearMensajeErrorEnvio } from "./lib/erroresEnvio";
 
 const PASOS = [
-  { label: "Fechas y duración" },
-  { label: "Barrio y punto de partida" },
-  { label: "Compañía e intereses" },
-  { label: "Estilo del viaje" },
+  { label: "Fechas y duración", shortLabel: "Fechas" },
+  { label: "Barrio y punto de partida", shortLabel: "Barrio" },
+  { label: "Compañía e intereses", shortLabel: "Intereses" },
+  { label: "Estilo del viaje", shortLabel: "Estilo" },
 ];
 
 type NavigationDirection = "forward" | "backward";
@@ -210,6 +210,18 @@ function PlanificacionForm() {
     });
   }
 
+  function handleStepSelect(step: number) {
+    if (step < 0 || step >= currentStepCounter) {
+      return;
+    }
+
+    setErrors({});
+    setSubmitError(null);
+    scrollToFormTop();
+    setDirection("backward");
+    setCurrentStepCounter(step);
+  }
+
   function renderCurrentStep() {
     switch (currentStepCounter) {
       case 0:
@@ -270,6 +282,8 @@ function PlanificacionForm() {
         currentStep={currentStepCounter}
         stepLabel={currentStep.label}
         totalSteps={PASOS.length}
+        steps={PASOS}
+        onStepSelect={handleStepSelect}
       />
 
       <PlanificacionErrorSummary ref={errorSummaryRef} errors={errors} />

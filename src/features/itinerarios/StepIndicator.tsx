@@ -1,12 +1,20 @@
-import "./StepIndicator.css"
+import { IoCheckmark } from "react-icons/io5";
+import "./StepIndicator.css";
 
-export interface StepIndicatorProps {
-  stepLabel: string
-  currentStep: number
-  totalSteps: number
+export interface StepIndicatorStep {
+  label: string;
+  shortLabel?: string;
 }
 
-function StepIndicator({stepLabel, currentStep, totalSteps}: StepIndicatorProps) {
+export interface StepIndicatorProps {
+  stepLabel: string;
+  currentStep: number;
+  totalSteps: number;
+  steps?: StepIndicatorStep[];
+  onStepSelect?: (step: number) => void;
+}
+
+function StepIndicator({stepLabel, currentStep, totalSteps, steps = [], onStepSelect}: StepIndicatorProps) {
     const stepNumber = currentStep + 1;
 
     return (
@@ -23,6 +31,52 @@ function StepIndicator({stepLabel, currentStep, totalSteps}: StepIndicatorProps)
             Paso {stepNumber} de {totalSteps}
           </p>
         </div>
+
+        {steps.length > 0 && (
+          <nav
+            className="step-indicator-nav"
+            aria-label="Pasos del planificador"
+          >
+            <ol className="step-indicator-list">
+              {steps.map((step, index) => {
+                const isCurrent = index === currentStep;
+                const isCompleted = index < currentStep;
+
+                return (
+                  <li key={step.label} className="step-indicator-item">
+                    <button
+                      type="button"
+                      className={`step-indicator-step ${
+                        isCurrent ? "step-indicator-step--current" : ""
+                      } ${isCompleted ? "step-indicator-step--completed" : ""}`}
+                      onClick={
+                        isCompleted
+                          ? () => onStepSelect?.(index)
+                          : undefined
+                      }
+                      disabled={!isCompleted}
+                      aria-current={isCurrent ? "step" : undefined}
+                      aria-label={`Paso ${index + 1}: ${step.label}${
+                        isCompleted ? " (completado)" : ""
+                      }`}
+                    >
+                      <span
+                        className="step-indicator-step__marker"
+                        aria-hidden="true"
+                      >
+                        {isCompleted ? <IoCheckmark /> : index + 1}
+                      </span>
+                      <span className="step-indicator-step__label">
+                        {step.shortLabel ?? step.label}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+          </nav>
+        )}
+
         <div
           className="step-indicator-bar"
           role="progressbar"

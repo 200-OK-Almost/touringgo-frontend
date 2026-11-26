@@ -95,7 +95,15 @@
 
 @media (max-width: 520px) {
   .form-navigation {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
     flex-direction: column-reverse;
+    margin-inline: -1rem;
+    padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--border);
+    background-color: var(--bg);
+    box-shadow: 0 -10px 30px -22px rgba(16, 24, 40, 0.35);
   }
 
   .form-navigation-button {
@@ -104,5 +112,16 @@
 
   .form-confirm-button {
     min-width: 0;
+  }
+
+  .planificacion-form-main :is(
+    button,
+    input,
+    textarea,
+    select,
+    a,
+    [tabindex]
+  ) {
+    scroll-margin-bottom: 96px;
   }
 }
