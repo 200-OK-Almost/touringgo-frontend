@@ -41,4 +41,23 @@ describe("PlanificacionFormNavigation", () => {
     ).toBeEnabled();
     expect(screen.getByRole("button", { name: /Atrás/ })).toBeEnabled();
   });
+
+  it("anticipa el próximo paso en el botón siguiente", () => {
+    render(
+      <PlanificacionFormNavigation
+        onBack={vi.fn()}
+        onNext={vi.fn()}
+        isFirstStep={false}
+        isLastStep={false}
+        isSubmitLoading={false}
+        nextLabel="Barrio y punto de partida"
+      />
+    );
+
+    expect(
+      screen.getByRole("button", {
+        name: /Siguiente: Barrio y punto de partida/,
+      })
+    ).toBeInTheDocument();
+  });
 });

@@ -24,10 +24,10 @@ import { construirViajeCreateDto } from "./lib/viajePayload";
 import { crearMensajeErrorEnvio } from "./lib/erroresEnvio";
 
 const PASOS = [
-  { label: "Duración y disponibilidad diaria" },
+  { label: "Fechas y duración" },
   { label: "Barrio y punto de partida" },
-  { label: "Compañía e Intereses" },
-  { label: "Estilo" },
+  { label: "Compañía e intereses" },
+  { label: "Estilo del viaje" },
 ];
 
 type NavigationDirection = "forward" | "backward";
@@ -315,6 +315,7 @@ function PlanificacionForm() {
         isFirstStep={currentStepCounter === 0}
         isLastStep={currentStepCounter === PASOS.length - 1}
         isSubmitLoading={submitLoading}
+        nextLabel={PASOS[currentStepCounter + 1]?.label}
       />
     </main>
   );

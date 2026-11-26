@@ -7,10 +7,11 @@ export interface PlanificacionFormNavigationProps {
   isFirstStep: boolean
   isLastStep: boolean
   isSubmitLoading: boolean
+  nextLabel?: string
 }
 
 function PlanificacionFormNavigation(
-  {onBack, onNext, isFirstStep, isLastStep, isSubmitLoading}: PlanificacionFormNavigationProps
+  {onBack, onNext, isFirstStep, isLastStep, isSubmitLoading, nextLabel}: PlanificacionFormNavigationProps
 ) {
   return (
     <div className="form-navigation" aria-busy={isSubmitLoading}>
@@ -44,7 +45,9 @@ function PlanificacionFormNavigation(
         <p>
           {isLastStep ? 
             isSubmitLoading ? "Generando..." : "Armar itinerario con IA"
-            : "Siguiente"}
+            : nextLabel
+              ? `Siguiente: ${nextLabel}`
+              : "Siguiente"}
         </p>
         
       </button>
