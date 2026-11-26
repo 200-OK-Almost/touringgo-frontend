@@ -21,6 +21,7 @@ import {
 import { usePlanificacionDraft } from "./hooks/usePlanificacionDraft";
 import { construirDias } from "./lib/diasPlanificacion";
 import { construirViajeCreateDto } from "./lib/viajePayload";
+import { crearMensajeErrorEnvio } from "./lib/erroresEnvio";
 
 const PASOS = [
   { label: "Duración y disponibilidad diaria" },
@@ -43,8 +44,10 @@ function PlanificacionForm() {
     return Math.min(Math.max(paso, 0), PASOS.length - 1);
   });
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const formRef = useRef<HTMLElement | null>(null);
   const errorSummaryRef = useRef<HTMLDivElement | null>(null);
+  const submitErrorRef = useRef<HTMLDivElement | null>(null);
   const stepContentRef = useRef<HTMLDivElement | null>(null);
   const isFirstRenderRef = useRef(true);
   const [direction, setDirection] = useState<NavigationDirection>("forward");
@@ -104,6 +107,14 @@ function PlanificacionForm() {
     heading.tabIndex = -1;
     heading.focus({ preventScroll: true });
   }, [currentStepCounter]);
+
+  useEffect(() => {
+    if (!submitError) {
+      return;
+    }
+
+    submitErrorRef.current?.focus();
+  }, [submitError]);
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -172,13 +183,20 @@ function PlanificacionForm() {
   }
 
   async function handleSubmit() {
+    if (submitLoading) {
+      return;
+    }
+
     setSubmitLoading(true);
+    setSubmitError(null);
 
     try {
       const viajeCreateDto = construirViajeCreateDto(formData);
       const viajeResponse = await createViaje(viajeCreateDto);
       clearDraft();
       navigate(`/viajes/${viajeResponse.id}`);
+    } catch (error) {
+      setSubmitError(crearMensajeErrorEnvio(error));
     } finally {
       setSubmitLoading(false);
     }
@@ -272,6 +290,25 @@ function PlanificacionForm() {
       >
         {renderCurrentStep()}
       </div>
+
+      {submitError && (
+        <div
+          ref={submitErrorRef}
+          className="planificacion-submit-error"
+          role="alert"
+          tabIndex={-1}
+        >
+          <p>{submitError}</p>
+          <button
+            type="button"
+            className="planificacion-submit-error__retry"
+            onClick={handleSubmit}
+            disabled={submitLoading}
+          >
+            {submitLoading ? "Reintentando..." : "Reintentar"}
+          </button>
+        </div>
+      )}
 
       <PlanificacionFormNavigation
         onBack={handleBack}
