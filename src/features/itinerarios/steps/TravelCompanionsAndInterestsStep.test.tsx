@@ -149,11 +149,32 @@ describe("TravelCompanionsAndInterestsStep", () => {
     const quinta = screen.getByRole("checkbox", { name: "Bares y vermú" });
 
     expect(quinta).toBeDisabled();
-    expect(screen.getByText(/Límite alcanzado/)).toBeInTheDocument();
+    expect(screen.getByText("Límite alcanzado")).toBeInTheDocument();
 
     fireEvent.click(quinta);
 
     expect(onChangeDia).not.toHaveBeenCalled();
+  });
+
+  it("muestra el contador y el medidor de categorías", () => {
+    const { container } = renderPaso([
+      dia("2026-11-18", 1, {
+        modalidadViaje: "Solo",
+        categoriasPrioritarias: CATEGORIAS.slice(0, 2),
+      }),
+    ]);
+
+    expect(screen.getByText("2 de 4 seleccionadas")).toBeInTheDocument();
+    expect(
+      container.querySelectorAll(".categories-meter__segment--on")
+    ).toHaveLength(2);
+  });
+
+  it("indica que faltan categorías para el mínimo", () => {
+    renderPaso([dia("2026-11-18", 1, { modalidadViaje: "Solo" })]);
+
+    expect(screen.getByText("0 de 4 seleccionadas")).toBeInTheDocument();
+    expect(screen.getByText("Elegí al menos 2")).toBeInTheDocument();
   });
 
   it("muestra los días faltantes informados por validación", () => {

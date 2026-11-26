@@ -138,15 +138,37 @@ function PreferenceFields({
 
       <div className="planificacion-form-header">
         <h3 id="preferences-categorias-title" tabIndex={-1}>Categorías de interés</h3>
-        <p
+        <div
           id="preferences-categorias-help"
-          className="planificacion-form-description text-muted"
+          className="categories-help"
           aria-live="polite"
         >
-          Elegí entre 2 y 4 categorías · {categoriasPrioritarias.length}{" "}
-          {categoriasPrioritarias.length === 1 ? "seleccionada" : "seleccionadas"}
-          {limiteAlcanzado ? " · Límite alcanzado" : ""}
-        </p>
+          <p className="categories-help__text">
+            {categoriasPrioritarias.length} de {MAX_CATEGORIAS}{" "}
+            {categoriasPrioritarias.length === 1
+              ? "seleccionada"
+              : "seleccionadas"}
+          </p>
+          <span className="categories-help__hint">
+            {limiteAlcanzado
+              ? "Límite alcanzado"
+              : categoriasPrioritarias.length < 2
+                ? "Elegí al menos 2"
+                : "Hasta 4 categorías"}
+          </span>
+          <span className="categories-meter" aria-hidden="true">
+            {Array.from({ length: MAX_CATEGORIAS }, (_, index) => (
+              <span
+                key={index}
+                className={`categories-meter__segment ${
+                  index < categoriasPrioritarias.length
+                    ? "categories-meter__segment--on"
+                    : ""
+                }`}
+              />
+            ))}
+          </span>
+        </div>
       </div>
       <SelectableCardGroup
         role="group"
