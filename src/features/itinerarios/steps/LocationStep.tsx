@@ -236,6 +236,8 @@ function LocationStep({ dias, onChangeDia, errors }: LocationStepProps) {
             dias={dias}
             diaActivo={diaSeleccionado}
             onChange={setDiaActivo}
+            idPrefix="location-day"
+            panelId="location-day-panel"
           />
         </div>
       )}
@@ -251,17 +253,25 @@ function LocationStep({ dias, onChangeDia, errors }: LocationStepProps) {
         </div>
       )}
 
-      <LocationFields
-        dia={dia}
-        onChange={(changes) => {
-          if (dia) {
-            onChangeDia(dia.dia, changes);
-          }
-        }}
-        errorBarrio={esUnDia ? errors.barrio : undefined}
-        errorPuntoInicio={esUnDia ? errors.puntoInicio : undefined}
-        errorHospedaje={esUnDia ? errors.hospedajeLugarGuid : undefined}
-      />
+      <div
+        id="location-day-panel"
+        role={esUnDia ? undefined : "tabpanel"}
+        aria-labelledby={
+          esUnDia ? undefined : `location-day-${diaSeleccionado}`
+        }
+      >
+        <LocationFields
+          dia={dia}
+          onChange={(changes) => {
+            if (dia) {
+              onChangeDia(dia.dia, changes);
+            }
+          }}
+          errorBarrio={esUnDia ? errors.barrio : undefined}
+          errorPuntoInicio={esUnDia ? errors.puntoInicio : undefined}
+          errorHospedaje={esUnDia ? errors.hospedajeLugarGuid : undefined}
+        />
+      </div>
     </>
   );
 }

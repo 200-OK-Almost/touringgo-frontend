@@ -262,6 +262,8 @@ function TravelCompanionsAndInterestsStep({
             diaActivo={diaSeleccionado}
             onChange={setDiaActivo}
             isComplete={preferenciasDiaCompletas}
+            idPrefix="preferences-day"
+            panelId="preferences-day-panel"
           />
         </div>
       )}
@@ -277,17 +279,27 @@ function TravelCompanionsAndInterestsStep({
         </div>
       )}
 
-      <PreferenceFields
-        dia={dia}
-        categorias={categorias}
-        onChange={(changes) => {
-          if (dia) {
-            onChangeDia(dia.dia, changes);
+      <div
+        id="preferences-day-panel"
+        role={esUnDia ? undefined : "tabpanel"}
+        aria-labelledby={
+          esUnDia ? undefined : `preferences-day-${diaSeleccionado}`
+        }
+      >
+        <PreferenceFields
+          dia={dia}
+          categorias={categorias}
+          onChange={(changes) => {
+            if (dia) {
+              onChangeDia(dia.dia, changes);
+            }
+          }}
+          errorModalidad={esUnDia ? errors.modalidadViaje : undefined}
+          errorCategorias={
+            esUnDia ? errors.categoriasPrioritarias : undefined
           }
-        }}
-        errorModalidad={esUnDia ? errors.modalidadViaje : undefined}
-        errorCategorias={esUnDia ? errors.categoriasPrioritarias : undefined}
-      />
+        />
+      </div>
     </>
   );
 }
