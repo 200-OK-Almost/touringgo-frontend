@@ -1,7 +1,7 @@
 .selectable-card-option {
   border-radius: 10px;
   border: 1px solid var(--border, #e5e4e7);
-  background: #ffffff;
+  background: var(--surface, #ffffff);
   cursor: pointer;
   text-align: left;
   transition: all 0.15s ease;
@@ -21,12 +21,12 @@
 
 .selectable-card-option:disabled:hover {
   border-color: var(--border, #e5e4e7);
-  background-color: #ffffff;
+  background-color: var(--surface, #ffffff);
 }
 
 .selectable-card-option--selected {
   border-color: var(--primary, #0f766e);
-  background-color: rgba(15, 118, 110, 0.04);
+  background-color: var(--primary-soft, rgba(15, 118, 110, 0.04));
   box-shadow: 0 0 0 1px var(--primary, #0f766e);
 }
 
@@ -96,7 +96,7 @@
 .selectable-card-option__check-icon {
   width: 12px;
   height: 12px;
-  color: #ffffff;
+  color: var(--on-primary, #ffffff);
 }
 
 
