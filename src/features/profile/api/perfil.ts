@@ -25,3 +25,6 @@ export function actualizarRestricciones(
   return http.patch<RestriccionesUsuarioDTO>(`${ME_BASE}/restricciones`, dto);
 }
 
+export function completarEncuesta() {
+  return http.patch(`${ME_BASE}/encuesta`)
+}

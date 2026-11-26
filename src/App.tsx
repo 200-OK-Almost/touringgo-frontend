@@ -5,17 +5,19 @@ import AuthCallback from "./features/auth/AuthCallback.tsx"
 import HomePage from "./pages/HomePage.tsx";
 import PlanificacionPage from "./pages/PlanificacionPage.tsx";
 import ViajePage from "./pages/ViajePage.tsx";
+import EncuestaPage from "./pages/EncuestaPage.tsx";
 
 function App() {
-    return (
+  return (
     <Routes>
-        <Route path="/auth/callback" element={<AuthCallback/>}/>
-        <Route path="/" element={<HomePage/>} />
-        <Route path="/planificacion" element={<PlanificacionPage/>} />
-        <Route path="/viajes/:id" element={<ViajePage/>} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="/auth/callback" element={<AuthCallback/>}/>
+      <Route path="/" element={<HomePage/>} />
+      <Route path="/planificacion" element={<PlanificacionPage/>} />
+      <Route path="/viajes/:id" element={<ViajePage/>} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="/encuesta-inicial" element={<EncuestaPage/>} />
     </Routes>
-    )
+  )
 }
 
 export default App
