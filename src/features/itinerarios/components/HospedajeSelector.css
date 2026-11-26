@@ -3,11 +3,21 @@
   flex-direction: column;
   gap: 1.15rem;
   padding: 1.25rem;
-  background: var(--surface, #ffffff);
-  border: 1px solid var(--border, #e5e4e7);
-  border-radius: 12px;
-  box-shadow: var(--shadow-card, 0 1px 3px rgba(0, 0, 0, 0.05));
+  background: var(--glass-surface, rgba(255, 255, 255, 0.62));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.8));
+  border-radius: 14px;
+  -webkit-backdrop-filter: var(--glass-blur, blur(16px) saturate(130%));
+  backdrop-filter: var(--glass-blur, blur(16px) saturate(130%));
+  box-shadow: 0 16px 36px -30px var(--primary-shadow, rgba(15, 118, 110, 0.35));
   margin-top: 0.5rem;
+}
+
+@supports not (
+  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+) {
+  .hospedaje-selector {
+    background: var(--surface, #ffffff);
+  }
 }
 
 .hospedaje-selector__header {

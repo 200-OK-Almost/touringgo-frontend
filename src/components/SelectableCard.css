@@ -1,7 +1,10 @@
 .selectable-card-option {
   border-radius: 10px;
-  border: 1px solid var(--border, #e5e4e7);
-  background: var(--surface, #ffffff);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.8));
+  background: var(--glass-gradient, linear-gradient(150deg, #ffffff, #f5fbf8));
+  -webkit-backdrop-filter: var(--glass-blur, blur(16px) saturate(130%));
+  backdrop-filter: var(--glass-blur, blur(16px) saturate(130%));
+  box-shadow: 0 12px 28px -26px var(--primary-shadow, rgba(15, 118, 110, 0.35));
   cursor: pointer;
   text-align: left;
   transition: all 0.15s ease;
@@ -11,7 +14,7 @@
 
 .selectable-card-option:hover {
   border-color: var(--primary, #0f766e);
-  background-color: var(--bg-subtle, #f8f7fa);
+  background: var(--glass-surface-strong, rgba(255, 255, 255, 0.82));
 }
 
 .selectable-card-option:disabled {
@@ -21,13 +24,23 @@
 
 .selectable-card-option:disabled:hover {
   border-color: var(--border, #e5e4e7);
-  background-color: var(--surface, #ffffff);
+  background: var(--surface, #ffffff);
 }
 
 .selectable-card-option--selected {
   border-color: var(--primary, #0f766e);
-  background-color: var(--primary-soft, rgba(15, 118, 110, 0.04));
-  box-shadow: 0 0 0 1px var(--primary, #0f766e);
+  background: var(--primary-soft, rgba(15, 118, 110, 0.04));
+  box-shadow:
+    0 0 0 1px var(--primary, #0f766e),
+    0 12px 28px -26px var(--primary-shadow, rgba(15, 118, 110, 0.35));
+}
+
+@supports not (
+  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+) {
+  .selectable-card-option {
+    background: var(--surface, #ffffff);
+  }
 }
 
 .selectable-card-option__icon {
