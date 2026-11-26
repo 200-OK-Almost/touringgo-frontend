@@ -1,7 +1,6 @@
 import { IoCafeOutline, IoFlashOutline } from "react-icons/io5";
 import { SelectableCard } from "../../../components/SelectableCard";
 import { SelectableCardGroup } from "../../../components/SelectableCardGroup";
-import type { TipoTransporte } from "../../profile/types";
 import type { RitmoCaminata } from "../types";
 import { BsGem, BsPiggyBank, BsWallet2 } from "react-icons/bs";
 import type { FormErrors } from "../PlanificationForm.validation";
@@ -24,10 +23,8 @@ type PresupuestoOption = {
 interface TravelStyleStepProps {
   ritmoVisita: RitmoCaminata | null, 
   presupuestoNivel: NivelPresupuesto | null, 
-  tipoTransporte: TipoTransporte | null,
   onChange: (changes: {
     ritmoVisita?: RitmoCaminata | null, 
-    tipoTransporte?: TipoTransporte | null, 
     presupuestoNivel?: NivelPresupuesto | null, 
   }) => void;
   errors: FormErrors
@@ -50,22 +47,6 @@ function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: Trav
       icon: <IoFlashOutline /> 
     },
   ]
-  // const transporteOptions: TipoTransporteOption[] = [
-  //   { 
-  //     value: "Caminando", title: "Caminando (A pie)", 
-  //     description: "Prioriza lugares cercanos y recorridos a pie", icon: <IoWalkOutline /> 
-  //   },
-  //   { 
-  //     value: "TransportePublico", title: "Transporte público", 
-  //     description: "Combina caminatas con colectivos, subtes y trenes.", icon: <IoBusOutline />
-
-  //   },
-  //   { 
-  //     value: "VehiculoPersonal", title: "Vehículo personal", 
-  //     description: "Considera desplazamientos en auto entre las distintas zonas", icon: <IoCarOutline />
-  //   },
-  // ];
-  
 
   const presupuestoOptions: PresupuestoOption[] = [
     { 
@@ -109,27 +90,6 @@ function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: Trav
       <p>{errors.ritmoVisita}</p>
     </div>
     }
-    {/* <div className="planificacion-form-header">
-      <h2>Medio de transporte</h2>
-    </div>
-    <div className="selectable-card-group grid-3">
-      {transporteOptions.map(t => 
-        <SelectableCard 
-          key={t.value}
-          title={t.title}
-          icon={t.icon}
-          description={t.description}
-          selected={tipoTransporte === t.value}
-          onClick={() => onChange({tipoTransporte: t.value})}
-          variant="big"
-        />
-      )}
-    </div> 
-    {errors.tipoTransporte && <div className="planificacion-field-error">
-      <p>{errors.tipoTransporte}</p>
-    </div>
-    }
-    */}
     <div className="planificacion-form-header">
       <h2 id="style-presupuesto-title" tabIndex={-1}>Presupuesto</h2>
       <p className="planificacion-form-description text-muted">

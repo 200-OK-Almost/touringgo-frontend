@@ -15,7 +15,6 @@ const TARGET_IDS: Partial<Record<ErrorKey, string>> = {
   categoriasPrioritarias: "preferences-categorias-title",
   ritmoVisita: "style-ritmo-title",
   presupuestoNivel: "style-presupuesto-title",
-  tipoTransporte: "style-ritmo-title",
 };
 
 export interface PlanificacionErrorSummaryProps {

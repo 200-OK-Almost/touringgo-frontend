@@ -254,7 +254,6 @@ function PlanificacionForm() {
         return (
           <TravelStyleStep
             ritmoVisita={formData.ritmoVisita}
-            tipoTransporte={formData.tipoTransporte}
             presupuestoNivel={formData.presupuestoNivel}
             onChange={(changes) => updateFormData(changes)}
             errors={errors}

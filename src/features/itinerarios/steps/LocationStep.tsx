@@ -142,13 +142,9 @@ function LocationFields({
               onChange({
                 puntoInicio: a.value,
                 hospedajeLugarGuid:
-                  a.value === "PrimeraParada" || a.value === "NodoUrbano"
-                    ? null
-                    : hospedajeLugarGuid,
+                  a.value === "NodoUrbano" ? null : hospedajeLugarGuid,
                 hospedajeBarrio:
-                  a.value === "PrimeraParada" || a.value === "NodoUrbano"
-                    ? null
-                    : hospedajeBarrio,
+                  a.value === "NodoUrbano" ? null : hospedajeBarrio,
               })
             }
             variant="big"

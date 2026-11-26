@@ -127,9 +127,6 @@ export function validateStep(formData: ItineraryFormData, step: number): FormErr
       if (formData.ritmoVisita == null) {
         errors.ritmoVisita = "Seleccioná el ritmo de la salida.";
       }
-      // if (formData.tipoTransporte == null) {
-      //   errors.tipoTransporte = "Seleccioná un medio de transporte.";
-      // }
       if (formData.presupuestoNivel == null) {
         errors.presupuestoNivel = "Seleccioná un nivel de presupuesto.";
       }
