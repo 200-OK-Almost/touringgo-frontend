@@ -31,9 +31,9 @@ function DurationStep({
   onChange,
   errors,
 }: DurationStepProps) {
-  const disponiblidadDiariaOptions: DayAvailabilityOption[] = [
+  const disponibilidadDiariaOptions: DayAvailabilityOption[] = [
     {
-      title: "Dia completo",
+      title: "Día completo",
       value: "DiaCompleto",
       description: "Mañana y tarde",
       icon: <IoSunnyOutline />,
@@ -57,7 +57,7 @@ function DurationStep({
       <div className="planificacion-form-header">
         <h2>Fechas del viaje</h2>
         <p className="planificacion-form-description text-muted">
-          Elegí la fecha de inicio y de fin. El viaje puede durar entre 1 y 7 días.
+          Elegí la fecha de inicio y la duración del viaje. Puede durar entre 1 y 7 días.
         </p>
       </div>
 
@@ -69,7 +69,7 @@ function DurationStep({
       />
 
       <div className="planificacion-form-header duration-step__availability-header">
-        <h2 id="duration-availability-title" tabIndex={-1}>¿Cuanto tiempo querés dedicar a recorrer cada día?</h2>
+        <h2 id="duration-availability-title" tabIndex={-1}>¿Cuánto tiempo querés dedicar a recorrer cada día?</h2>
       </div>
       <SelectableCardGroup
         role="radiogroup"
@@ -81,7 +81,7 @@ function DurationStep({
         }
         className="selectable-card-group grid-3"
       >
-        {disponiblidadDiariaOptions.map((d) => (
+        {disponibilidadDiariaOptions.map((d) => (
           <SelectableCard
             key={d.value}
             title={d.title}

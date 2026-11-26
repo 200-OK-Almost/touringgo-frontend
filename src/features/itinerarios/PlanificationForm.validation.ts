@@ -40,7 +40,7 @@ export function validateStep(formData: ItineraryFormData, step: number): FormErr
       }
 
       if (formData.disponibilidadDiaria == null) {
-        errors.disponibilidadDiaria = "Seleccioná una opción de disponiblidad";
+        errors.disponibilidadDiaria = "Seleccioná una opción de disponibilidad.";
       }
       break;
 
