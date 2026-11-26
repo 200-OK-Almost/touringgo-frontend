@@ -130,7 +130,12 @@ function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: Trav
     </div>
     }
     */}
-    <h2 id="style-presupuesto-title" tabIndex={-1}>Presupuesto</h2>
+    <div className="planificacion-form-header">
+      <h2 id="style-presupuesto-title" tabIndex={-1}>Presupuesto</h2>
+      <p className="planificacion-form-description text-muted">
+        Elegí cómo querés manejar los costos del recorrido.
+      </p>
+    </div>
     <SelectableCardGroup
       role="radiogroup"
       labelledBy="style-presupuesto-title"

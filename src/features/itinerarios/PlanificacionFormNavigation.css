@@ -29,6 +29,14 @@
   background-color: #575e64;
   color: white;
 }
+.form-back-button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+.form-back-button:disabled:hover {
+  background-color: transparent;
+  color: #6c757d;
+}
 
 /* next button */
 .form-next-button {
@@ -62,6 +70,27 @@
 }
 .form-confirm-button-loading {
   cursor: progress;
+}
+
+.form-navigation-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: form-navigation-spin 0.7s linear infinite;
+}
+
+@keyframes form-navigation-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-navigation-spinner {
+    animation-duration: 1.4s;
+  }
 }
 
 @media (max-width: 520px) {

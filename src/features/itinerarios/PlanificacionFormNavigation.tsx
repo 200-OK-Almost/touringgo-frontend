@@ -13,10 +13,11 @@ function PlanificacionFormNavigation(
   {onBack, onNext, isFirstStep, isLastStep, isSubmitLoading}: PlanificacionFormNavigationProps
 ) {
   return (
-    <div className="form-navigation">
+    <div className="form-navigation" aria-busy={isSubmitLoading}>
       <button
         className="form-navigation-button form-back-button"
         onClick={onBack}
+        disabled={isSubmitLoading}
       >
         <IoArrowBackOutline />
         <p>{!isFirstStep ? "Atrás" : "Volver al inicio"}</p>
@@ -29,9 +30,17 @@ function PlanificacionFormNavigation(
           ${isSubmitLoading && "form-confirm-button-loading"}`
         }
         onClick={onNext}
-        disabled={isLastStep && isSubmitLoading}
+        disabled={isSubmitLoading}
       >
-        {isLastStep ? <IoSparkles /> : <IoArrowForwardOutline />} 
+        {isLastStep ? (
+          isSubmitLoading ? (
+            <span className="form-navigation-spinner" aria-hidden="true" />
+          ) : (
+            <IoSparkles />
+          )
+        ) : (
+          <IoArrowForwardOutline />
+        )}
         <p>
           {isLastStep ? 
             isSubmitLoading ? "Generando..." : "Armar itinerario con IA"
