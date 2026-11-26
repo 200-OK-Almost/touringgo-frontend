@@ -12,6 +12,7 @@ export interface SelectableCardProps {
   variant?: "big" | "small";
   role?: "radio" | "checkbox";
   tabIndex?: number;
+  disabled?: boolean;
   "aria-describedby"?: string;
 }
 
@@ -26,6 +27,7 @@ export function SelectableCard({
   variant = "small",
   role,
   tabIndex,
+  disabled = false,
   "aria-describedby": ariaDescribedBy,
 }: SelectableCardProps) {
   const resolvedRole =
@@ -42,6 +44,8 @@ export function SelectableCard({
       role={resolvedRole}
       aria-checked={resolvedRole ? selected : undefined}
       aria-describedby={ariaDescribedBy}
+      aria-disabled={disabled || undefined}
+      disabled={disabled}
       tabIndex={tabIndex}
       className={`selectable-card-option ${selected ? "selectable-card-option--selected" : ""} ${variant === "small" ? "selectable-card-small" : "selectable-card-big"}`}
       onClick={onClick}

@@ -9,6 +9,7 @@ const CATEGORIAS: CategoriaDto[] = [
   { id: 2, codigo: "museos_galerias", nombre: "Museos y galerías" },
   { id: 3, codigo: "parques_aire_libre", nombre: "Parques y aire libre" },
   { id: 4, codigo: "gastronomia_clasica", nombre: "Gastronomía clásica" },
+  { id: 5, codigo: "bares_vermu", nombre: "Bares y vermú" },
 ];
 
 function dia(
@@ -130,6 +131,29 @@ describe("TravelCompanionsAndInterestsStep", () => {
       modalidadViaje: "Solo",
       categoriasPrioritarias: CATEGORIAS.slice(0, 2),
     });
+  });
+
+  it("no permite seleccionar más de 4 categorías", () => {
+    const onChangeDia = vi.fn();
+
+    renderPaso(
+      [
+        dia("2026-11-18", 1, {
+          modalidadViaje: "Solo",
+          categoriasPrioritarias: CATEGORIAS.slice(0, 4),
+        }),
+      ],
+      onChangeDia
+    );
+
+    const quinta = screen.getByRole("checkbox", { name: "Bares y vermú" });
+
+    expect(quinta).toBeDisabled();
+    expect(screen.getByText(/Límite alcanzado/)).toBeInTheDocument();
+
+    fireEvent.click(quinta);
+
+    expect(onChangeDia).not.toHaveBeenCalled();
   });
 
   it("muestra los días faltantes informados por validación", () => {

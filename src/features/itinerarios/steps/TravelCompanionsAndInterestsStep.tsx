@@ -51,6 +51,8 @@ interface PreferenceFieldsProps {
   errorCategorias?: string;
 }
 
+const MAX_CATEGORIAS = 4;
+
 const MODALIDAD_OPTIONS: ModalidadViajeOption[] = [
   {
     title: "Solo",
@@ -91,6 +93,7 @@ function PreferenceFields({
 }: PreferenceFieldsProps) {
   const modalidadViaje = dia?.modalidadViaje ?? null;
   const categoriasPrioritarias = dia?.categoriasPrioritarias ?? [];
+  const limiteAlcanzado = categoriasPrioritarias.length >= MAX_CATEGORIAS;
 
   const categoriaOptions: CategoriaOption[] = categorias.map((categoria) => ({
     title: categoria.nombre,
@@ -138,9 +141,11 @@ function PreferenceFields({
         <p
           id="preferences-categorias-help"
           className="planificacion-form-description text-muted"
+          aria-live="polite"
         >
           Elegí entre 2 y 4 categorías · {categoriasPrioritarias.length}{" "}
-          Seleccionadas
+          {categoriasPrioritarias.length === 1 ? "seleccionada" : "seleccionadas"}
+          {limiteAlcanzado ? " · Límite alcanzado" : ""}
         </p>
       </div>
       <SelectableCardGroup
@@ -153,30 +158,38 @@ function PreferenceFields({
         }
         className="selectable-card-group grid-auto"
       >
-        {categoriaOptions.map((categoria) => (
-          <SelectableCard
-            key={categoria.value.id ?? categoria.title}
-            title={categoria.title}
-            icon={categoria.icon}
-            selected={categoriasPrioritarias.some(
-              (seleccionada) => seleccionada.id === categoria.value.id
-            )}
-            variant="big"
-            selectionIndicator="checkbox"
-            onClick={() => {
-              const yaSeleccionada = categoriasPrioritarias.some(
-                (seleccionada) => seleccionada.id === categoria.value.id
-              );
-              const nuevasCategorias = yaSeleccionada
-                ? categoriasPrioritarias.filter(
-                    (seleccionada) => seleccionada.id !== categoria.value.id
-                  )
-                : [...categoriasPrioritarias, categoria.value];
+        {categoriaOptions.map((categoria) => {
+          const seleccionada = categoriasPrioritarias.some(
+            (seleccionadaActual) =>
+              seleccionadaActual.id === categoria.value.id
+          );
 
-              onChange({ categoriasPrioritarias: nuevasCategorias });
-            }}
-          />
-        ))}
+          return (
+            <SelectableCard
+              key={categoria.value.id ?? categoria.title}
+              title={categoria.title}
+              icon={categoria.icon}
+              selected={seleccionada}
+              disabled={!seleccionada && limiteAlcanzado}
+              variant="big"
+              selectionIndicator="checkbox"
+              onClick={() => {
+                if (!seleccionada && limiteAlcanzado) {
+                  return;
+                }
+
+                const nuevasCategorias = seleccionada
+                  ? categoriasPrioritarias.filter(
+                      (seleccionadaActual) =>
+                        seleccionadaActual.id !== categoria.value.id
+                    )
+                  : [...categoriasPrioritarias, categoria.value];
+
+                onChange({ categoriasPrioritarias: nuevasCategorias });
+              }}
+            />
+          );
+        })}
       </SelectableCardGroup>
       {errorCategorias && (
         <div

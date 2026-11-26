@@ -14,6 +14,16 @@
   background-color: var(--bg-subtle, #f8f7fa);
 }
 
+.selectable-card-option:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.selectable-card-option:disabled:hover {
+  border-color: var(--border, #e5e4e7);
+  background-color: #ffffff;
+}
+
 .selectable-card-option--selected {
   border-color: var(--primary, #0f766e);
   background-color: rgba(15, 118, 110, 0.04);
