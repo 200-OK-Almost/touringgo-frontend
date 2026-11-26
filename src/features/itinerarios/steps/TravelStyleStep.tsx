@@ -1,5 +1,6 @@
 import { IoCafeOutline, IoFlashOutline } from "react-icons/io5";
 import { SelectableCard } from "../../../components/SelectableCard";
+import { SelectableCardGroup } from "../../../components/SelectableCardGroup";
 import type { TipoTransporte } from "../../profile/types";
 import type { RitmoCaminata } from "../types";
 import { BsGem, BsPiggyBank, BsWallet2 } from "react-icons/bs";
@@ -84,9 +85,14 @@ function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: Trav
   return (
     <>
     <div className="planificacion-form-header">
-      <h2>Ritmo</h2>
+      <h2 id="style-ritmo-title">Ritmo</h2>
     </div>
-    <div className="selectable-card-group grid-2">
+    <SelectableCardGroup
+      role="radiogroup"
+      labelledBy="style-ritmo-title"
+      describedBy={errors.ritmoVisita ? "style-ritmo-error" : undefined}
+      className="selectable-card-group grid-2"
+    >
       {ritmoVisitaOptions.map(r => 
         <SelectableCard 
           key={r.value}
@@ -98,8 +104,8 @@ function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: Trav
           variant="big"
         />
       )}
-    </div>
-    {errors.ritmoVisita && <div className="planificacion-field-error">
+    </SelectableCardGroup>
+    {errors.ritmoVisita && <div id="style-ritmo-error" className="planificacion-field-error">
       <p>{errors.ritmoVisita}</p>
     </div>
     }
@@ -124,8 +130,15 @@ function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: Trav
     </div>
     }
     */}
-    <h2>Presupuesto</h2>
-    <div className="selectable-card-group grid-3">
+    <h2 id="style-presupuesto-title">Presupuesto</h2>
+    <SelectableCardGroup
+      role="radiogroup"
+      labelledBy="style-presupuesto-title"
+      describedBy={
+        errors.presupuestoNivel ? "style-presupuesto-error" : undefined
+      }
+      className="selectable-card-group grid-3"
+    >
       {presupuestoOptions.map(p => 
         <SelectableCard 
           key={p.value}
@@ -137,8 +150,8 @@ function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: Trav
           variant="big"
         />
       )}
-    </div>
-    {errors.presupuestoNivel && <div className="planificacion-field-error">
+    </SelectableCardGroup>
+    {errors.presupuestoNivel && <div id="style-presupuesto-error" className="planificacion-field-error">
       <p>{errors.presupuestoNivel}</p>
     </div>
     }

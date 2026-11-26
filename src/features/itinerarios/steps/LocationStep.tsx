@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { BarrioCaba } from "../../../api/types";
 import { SelectableCard } from "../../../components/SelectableCard";
+import { SelectableCardGroup } from "../../../components/SelectableCardGroup";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import type { PuntoInicio } from "../types";
 import { IoBusinessOutline, IoHomeOutline, IoTrailSignOutline } from "react-icons/io5";
@@ -85,9 +86,14 @@ function LocationFields({
   return (
     <>
       <div className="planificacion-form-header">
-        <h2>¿Qué barrio querés recorrer?</h2>
+        <h2 id="location-barrio-title">¿Qué barrio querés recorrer?</h2>
       </div>
-      <div className="selectable-card-group grid-5">
+      <SelectableCardGroup
+        role="radiogroup"
+        labelledBy="location-barrio-title"
+        describedBy={errorBarrio ? "location-barrio-error" : undefined}
+        className="selectable-card-group grid-5"
+      >
         {BARRIOS.map((b) => (
           <SelectableCard
             key={b.value}
@@ -106,16 +112,21 @@ function LocationFields({
             variant="big"
           />
         ))}
-      </div>
+      </SelectableCardGroup>
       {errorBarrio && (
-        <div className="planificacion-field-error">
+        <div id="location-barrio-error" className="planificacion-field-error">
           <p>{errorBarrio}</p>
         </div>
       )}
       <div className="planificacion-form-header">
-        <h2>Punto de partida</h2>
+        <h2 id="location-punto-title">Punto de partida</h2>
       </div>
-      <div className="selectable-card-group grid-3">
+      <SelectableCardGroup
+        role="radiogroup"
+        labelledBy="location-punto-title"
+        describedBy={errorPuntoInicio ? "location-punto-error" : undefined}
+        className="selectable-card-group grid-3"
+      >
         {ALOJAMIENTO_OPTIONS.map((a) => (
           <SelectableCard
             key={a.value}
@@ -139,9 +150,9 @@ function LocationFields({
             variant="big"
           />
         ))}
-      </div>
+      </SelectableCardGroup>
       {errorPuntoInicio && (
-        <div className="planificacion-field-error">
+        <div id="location-punto-error" className="planificacion-field-error">
           <p>{errorPuntoInicio}</p>
         </div>
       )}

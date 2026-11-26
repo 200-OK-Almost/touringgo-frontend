@@ -57,7 +57,7 @@ describe("TravelCompanionsAndInterestsStep", () => {
       })
     ).not.toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /Solo/ })
+      screen.getByRole("radio", { name: /Solo/ })
     ).toHaveClass("selectable-card-option--selected");
   });
 
@@ -83,7 +83,7 @@ describe("TravelCompanionsAndInterestsStep", () => {
 
     expect(tabDia2).toHaveAttribute("aria-selected", "true");
     expect(
-      screen.getByRole("button", { name: /Con familia/ })
+      screen.getByRole("radio", { name: /Con familia/ })
     ).toHaveClass("selectable-card-option--selected");
   });
 
@@ -99,7 +99,7 @@ describe("TravelCompanionsAndInterestsStep", () => {
     );
 
     fireEvent.click(screen.getByRole("tab", { name: /Día 2/ }));
-    fireEvent.click(screen.getByRole("button", { name: /Con Grupo/ }));
+    fireEvent.click(screen.getByRole("radio", { name: /Con Grupo/ }));
 
     expect(onChangeDia).toHaveBeenCalledWith(2, {
       modalidadViaje: "Amigos",

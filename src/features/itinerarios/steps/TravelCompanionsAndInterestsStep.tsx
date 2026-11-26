@@ -12,6 +12,7 @@ import {
   IoWineOutline,
 } from "react-icons/io5";
 import { SelectableCard } from "../../../components/SelectableCard";
+import { SelectableCardGroup } from "../../../components/SelectableCardGroup";
 import type { CategoriaDto } from "../../../api/types";
 import type { FormErrors } from "../PlanificationForm.validation";
 import type { DiaPlanificacion } from "../planificacionFormData";
@@ -100,9 +101,16 @@ function PreferenceFields({
   return (
     <>
       <div className="planificacion-form-header">
-        <h2>Modalidad de viaje</h2>
+        <h2 id="preferences-modalidad-title">Modalidad de viaje</h2>
       </div>
-      <div className="selectable-card-group grid-3">
+      <SelectableCardGroup
+        role="radiogroup"
+        labelledBy="preferences-modalidad-title"
+        describedBy={
+          errorModalidad ? "preferences-modalidad-error" : undefined
+        }
+        className="selectable-card-group grid-3"
+      >
         {MODALIDAD_OPTIONS.map((modalidad) => (
           <SelectableCard
             key={modalidad.value}
@@ -114,21 +122,36 @@ function PreferenceFields({
             variant="big"
           />
         ))}
-      </div>
+      </SelectableCardGroup>
       {errorModalidad && (
-        <div className="planificacion-field-error">
+        <div
+          id="preferences-modalidad-error"
+          className="planificacion-field-error"
+        >
           <p>{errorModalidad}</p>
         </div>
       )}
 
       <div className="planificacion-form-header">
-        <h2>Categorías de interés</h2>
-        <p className="planificacion-form-description text-muted">
+        <h2 id="preferences-categorias-title">Categorías de interés</h2>
+        <p
+          id="preferences-categorias-help"
+          className="planificacion-form-description text-muted"
+        >
           Elegí entre 2 y 4 categorías · {categoriasPrioritarias.length}{" "}
           Seleccionadas
         </p>
       </div>
-      <div className="selectable-card-group grid-auto">
+      <SelectableCardGroup
+        role="group"
+        labelledBy="preferences-categorias-title"
+        describedBy={
+          errorCategorias
+            ? "preferences-categorias-help preferences-categorias-error"
+            : "preferences-categorias-help"
+        }
+        className="selectable-card-group grid-auto"
+      >
         {categoriaOptions.map((categoria) => (
           <SelectableCard
             key={categoria.value.id ?? categoria.title}
@@ -153,9 +176,12 @@ function PreferenceFields({
             }}
           />
         ))}
-      </div>
+      </SelectableCardGroup>
       {errorCategorias && (
-        <div className="planificacion-field-error">
+        <div
+          id="preferences-categorias-error"
+          className="planificacion-field-error"
+        >
           <p>{errorCategorias}</p>
         </div>
       )}

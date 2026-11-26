@@ -1,4 +1,5 @@
 import { SelectableCard } from "../../../components/SelectableCard";
+import { SelectableCardGroup } from "../../../components/SelectableCardGroup";
 import { RangoFechasSelector } from "../components/RangoFechasSelector";
 import type { FormErrors } from "../PlanificationForm.validation";
 import type { DisponibilidadDiaria } from "../types";
@@ -61,9 +62,18 @@ function DurationStep({
       />
 
       <div className="planificacion-form-header duration-step__availability-header">
-        <h2>¿Cuanto tiempo querés dedicar a recorrer cada día?</h2>
+        <h2 id="duration-availability-title">¿Cuanto tiempo querés dedicar a recorrer cada día?</h2>
       </div>
-      <div className="selectable-card-group grid-3">
+      <SelectableCardGroup
+        role="radiogroup"
+        labelledBy="duration-availability-title"
+        describedBy={
+          errors.disponibilidadDiaria
+            ? "duration-availability-error"
+            : undefined
+        }
+        className="selectable-card-group grid-3"
+      >
         {disponiblidadDiariaOptions.map((d) => (
           <SelectableCard
             key={d.value}
@@ -75,9 +85,13 @@ function DurationStep({
             variant="big"
           />
         ))}
-      </div>
+      </SelectableCardGroup>
       {errors.disponibilidadDiaria && (
-        <div className="planificacion-field-error" role="alert">
+        <div
+          id="duration-availability-error"
+          className="planificacion-field-error"
+          role="alert"
+        >
           <p>{errors.disponibilidadDiaria}</p>
         </div>
       )}

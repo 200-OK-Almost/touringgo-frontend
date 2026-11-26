@@ -63,7 +63,7 @@ describe("LocationStep", () => {
 
     expect(tabDia2).toHaveAttribute("aria-selected", "true");
     expect(
-      screen.getByRole("button", { name: "Recoleta" })
+      screen.getByRole("radio", { name: "Recoleta" })
     ).toHaveClass("selectable-card-option--selected");
   });
 
@@ -82,7 +82,7 @@ describe("LocationStep", () => {
     );
 
     fireEvent.click(screen.getByRole("tab", { name: /Día 2/ }));
-    fireEvent.click(screen.getByRole("button", { name: "San Telmo" }));
+    fireEvent.click(screen.getByRole("radio", { name: "San Telmo" }));
 
     expect(onChangeDia).toHaveBeenCalledWith(
       2,
