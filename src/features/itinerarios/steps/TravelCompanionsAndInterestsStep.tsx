@@ -18,6 +18,7 @@ import type { DiaPlanificacion } from "../planificacionFormData";
 import type { ModalidadViaje } from "../types";
 import DaySelectorTabs from "../components/DaySelectorTabs";
 import { preferenciasDiaCompletas } from "../lib/diasPlanificacion";
+import { getCategoriaIcon } from "../../../lib/format";
 
 interface TravelCompanionsAndInterestsStepProps {
   dias: DiaPlanificacion[];
@@ -71,16 +72,6 @@ const MODALIDAD_OPTIONS: ModalidadViajeOption[] = [
   },
 ];
 
-const ICON_MAP: { [key: string]: React.ReactNode } = {
-  cafe_especialidad: <IoCafeOutline />,
-  museos_galerias: <IoColorPaletteOutline />,
-  parques_aire_libre: <IoLeafOutline />,
-  librerias_diseno: <IoLibraryOutline />,
-  bares_vermu: <IoBeerOutline />,
-  gastronomia_clasica: <IoPizzaOutline />,
-  cocteleria_autor: <IoWineOutline />,
-};
-
 function PreferenceFields({
   dia,
   categorias,
@@ -94,7 +85,7 @@ function PreferenceFields({
   const categoriaOptions: CategoriaOption[] = categorias.map((categoria) => ({
     title: categoria.nombre,
     value: categoria,
-    icon: ICON_MAP[categoria.codigo],
+    icon: getCategoriaIcon(categoria.codigo),
   }));
 
   return (

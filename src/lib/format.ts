@@ -1,5 +1,18 @@
-import type { BarrioCaba, OrigenLugar } from "../api/types";
+import { createElement, type ReactNode } from "react";
+import type { BarrioCaba, CategoriaCodigo, OrigenLugar } from "../api/types";
 import type { NivelPresupuesto } from "../features/viaje/types";
+import {
+  IoBeerOutline,
+  IoCafeOutline,
+  IoColorPaletteOutline,
+  IoLeafOutline,
+  IoLibraryOutline,
+  IoPeople,
+  IoPeopleOutline,
+  IoPersonOutline,
+  IoPizzaOutline,
+  IoWineOutline,
+} from "react-icons/io5";
 
 const BARRIO_LABELS: Record<BarrioCaba, string> = {
   Palermo: "Palermo",
@@ -44,6 +57,19 @@ export function categoriaLabel(categoriaCodigo?: string | null): string {
     .split("_")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+}
+
+const ICON_MAP: Record<CategoriaCodigo, ReactNode> = {
+  cafe_especialidad: createElement(IoCafeOutline),
+  museos_galerias: createElement(IoColorPaletteOutline),
+  parques_aire_libre: createElement(IoLeafOutline),
+  librerias_diseno: createElement(IoLibraryOutline),
+  bares_vermu: createElement(IoBeerOutline),
+  gastronomia_clasica: createElement(IoPizzaOutline),
+  cocteleria_autor: createElement(IoWineOutline),
+};
+export function getCategoriaIcon(categoriaCodigo: CategoriaCodigo) {
+  return ICON_MAP[categoriaCodigo];
 }
 
 export function precioLabel(nivel: number): string {
