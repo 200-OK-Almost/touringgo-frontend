@@ -58,6 +58,7 @@
   --scrim-soft: rgba(255, 255, 255, 0.6);
   --scrim-card: rgba(255, 255, 255, 0.58);
   --scrim-chip: rgba(255, 255, 255, 0.62);
+  --scrim-dark: rgba(15, 23, 42, 0.45);
   --surface-solid: rgba(255, 255, 255, 0.94);
 
   /* Typography */
