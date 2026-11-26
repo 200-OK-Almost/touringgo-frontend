@@ -5,7 +5,7 @@ import { SelectablePlaceCard } from "../../../components/SelectablePlaceCard";
 import ChipGroup from "../../../components/ChipGroup";
 import { BARRIOS } from "../../../lib/filtros";
 import { barrioLabel } from "../../../lib/format";
-import { IoInformationCircleOutline, IoSearchOutline } from "react-icons/io5";
+import { IoClose, IoInformationCircleOutline, IoSearchOutline } from "react-icons/io5";
 import "./HospedajeSelector.css";
 
 export interface HospedajeSelectorProps {
@@ -158,8 +158,9 @@ export function HospedajeSelector({
               className="hospedaje-selector__clear-btn"
               onClick={handleClearSearch}
               title="Limpiar búsqueda"
+              aria-label="Limpiar búsqueda"
             >
-              ✕
+              <IoClose aria-hidden="true" />
             </button>
           )}
         </div>
