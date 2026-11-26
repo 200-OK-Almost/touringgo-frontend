@@ -86,7 +86,7 @@ function LocationFields({
   return (
     <>
       <div className="planificacion-form-header">
-        <h2 id="location-barrio-title">¿Qué barrio querés recorrer?</h2>
+        <h2 id="location-barrio-title" tabIndex={-1}>¿Qué barrio querés recorrer?</h2>
       </div>
       <SelectableCardGroup
         role="radiogroup"
@@ -114,12 +114,16 @@ function LocationFields({
         ))}
       </SelectableCardGroup>
       {errorBarrio && (
-        <div id="location-barrio-error" className="planificacion-field-error">
+        <div
+          id="location-barrio-error"
+          className="planificacion-field-error"
+          role="alert"
+        >
           <p>{errorBarrio}</p>
         </div>
       )}
       <div className="planificacion-form-header">
-        <h2 id="location-punto-title">Punto de partida</h2>
+        <h2 id="location-punto-title" tabIndex={-1}>Punto de partida</h2>
       </div>
       <SelectableCardGroup
         role="radiogroup"
@@ -152,7 +156,11 @@ function LocationFields({
         ))}
       </SelectableCardGroup>
       {errorPuntoInicio && (
-        <div id="location-punto-error" className="planificacion-field-error">
+        <div
+          id="location-punto-error"
+          className="planificacion-field-error"
+          role="alert"
+        >
           <p>{errorPuntoInicio}</p>
         </div>
       )}
@@ -233,7 +241,12 @@ function LocationStep({ dias, onChangeDia, errors }: LocationStepProps) {
       )}
 
       {errors.dias && (
-        <div className="planificacion-field-error" role="alert">
+        <div
+          id="planificacion-dias-error"
+          className="planificacion-field-error"
+          role="alert"
+          tabIndex={-1}
+        >
           <p>{errors.dias}</p>
         </div>
       )}

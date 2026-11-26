@@ -253,7 +253,7 @@ export function DateRangeWidget({
       : `month-${cursor.getFullYear()}-${cursor.getMonth()}`;
 
   return (
-    <div className="date-widget">
+    <div className="date-widget" id="viaje-fechas" tabIndex={-1}>
       <DurationChips
         durations={durationOptions}
         value={duration}

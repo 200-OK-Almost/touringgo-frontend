@@ -192,7 +192,12 @@ export function HospedajeSelector({
 
       {/* Mensaje de error de validación si existe */}
       {error && (
-        <div className="planificacion-field-error">
+        <div
+          id="hospedaje-error"
+          className="planificacion-field-error"
+          role="alert"
+          tabIndex={-1}
+        >
           <p>{error}</p>
         </div>
       )}

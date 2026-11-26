@@ -6,6 +6,7 @@ import LocationStep from "./steps/LocationStep";
 import TravelCompanionsAndInterestsStep from "./steps/TravelCompanionsAndInterestsStep";
 import TravelStyleStep from "./steps/TravelStyleStep";
 import PlanificacionFormNavigation from "./PlanificacionFormNavigation";
+import PlanificacionErrorSummary from "./components/PlanificacionErrorSummary";
 
 import "./PlanificacionForm.css"
 import type { CategoriaDto } from "../../api/types";
@@ -43,6 +44,7 @@ function PlanificacionForm() {
   });
   const [submitLoading, setSubmitLoading] = useState(false);
   const formRef = useRef<HTMLElement | null>(null);
+  const errorSummaryRef = useRef<HTMLDivElement | null>(null);
   const [direction, setDirection] = useState<NavigationDirection>("forward");
   const [categorias, setCategorias] = useState<CategoriaDto[]>([]);
   const [formData, setFormData] = useState<ItineraryFormData>(() =>
@@ -74,6 +76,14 @@ function PlanificacionForm() {
   useEffect(() => {
     saveDraft(formData, currentStepCounter);
   }, [formData, currentStepCounter, saveDraft]);
+
+  useEffect(() => {
+    if (Object.keys(errors).length === 0) {
+      return;
+    }
+
+    errorSummaryRef.current?.focus();
+  }, [errors]);
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -122,8 +132,6 @@ function PlanificacionForm() {
   }
 
   function handleNext() {
-    scrollToFormTop();
-
     const validationErrors = validateStep(formData, currentStepCounter);
     setErrors(validationErrors);
 
@@ -131,6 +139,7 @@ function PlanificacionForm() {
       return;
     }
 
+    scrollToFormTop();
     setDirection("forward");
     setCurrentStepCounter((prev) => {
       if (prev >= PASOS.length - 1) return prev;
@@ -226,6 +235,8 @@ function PlanificacionForm() {
         stepLabel={currentStep.label}
         totalSteps={PASOS.length}
       />
+
+      <PlanificacionErrorSummary ref={errorSummaryRef} errors={errors} />
 
       <div
         key={currentStepCounter}

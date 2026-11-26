@@ -62,7 +62,7 @@ function DurationStep({
       />
 
       <div className="planificacion-form-header duration-step__availability-header">
-        <h2 id="duration-availability-title">¿Cuanto tiempo querés dedicar a recorrer cada día?</h2>
+        <h2 id="duration-availability-title" tabIndex={-1}>¿Cuanto tiempo querés dedicar a recorrer cada día?</h2>
       </div>
       <SelectableCardGroup
         role="radiogroup"

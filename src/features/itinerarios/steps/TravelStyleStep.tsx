@@ -85,7 +85,7 @@ function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: Trav
   return (
     <>
     <div className="planificacion-form-header">
-      <h2 id="style-ritmo-title">Ritmo</h2>
+      <h2 id="style-ritmo-title" tabIndex={-1}>Ritmo</h2>
     </div>
     <SelectableCardGroup
       role="radiogroup"
@@ -105,7 +105,7 @@ function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: Trav
         />
       )}
     </SelectableCardGroup>
-    {errors.ritmoVisita && <div id="style-ritmo-error" className="planificacion-field-error">
+    {errors.ritmoVisita && <div id="style-ritmo-error" className="planificacion-field-error" role="alert">
       <p>{errors.ritmoVisita}</p>
     </div>
     }
@@ -130,7 +130,7 @@ function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: Trav
     </div>
     }
     */}
-    <h2 id="style-presupuesto-title">Presupuesto</h2>
+    <h2 id="style-presupuesto-title" tabIndex={-1}>Presupuesto</h2>
     <SelectableCardGroup
       role="radiogroup"
       labelledBy="style-presupuesto-title"
@@ -151,7 +151,7 @@ function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: Trav
         />
       )}
     </SelectableCardGroup>
-    {errors.presupuestoNivel && <div id="style-presupuesto-error" className="planificacion-field-error">
+    {errors.presupuestoNivel && <div id="style-presupuesto-error" className="planificacion-field-error" role="alert">
       <p>{errors.presupuestoNivel}</p>
     </div>
     }

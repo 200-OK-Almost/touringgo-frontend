@@ -101,7 +101,7 @@ function PreferenceFields({
   return (
     <>
       <div className="planificacion-form-header">
-        <h2 id="preferences-modalidad-title">Modalidad de viaje</h2>
+        <h2 id="preferences-modalidad-title" tabIndex={-1}>Modalidad de viaje</h2>
       </div>
       <SelectableCardGroup
         role="radiogroup"
@@ -127,13 +127,14 @@ function PreferenceFields({
         <div
           id="preferences-modalidad-error"
           className="planificacion-field-error"
+          role="alert"
         >
           <p>{errorModalidad}</p>
         </div>
       )}
 
       <div className="planificacion-form-header">
-        <h2 id="preferences-categorias-title">Categorías de interés</h2>
+        <h2 id="preferences-categorias-title" tabIndex={-1}>Categorías de interés</h2>
         <p
           id="preferences-categorias-help"
           className="planificacion-form-description text-muted"
@@ -181,6 +182,7 @@ function PreferenceFields({
         <div
           id="preferences-categorias-error"
           className="planificacion-field-error"
+          role="alert"
         >
           <p>{errorCategorias}</p>
         </div>
@@ -252,7 +254,12 @@ function TravelCompanionsAndInterestsStep({
       )}
 
       {errors.dias && (
-        <div className="planificacion-field-error" role="alert">
+        <div
+          id="planificacion-dias-error"
+          className="planificacion-field-error"
+          role="alert"
+          tabIndex={-1}
+        >
           <p>{errors.dias}</p>
         </div>
       )}
