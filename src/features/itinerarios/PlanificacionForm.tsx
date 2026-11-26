@@ -45,6 +45,8 @@ function PlanificacionForm() {
   const [submitLoading, setSubmitLoading] = useState(false);
   const formRef = useRef<HTMLElement | null>(null);
   const errorSummaryRef = useRef<HTMLDivElement | null>(null);
+  const stepContentRef = useRef<HTMLDivElement | null>(null);
+  const isFirstRenderRef = useRef(true);
   const [direction, setDirection] = useState<NavigationDirection>("forward");
   const [categorias, setCategorias] = useState<CategoriaDto[]>([]);
   const [formData, setFormData] = useState<ItineraryFormData>(() =>
@@ -84,6 +86,24 @@ function PlanificacionForm() {
 
     errorSummaryRef.current?.focus();
   }, [errors]);
+
+  useEffect(() => {
+    if (isFirstRenderRef.current) {
+      isFirstRenderRef.current = false;
+      return;
+    }
+
+    const heading = stepContentRef.current?.querySelector<HTMLElement>(
+      "h1, h2, h3"
+    );
+
+    if (!heading) {
+      return;
+    }
+
+    heading.tabIndex = -1;
+    heading.focus({ preventScroll: true });
+  }, [currentStepCounter]);
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -230,6 +250,13 @@ function PlanificacionForm() {
 
   return (
     <main className="planificacion-form-main" ref={formRef}>
+      <header className="planificacion-form-heading">
+        <h1 className="planificacion-form-title">Planificá tu salida</h1>
+        <p className="planificacion-form-description text-muted">
+          Contanos tus preferencias y armamos un itinerario a tu medida.
+        </p>
+      </header>
+
       <StepIndicator
         currentStep={currentStepCounter}
         stepLabel={currentStep.label}
@@ -240,6 +267,7 @@ function PlanificacionForm() {
 
       <div
         key={currentStepCounter}
+        ref={stepContentRef}
         className={`planificacion-step-content planificacion-step-content--${direction}`}
       >
         {renderCurrentStep()}

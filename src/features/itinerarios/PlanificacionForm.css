@@ -24,6 +24,19 @@
   gap: .25rem;
 }
 
+.planificacion-form-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.planificacion-form-title {
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--text-heading);
+}
+
 /* =========================================================
    GRID RESPONSIVE POR CANTIDAD DE OPCIONES
    ========================================================= */
