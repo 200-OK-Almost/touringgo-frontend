@@ -7,6 +7,7 @@ import TravelCompanionsAndInterestsStep from "./steps/TravelCompanionsAndInteres
 import TravelStyleStep from "./steps/TravelStyleStep";
 import PlanificacionFormNavigation from "./PlanificacionFormNavigation";
 import PlanificacionErrorSummary from "./components/PlanificacionErrorSummary";
+import ResumenPlanificacion from "./components/ResumenPlanificacion";
 
 import "./PlanificacionForm.css"
 import type { CategoriaDto } from "../../api/types";
@@ -313,6 +314,10 @@ function PlanificacionForm() {
           </button>
         </div>
       )}
+
+      <aside className="planificacion-form-aside" aria-label="Resumen del viaje">
+        <ResumenPlanificacion formData={formData} />
+      </aside>
 
       <PlanificacionFormNavigation
         onBack={handleBack}
