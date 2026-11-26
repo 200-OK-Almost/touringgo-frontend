@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import StepIndicator from "../../itinerarios/StepIndicator"
 import RestriccionesStep from "./RestriccionesStep";
-import type { ActualizarPreferenciasCategoriaDTO, ActualizarPreferenciasUsuarioDTO, PreferenciasCategoriaDTO, TipoDieta } from "../types";
+import type { ActualizarPerfilUsuarioDTO, PerfilUsuarioDTO, PreferenciasCategoriaDTO, TipoDieta } from "../types";
 import { useNavigate } from "react-router-dom";
 import PreferenciasStep from "./PreferenciasStep";
-import { actualizarPreferencias, completarEncuesta, getPerfil } from "../api/perfil";
+import { actualizarPerfil, completarEncuesta, getPerfil } from "../api/perfil";
 import FormNavigation from "../../../components/FormNavigation";
 
 type EncuestaFormData = {
@@ -33,15 +33,24 @@ function EncuestaInicial() {
   const navigate = useNavigate();
   const [direction, setDirection] = useState<NavigationDirection>("forward");
   const [submitLoading, setSubmitLoading] = useState<boolean>(false)
+  const [perfil, setPerfil] = useState<PerfilUsuarioDTO | null>(null)
 
   useEffect(() => {
     const fetchPerfil = async () => {
       try {
-        const perfil = await getPerfil()
-        setFormData((prev) => ({
-          ...prev,
-          preferenciasCategorias: perfil.preferencias.categorias,
-        }));
+        const perfilData = await getPerfil()
+        setFormData({
+          requiereRecorridoSinEscalones:
+            perfilData.restricciones.requiereRecorridoSinEscalones,
+
+          requiereBanoAccesible:
+            perfilData.restricciones.requiereBanoAccesible,
+
+          tipoDietas: [...perfilData.restricciones.dieta],
+
+          preferenciasCategorias: perfilData.preferencias.categorias
+        });
+        setPerfil(perfilData)
       } catch {
         // Ignore error
       }
@@ -111,23 +120,48 @@ function EncuestaInicial() {
   }
 
   function handleNext() {
-    setDirection("forward");
-    setCurrentStepCounter((prev) => {
-      if (prev >= PASOS.length - 1) return prev;
-      return prev + 1;
-    });
-
     if (currentStepCounter >= PASOS.length - 1) {
-      handleSubmit();
+      void handleSubmit();
+      return;
     }
+
+    setDirection("forward");
+    setCurrentStepCounter(prev => prev + 1);
   }
 
   async function handleSubmit() {
-    try {
+    if (!perfil || submitLoading) return;
 
-      await completarEncuesta()
-    } catch {
-      
+    const dto: ActualizarPerfilUsuarioDTO = {
+      preferencias: {
+        ritmoVisitaPreferido: perfil.preferencias.ritmoVisitaPreferido,
+        transportesPreferidos: perfil.preferencias.transportesPreferidos,
+        categorias: formData.preferenciasCategorias.map(
+          ({ categoriaCodigo, afinidad }) => ({
+            categoriaCodigo,
+            afinidad
+          })
+        )
+      },
+      restricciones: {
+        dieta: formData.tipoDietas,
+        requiereRecorridoSinEscalones: formData.requiereRecorridoSinEscalones,
+        requiereBanoAccesible: formData.requiereBanoAccesible
+      }
+    };
+
+    try {
+      setSubmitLoading(true);
+
+      await actualizarPerfil(dto);
+      await completarEncuesta();
+
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.error("Error al completar la encuesta:", error);
+      // Mostrar un mensaje de error en el formulario.
+    } finally {
+      setSubmitLoading(false);
     }
   }
 

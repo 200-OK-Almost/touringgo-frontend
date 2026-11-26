@@ -1,5 +1,6 @@
 import { http } from "../../../api/client";
 import type {
+  ActualizarPerfilUsuarioDTO,
   ActualizarPreferenciasUsuarioDTO,
   ActualizarRestriccionesUsuarioDTO,
   PerfilUsuarioDTO,
@@ -26,5 +27,9 @@ export function actualizarRestricciones(
 }
 
 export function completarEncuesta() {
-  return http.patch(`${ME_BASE}/encuesta`)
+  return http.patch("/usuarios/api/usuarios/me/encuesta")
+}
+
+export function actualizarPerfil(actualizarPerfilUsuarioDTO: ActualizarPerfilUsuarioDTO) {
+  return http.put(`${ME_BASE}/perfil`, actualizarPerfilUsuarioDTO)
 }
