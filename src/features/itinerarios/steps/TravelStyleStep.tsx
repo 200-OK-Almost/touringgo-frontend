@@ -66,7 +66,7 @@ function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: Trav
   return (
     <>
     <div className="planificacion-form-header">
-      <h2 id="style-ritmo-title" tabIndex={-1}>Ritmo</h2>
+      <h3 id="style-ritmo-title" tabIndex={-1}>Ritmo</h3>
     </div>
     <SelectableCardGroup
       role="radiogroup"
@@ -91,7 +91,7 @@ function TravelStyleStep({ritmoVisita, presupuestoNivel, onChange, errors}: Trav
     </div>
     }
     <div className="planificacion-form-header">
-      <h2 id="style-presupuesto-title" tabIndex={-1}>Presupuesto</h2>
+      <h3 id="style-presupuesto-title" tabIndex={-1}>Presupuesto</h3>
       <p className="planificacion-form-description text-muted">
         Elegí cómo querés manejar los costos del recorrido.
       </p>

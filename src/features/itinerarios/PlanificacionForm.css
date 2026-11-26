@@ -24,6 +24,13 @@
   gap: .25rem;
 }
 
+.planificacion-form-header h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text-heading);
+}
+
 .planificacion-form-heading {
   display: flex;
   flex-direction: column;

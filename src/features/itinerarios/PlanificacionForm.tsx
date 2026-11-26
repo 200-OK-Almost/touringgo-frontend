@@ -48,7 +48,6 @@ function PlanificacionForm() {
   const formRef = useRef<HTMLElement | null>(null);
   const errorSummaryRef = useRef<HTMLDivElement | null>(null);
   const submitErrorRef = useRef<HTMLDivElement | null>(null);
-  const stepContentRef = useRef<HTMLDivElement | null>(null);
   const isFirstRenderRef = useRef(true);
   const [direction, setDirection] = useState<NavigationDirection>("forward");
   const [categorias, setCategorias] = useState<CategoriaDto[]>([]);
@@ -96,16 +95,9 @@ function PlanificacionForm() {
       return;
     }
 
-    const heading = stepContentRef.current?.querySelector<HTMLElement>(
-      "h1, h2, h3"
-    );
-
-    if (!heading) {
-      return;
-    }
-
-    heading.tabIndex = -1;
-    heading.focus({ preventScroll: true });
+    document
+      .getElementById("planificacion-step-title")
+      ?.focus({ preventScroll: true });
   }, [currentStepCounter]);
 
   useEffect(() => {
@@ -284,7 +276,6 @@ function PlanificacionForm() {
 
       <div
         key={currentStepCounter}
-        ref={stepContentRef}
         className={`planificacion-step-content planificacion-step-content--${direction}`}
       >
         {renderCurrentStep()}

@@ -86,7 +86,7 @@ function LocationFields({
   return (
     <>
       <div className="planificacion-form-header">
-        <h2 id="location-barrio-title" tabIndex={-1}>¿Qué barrio querés recorrer?</h2>
+        <h3 id="location-barrio-title" tabIndex={-1}>¿Qué barrio querés recorrer?</h3>
       </div>
       <SelectableCardGroup
         role="radiogroup"
@@ -123,7 +123,7 @@ function LocationFields({
         </div>
       )}
       <div className="planificacion-form-header">
-        <h2 id="location-punto-title" tabIndex={-1}>Punto de partida</h2>
+        <h3 id="location-punto-title" tabIndex={-1}>Punto de partida</h3>
       </div>
       <SelectableCardGroup
         role="radiogroup"
@@ -213,7 +213,7 @@ function LocationStep({ dias, onChangeDia, errors }: LocationStepProps) {
         <div className="location-days">
           <div className="location-days__header">
             <div className="planificacion-form-header">
-              <h2>¿Qué barrio querés recorrer cada día?</h2>
+              <h3>¿Qué barrio querés recorrer cada día?</h3>
               <p className="planificacion-form-description text-muted">
                 Elegí un barrio y un punto de partida para cada día del viaje.
               </p>

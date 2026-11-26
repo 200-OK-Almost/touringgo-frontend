@@ -24,5 +24,8 @@ describe("StepIndicator", () => {
       "Paso 2 de 4: Barrio y punto de partida"
     );
     expect(screen.getByText("Paso 2 de 4")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Barrio y punto de partida" })
+    ).toBeInTheDocument();
   });
 });

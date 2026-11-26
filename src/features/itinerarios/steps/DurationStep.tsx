@@ -55,7 +55,7 @@ function DurationStep({
   return (
     <>
       <div className="planificacion-form-header">
-        <h2>Fechas del viaje</h2>
+        <h3>Fechas del viaje</h3>
         <p className="planificacion-form-description text-muted">
           Elegí la fecha de inicio y la duración del viaje. Puede durar entre 1 y 7 días.
         </p>
@@ -69,7 +69,7 @@ function DurationStep({
       />
 
       <div className="planificacion-form-header duration-step__availability-header">
-        <h2 id="duration-availability-title" tabIndex={-1}>¿Cuánto tiempo querés dedicar a recorrer cada día?</h2>
+        <h3 id="duration-availability-title" tabIndex={-1}>¿Cuánto tiempo querés dedicar a recorrer cada día?</h3>
       </div>
       <SelectableCardGroup
         role="radiogroup"

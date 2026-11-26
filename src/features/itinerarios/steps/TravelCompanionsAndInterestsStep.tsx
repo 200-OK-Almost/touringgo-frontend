@@ -104,7 +104,7 @@ function PreferenceFields({
   return (
     <>
       <div className="planificacion-form-header">
-        <h2 id="preferences-modalidad-title" tabIndex={-1}>Modalidad de viaje</h2>
+        <h3 id="preferences-modalidad-title" tabIndex={-1}>Modalidad de viaje</h3>
       </div>
       <SelectableCardGroup
         role="radiogroup"
@@ -137,7 +137,7 @@ function PreferenceFields({
       )}
 
       <div className="planificacion-form-header">
-        <h2 id="preferences-categorias-title" tabIndex={-1}>Categorías de interés</h2>
+        <h3 id="preferences-categorias-title" tabIndex={-1}>Categorías de interés</h3>
         <p
           id="preferences-categorias-help"
           className="planificacion-form-description text-muted"
@@ -241,7 +241,7 @@ function TravelCompanionsAndInterestsStep({
         <div className="preferences-days">
           <div className="preferences-days__header">
             <div className="planificacion-form-header">
-              <h2>¿Cómo viajás y qué te interesa cada día?</h2>
+              <h3>¿Cómo viajás y qué te interesa cada día?</h3>
               <p className="planificacion-form-description text-muted">
                 Elegí la modalidad de viaje y las categorías de interés para
                 cada día.

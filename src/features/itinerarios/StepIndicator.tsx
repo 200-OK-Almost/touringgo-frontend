@@ -12,7 +12,13 @@ function StepIndicator({stepLabel, currentStep, totalSteps}: StepIndicatorProps)
     return (
       <div className="step-indicator">
         <div className="step-indicator-info">
-          <p className="step-indicator-label">{stepLabel}</p>
+          <h2
+            id="planificacion-step-title"
+            className="step-indicator-label"
+            tabIndex={-1}
+          >
+            {stepLabel}
+          </h2>
           <p className="step-indicator-counter" aria-live="polite">
             Paso {stepNumber} de {totalSteps}
           </p>

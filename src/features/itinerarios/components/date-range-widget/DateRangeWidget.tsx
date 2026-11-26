@@ -274,7 +274,7 @@ export function DateRangeWidget({
             <ChevronLeft size={18} aria-hidden="true" />
           </button>
 
-          <h2 className="date-widget__month">{formatMonthYear(cursor)}</h2>
+          <h3 className="date-widget__month">{formatMonthYear(cursor)}</h3>
 
           <span className="date-widget__selected-day">
             {startDate ? startDate.getDate() : cursor.getDate()}
