@@ -29,6 +29,13 @@
   margin: 0;
   cursor: pointer;
   user-select: none;
+
+  display: flex;
+  gap: .25rem;
+  align-items: center;
+}
+.categoria-afinidad-slider__icon {
+  font-size: 1.25rem;
 }
 
 .categoria-afinidad-slider__badge {

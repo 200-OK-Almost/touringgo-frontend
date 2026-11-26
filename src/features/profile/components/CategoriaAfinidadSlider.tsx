@@ -1,5 +1,5 @@
 import type { PreferenciasCategoriaDTO } from "../types";
-import { categoriaLabel } from "../../../lib/format";
+import { categoriaLabel, getCategoriaIcon } from "../../../lib/format";
 import "./CategoriaAfinidadSlider.css";
 
 export interface CategoriaAfinidadSliderProps {
@@ -9,9 +9,9 @@ export interface CategoriaAfinidadSliderProps {
 }
 
 const AFINIDAD_LABELS: Record<number, string> = {
-  [-2]: "Desinterés / No me gusta",
+  [-2]: "No me gusta",
   [-1]: "Poco interés",
-  0: "Neutral / Sin preferencia",
+  0: "Sin preferencia",
   1: "Interesado",
   2: "Mucho interés",
 };
@@ -35,7 +35,10 @@ export function CategoriaAfinidadSlider({
         <label
           htmlFor={`slider-${categoriaCodigo}`}
           className="categoria-afinidad-slider__title"
-        >
+          >
+          <span className="categoria-afinidad-slider__icon">
+            {getCategoriaIcon(categoriaCodigo)}
+          </span>
           {label}
         </label>
         <span
