@@ -15,7 +15,7 @@ export interface NavbarProps {
 }
 
 export default function Navbar({ showNuevoViaje = false }: NavbarProps) {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMisViajesOpen, setIsMisViajesOpen] = useState(false);
   const [isUnirseViajeOpen, setIsUnirseViajeOpen] = useState(false);
@@ -36,6 +36,8 @@ export default function Navbar({ showNuevoViaje = false }: NavbarProps) {
             </div>
           ) : isAuthenticated ? (
             <>
+            {user?.completoEncuesta && 
+            <>
             <button
               type="button"
               className="mis-viajes-btn"
@@ -54,6 +56,8 @@ export default function Navbar({ showNuevoViaje = false }: NavbarProps) {
               <IoPersonAddOutline aria-hidden="true" />
               <span className="mis-viajes-btn__label">Unirse a un viaje</span>
             </button>
+            </>
+            }
             {showNuevoViaje && <NuevoViajeButton variant="nav" />}
             <div className="nav-divider"/>
             <UserMenu onOpenProfile={() => setIsProfileOpen(true)} />

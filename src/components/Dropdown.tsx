@@ -144,6 +144,7 @@ export interface DropdownItemProps {
   icon?: ReactNode;
   variant?: "default" | "danger";
   disabled?: boolean;
+  disabledToolTipText?: string
   className?: string;
   closeOnClick?: boolean;
 }
@@ -156,6 +157,7 @@ export function DropdownItem({
   disabled = false,
   className = "",
   closeOnClick = true,
+  disabledToolTipText = ""
 }: DropdownItemProps) {
   const { close } = useDropdown();
 
@@ -174,6 +176,7 @@ export function DropdownItem({
       type="button"
       role="menuitem"
       disabled={disabled}
+      title={disabledToolTipText}
       className={`dropdown-item dropdown-item--${variant} ${className}`}
       onClick={handleClick}
     >

@@ -8,6 +8,7 @@ import { actualizarPerfil, completarEncuesta, getPerfil } from "../api/perfil";
 import FormNavigation from "../../../components/FormNavigation";
 import EncuestaBienvenida from "./EncuestaBienvenida";
 import "./EncuestaInicial.css"
+import { useAuth } from "../../auth/auth-context";
 
 type EncuestaFormData = {
   requiereRecorridoSinEscalones: boolean
@@ -24,6 +25,7 @@ const PASOS = [
 type NavigationDirection = "forward" | "backward";
 
 function EncuestaInicial() {
+  const { checkAuth } = useAuth();
   const [formData, setFormData] = useState<EncuestaFormData>({
     requiereRecorridoSinEscalones: false,
     requiereBanoAccesible: false,
@@ -155,6 +157,8 @@ function EncuestaInicial() {
 
       await actualizarPerfil(dto);
       await completarEncuesta();
+
+      await checkAuth() // refrescar para habilitar botons de navbar
 
       navigate("/", { replace: true });
     } catch (error) {
