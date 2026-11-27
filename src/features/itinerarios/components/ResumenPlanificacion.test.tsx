@@ -1,10 +1,17 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   crearItineraryFormDataInicial,
   type ItineraryFormData,
 } from "../planificacionFormData";
+import { getLugaresDetalle } from "../../../api/lugares";
 import ResumenPlanificacion from "./ResumenPlanificacion";
+
+vi.mock("../../../api/lugares", () => ({
+  getLugaresDetalle: vi.fn().mockResolvedValue([
+    { id: "hospedaje-1", nombre: "Hotel Palermo Select" },
+  ]),
+}));
 
 const CATEGORIA = {
   id: 1,
@@ -51,7 +58,11 @@ function crearFormData(
 }
 
 describe("ResumenPlanificacion", () => {
-  it("resume las selecciones del viaje", () => {
+  beforeEach(() => {
+    vi.mocked(getLugaresDetalle).mockClear();
+  });
+
+  it("resume las selecciones del viaje con detalle por día", async () => {
     render(<ResumenPlanificacion formData={crearFormData()} />);
 
     expect(screen.getByText("Resumen del viaje")).toBeInTheDocument();
@@ -59,14 +70,37 @@ describe("ResumenPlanificacion", () => {
     expect(
       screen.getByText(/Del 18\/11 al 19\/11/)
     ).toBeInTheDocument();
-    expect(screen.getByText(/Día completo/)).toBeInTheDocument();
-    expect(screen.getByText("Palermo, Recoleta")).toBeInTheDocument();
-    expect(
-      screen.getByText("Hospedaje propio, Punto céntrico")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Día completo")).toBeInTheDocument();
+
+    const lineaDia1 = await screen.findByText(/Día 1 ·/);
+    expect(lineaDia1).toHaveTextContent(
+      "Día 1 · Palermo — Hotel Palermo Select"
+    );
+    expect(screen.getByText(/Día 2 ·/)).toHaveTextContent(
+      "Día 2 · Recoleta — Punto céntrico"
+    );
+
     expect(screen.getByText("En pareja")).toBeInTheDocument();
     expect(screen.getByText("Café de especialidad")).toBeInTheDocument();
-    expect(screen.getByText("Relajado · Equilibrado")).toBeInTheDocument();
+    expect(
+      screen.getByText("Relajado, Activo · Equilibrado, Económico")
+    ).toBeInTheDocument();
+
+    expect(getLugaresDetalle).toHaveBeenCalledWith(["hospedaje-1"]);
+  });
+
+  it("muestra barrio y punto de partida con nombre del hospedaje en un solo día", async () => {
+    const formData = crearFormData();
+    formData.dias = formData.dias.slice(0, 1);
+    formData.fechaFin = "2026-11-18";
+
+    render(<ResumenPlanificacion formData={formData} />);
+
+    expect(screen.getByText("1 día")).toBeInTheDocument();
+    expect(screen.getByText("Palermo")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Hotel Palermo Select")
+    ).toBeInTheDocument();
   });
 
   it("muestra valores pendientes cuando no hay selecciones", () => {
@@ -74,7 +108,8 @@ describe("ResumenPlanificacion", () => {
       <ResumenPlanificacion formData={crearItineraryFormDataInicial()} />
     );
 
-    expect(screen.getAllByText(/Sin definir/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Pendiente").length).toBeGreaterThanOrEqual(5);
     expect(screen.getByText("Sin días")).toBeInTheDocument();
+    expect(getLugaresDetalle).not.toHaveBeenCalled();
   });
 });

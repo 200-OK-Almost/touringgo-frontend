@@ -87,6 +87,15 @@
   color: var(--text-heading);
 }
 
+.resumen-viaje__row dd.resumen-viaje__valor--pendiente,
+.resumen-viaje__dia-linea .resumen-viaje__valor--pendiente {
+  color: var(--text-muted);
+}
+
+.resumen-viaje__dia-linea + .resumen-viaje__dia-linea {
+  margin-top: 0.2rem;
+}
+
 .resumen-viaje__hint {
   padding: 0 1rem 1rem;
   font-size: 0.78rem;

@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { IoChevronDown } from "react-icons/io5";
-import type { ItineraryFormData } from "../planificacionFormData";
+import type { LugarDetalleDto } from "../../../api/types";
+import { getLugaresDetalle } from "../../../api/lugares";
+import type {
+  DiaPlanificacion,
+  ItineraryFormData,
+} from "../planificacionFormData";
 import type {
   DisponibilidadDiaria,
   ModalidadViaje,
@@ -11,6 +16,8 @@ import type { NivelPresupuesto } from "../../viaje/types";
 import { formatearRangoFechas } from "../lib/fechas";
 import { barrioLabel } from "../../../lib/format";
 import "./ResumenPlanificacion.css";
+
+const PENDIENTE = "Pendiente";
 
 const DISPONIBILIDAD_LABEL: Record<DisponibilidadDiaria, string> = {
   DiaCompleto: "Día completo",
@@ -62,20 +69,116 @@ function abiertoPorDefecto(): boolean {
   return window.matchMedia("(min-width: 1080px)").matches;
 }
 
+function clasePendiente(texto: string) {
+  return texto === PENDIENTE ? "resumen-viaje__valor--pendiente" : undefined;
+}
+
+function textoBarrio(dia: DiaPlanificacion): string {
+  return dia.barrio ? barrioLabel(dia.barrio) : PENDIENTE;
+}
+
+function textoPuntoPartida(
+  dia: DiaPlanificacion,
+  lugaresPartida: Record<string, LugarDetalleDto>
+): string {
+  if (!dia.puntoInicio) {
+    return PENDIENTE;
+  }
+
+  if (
+    (dia.puntoInicio === "HospedajePropio" ||
+      dia.puntoInicio === "HospedajeSugerido") &&
+    dia.hospedajeLugarGuid
+  ) {
+    const lugar = lugaresPartida[dia.hospedajeLugarGuid];
+
+    if (lugar) {
+      return lugar.nombre;
+    }
+  }
+
+  return PUNTO_LABEL[dia.puntoInicio];
+}
+
+interface LineaDiaProps {
+  dia: DiaPlanificacion;
+  lugaresPartida: Record<string, LugarDetalleDto>;
+}
+
+function LineaDia({ dia, lugaresPartida }: LineaDiaProps) {
+  const barrio = textoBarrio(dia);
+  const punto = textoPuntoPartida(dia, lugaresPartida);
+
+  return (
+    <dd className="resumen-viaje__dia-linea">
+      Día {dia.dia} · <span className={clasePendiente(barrio)}>{barrio}</span> —{" "}
+      <span className={clasePendiente(punto)}>{punto}</span>
+    </dd>
+  );
+}
+
 export function ResumenPlanificacion({ formData }: ResumenPlanificacionProps) {
   const [abierto, setAbierto] = useState(abiertoPorDefecto);
+  const [lugaresPartida, setLugaresPartida] = useState<
+    Record<string, LugarDetalleDto>
+  >({});
+
+  const guidsPartida = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          formData.dias.flatMap((dia) =>
+            dia.hospedajeLugarGuid ? [dia.hospedajeLugarGuid] : []
+          )
+        )
+      ),
+    [formData.dias]
+  );
+  const guidsKey = guidsPartida.join("|");
+
+  useEffect(() => {
+    if (!guidsKey) {
+      return;
+    }
+
+    let cancelado = false;
+
+    getLugaresDetalle(guidsKey.split("|"))
+      .then((lugares) => {
+        if (cancelado) {
+          return;
+        }
+
+        setLugaresPartida((prev) => {
+          const siguiente = { ...prev };
+          lugares.forEach((lugar) => {
+            siguiente[lugar.id] = lugar;
+          });
+          return siguiente;
+        });
+      })
+      .catch(() => {
+        // Sin detalle del hospedaje, se muestra la etiqueta del tipo de punto
+      });
+
+    return () => {
+      cancelado = true;
+    };
+  }, [guidsKey]);
 
   const dias = formData.dias.length;
+  const esUnDia = formData.dias.length === 1;
   const fechas = formData.fechaInicio
     ? formatearRangoFechas(formData.fechaInicio, formData.fechaFin)
-    : "Sin definir";
-  const disponibilidad = formData.disponibilidadDiaria
+    : PENDIENTE;
+  const momento = formData.disponibilidadDiaria
     ? DISPONIBILIDAD_LABEL[formData.disponibilidadDiaria]
-    : "Sin definir";
-  const barrios = unicos(formData.dias.map((dia) => dia.barrio)).map(barrioLabel);
-  const puntos = unicos(formData.dias.map((dia) => dia.puntoInicio)).map(
-    (punto) => PUNTO_LABEL[punto]
-  );
+    : PENDIENTE;
+  const diaUnico = esUnDia ? formData.dias[0] : null;
+  const barrioUnico = diaUnico ? textoBarrio(diaUnico) : "";
+  const puntoUnico = diaUnico
+    ? textoPuntoPartida(diaUnico, lugaresPartida)
+    : "";
   const modalidades = unicos(
     formData.dias.map((dia) => dia.modalidadViaje)
   ).map((modalidad) => MODALIDAD_LABEL[modalidad]);
@@ -86,16 +189,19 @@ export function ResumenPlanificacion({ formData }: ResumenPlanificacionProps) {
       )
     )
   );
-  const estilo = [
-    formData.dias[0]?.ritmoVisita
-      ? RITMO_LABEL[formData.dias[0].ritmoVisita]
-      : null,
-    formData.dias[0]?.presupuestoNivel
-      ? PRESUPUESTO_LABEL[formData.dias[0].presupuestoNivel]
-      : null,
-  ]
-    .filter(Boolean)
-    .join(" · ");
+  const ritmos = unicos(formData.dias.map((dia) => dia.ritmoVisita)).map(
+    (ritmo) => RITMO_LABEL[ritmo]
+  );
+  const presupuestos = unicos(
+    formData.dias.map((dia) => dia.presupuestoNivel)
+  ).map((presupuesto) => PRESUPUESTO_LABEL[presupuesto]);
+  const compania = modalidades.length > 0 ? modalidades.join(", ") : PENDIENTE;
+  const interesesTexto =
+    intereses.length > 0 ? intereses.join(", ") : PENDIENTE;
+  const estilo =
+    [ritmos.join(", "), presupuestos.join(", ")]
+      .filter(Boolean)
+      .join(" · ") || PENDIENTE;
 
   return (
     <details
@@ -116,31 +222,54 @@ export function ResumenPlanificacion({ formData }: ResumenPlanificacionProps) {
       <dl className="resumen-viaje__list">
         <div className="resumen-viaje__row">
           <dt>Fechas</dt>
-          <dd>
-            {fechas} · {disponibilidad}
-          </dd>
+          <dd className={clasePendiente(fechas)}>{fechas}</dd>
         </div>
         <div className="resumen-viaje__row">
-          <dt>Zonas</dt>
-          <dd>{barrios.length > 0 ? barrios.join(", ") : "Sin definir"}</dd>
+          <dt>Momento del día</dt>
+          <dd className={clasePendiente(momento)}>{momento}</dd>
         </div>
-        <div className="resumen-viaje__row">
-          <dt>Punto de partida</dt>
-          <dd>{puntos.length > 0 ? puntos.join(", ") : "Sin definir"}</dd>
-        </div>
+
+        {esUnDia ? (
+          <>
+            <div className="resumen-viaje__row">
+              <dt>Barrio</dt>
+              <dd className={clasePendiente(barrioUnico)}>{barrioUnico}</dd>
+            </div>
+            <div className="resumen-viaje__row">
+              <dt>Punto de partida</dt>
+              <dd className={clasePendiente(puntoUnico)}>{puntoUnico}</dd>
+            </div>
+          </>
+        ) : (
+          <div className="resumen-viaje__row">
+            <dt>Días</dt>
+            {formData.dias.length === 0 ? (
+              <dd className="resumen-viaje__valor--pendiente">{PENDIENTE}</dd>
+            ) : (
+              formData.dias.map((dia) => (
+                <LineaDia
+                  key={dia.dia}
+                  dia={dia}
+                  lugaresPartida={lugaresPartida}
+                />
+              ))
+            )}
+          </div>
+        )}
+
         <div className="resumen-viaje__row">
           <dt>Compañía</dt>
-          <dd>
-            {modalidades.length > 0 ? modalidades.join(", ") : "Sin definir"}
-          </dd>
+          <dd className={clasePendiente(compania)}>{compania}</dd>
         </div>
         <div className="resumen-viaje__row">
           <dt>Intereses</dt>
-          <dd>{intereses.length > 0 ? intereses.join(", ") : "Sin definir"}</dd>
+          <dd className={clasePendiente(interesesTexto)}>
+            {interesesTexto}
+          </dd>
         </div>
         <div className="resumen-viaje__row">
           <dt>Estilo</dt>
-          <dd>{estilo || "Sin definir"}</dd>
+          <dd className={clasePendiente(estilo)}>{estilo}</dd>
         </div>
       </dl>
 
