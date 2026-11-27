@@ -1,9 +1,18 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { ApiError } from "../../../api/client";
 import type { LugarResumenDto } from "../../../api/types";
+import { crearViajeRecomendado } from "../../viaje/api/viajes";
+import type { ViajeDto } from "../../viaje/types";
 import type { ItinerarioDestacado } from "../types";
 import ItinerariosDestacados from "./ItinerariosDestacados";
+
+vi.mock("../../viaje/api/viajes", () => ({
+  crearViajeRecomendado: vi.fn(),
+}));
+
+const crearViajeMock = vi.mocked(crearViajeRecomendado);
 
 const authState = vi.hoisted(() => ({ isAuthenticated: true }));
 
@@ -98,6 +107,8 @@ describe("ItinerariosDestacados", () => {
   beforeEach(() => {
     authState.isAuthenticated = true;
     hookState.value = { itinerarios: [], loading: false, error: null };
+    crearViajeMock.mockReset();
+    crearViajeMock.mockResolvedValue({ id: "viaje-1" } as ViajeDto);
     vi.stubGlobal("requestAnimationFrame", vi.fn(() => 0));
     vi.stubGlobal("cancelAnimationFrame", vi.fn());
   });
@@ -123,7 +134,7 @@ describe("ItinerariosDestacados", () => {
     expect(screen.getByText("Cassia House")).toBeInTheDocument();
   });
 
-  it("navega al planificador con barrio y categoría del recorrido", () => {
+  it("crea el viaje con las paradas y navega a la vista del viaje", async () => {
     hookState.value = {
       itinerarios: [crearItinerario()],
       loading: false,
@@ -138,9 +149,65 @@ describe("ItinerariosDestacados", () => {
       })
     );
 
-    expect(screen.getByTestId("location")).toHaveTextContent(
-      "/planificacion?nuevo=1&barrio=Recoleta&categoria=museos_galerias"
+    await waitFor(() =>
+      expect(screen.getByTestId("location")).toHaveTextContent("/viajes/viaje-1")
     );
+
+    expect(crearViajeMock).toHaveBeenCalledTimes(1);
+
+    const payload = crearViajeMock.mock.calls[0][0];
+    expect(payload).toEqual(
+      expect.objectContaining({
+        titulo: "Recorrido: Recoleta cultural",
+        barrio: "Recoleta",
+        categoriaCodigo: "museos_galerias",
+        lugarIds: ["1", "2", "3", "4"],
+      })
+    );
+    expect(payload.fechaInicio).toBe(payload.fechaFin);
+    expect(payload.fechaInicio).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  it("muestra un error si falla la creación del viaje", async () => {
+    crearViajeMock.mockRejectedValue(new ApiError(500, "No se pudo crear"));
+    hookState.value = {
+      itinerarios: [crearItinerario()],
+      loading: false,
+      error: null,
+    };
+
+    renderCarrusel();
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Planificar el recorrido Recoleta cultural",
+      })
+    );
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "No se pudo crear"
+    );
+    expect(screen.getByTestId("location")).toHaveTextContent(/^\/$/);
+  });
+
+  it("abre el login si la sesión expiró al crear el viaje", async () => {
+    crearViajeMock.mockRejectedValue(new ApiError(401, "No autorizado"));
+    hookState.value = {
+      itinerarios: [crearItinerario()],
+      loading: false,
+      error: null,
+    };
+
+    renderCarrusel();
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Planificar el recorrido Recoleta cultural",
+      })
+    );
+
+    expect(await screen.findByTestId("login-modal")).toBeInTheDocument();
+    expect(screen.getByTestId("location")).toHaveTextContent(/^\/$/);
   });
 
   it("abre el login cuando el usuario no está autenticado", () => {

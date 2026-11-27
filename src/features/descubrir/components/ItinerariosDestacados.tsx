@@ -1,12 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ApiError } from "../../../api/client";
 import LoginModal from "../../../components/LoginModal";
 import PlaceCardSkeleton from "../../../components/PlaceCardSkeleton";
 import SmartImage from "../../../components/SmartImage";
 import { useAuth } from "../../auth/auth-context";
 import { barrioLabel, categoriaLabel, formatearPuntuacion } from "../../../lib/format";
+import { crearViajeRecomendado } from "../../viaje/api/viajes";
 import { useItinerariosDestacados } from "../hooks/useItinerariosDestacados";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
+import { construirViajeRecomendadoDto } from "../lib/recorridoRecomendado";
 import type { ItinerarioDestacado } from "../types";
 import "./ItinerariosDestacados.css";
 
@@ -38,9 +41,12 @@ export default function ItinerariosDestacados() {
 
   const trackRef = useRef<HTMLDivElement | null>(null);
   const reanudarTimerRef = useRef<number | null>(null);
+  const creandoRef = useRef(false);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [creandoId, setCreandoId] = useState<string | null>(null);
+  const [errorCreacion, setErrorCreacion] = useState<string | null>(null);
   const [hoverActivo, setHoverActivo] = useState(false);
   const [focusActivo, setFocusActivo] = useState(false);
   const [pausaManual, setPausaManual] = useState(false);
@@ -123,7 +129,14 @@ export default function ItinerariosDestacados() {
   useEffect(() => {
     if (prefiereReducido) return;
     if (loading || itinerarios.length < 2) return;
-    if (hoverActivo || focusActivo || pausaManual || documentoOculto || loginOpen) {
+    if (
+      hoverActivo ||
+      focusActivo ||
+      pausaManual ||
+      documentoOculto ||
+      loginOpen ||
+      creandoId
+    ) {
       return;
     }
 
@@ -151,26 +164,44 @@ export default function ItinerariosDestacados() {
     pausaManual,
     documentoOculto,
     loginOpen,
+    creandoId,
     desplazar,
   ]);
 
   const handleSelect = useCallback(
-    (itinerario: ItinerarioDestacado) => {
+    async (itinerario: ItinerarioDestacado) => {
+      if (creandoRef.current) {
+        return;
+      }
+
       if (!isAuthenticated) {
         setLoginOpen(true);
         return;
       }
 
-      const params = new URLSearchParams({
-        nuevo: "1",
-        barrio: itinerario.tema.barrio,
-      });
+      creandoRef.current = true;
+      setCreandoId(itinerario.tema.id);
+      setErrorCreacion(null);
 
-      if (itinerario.tema.categoriaCodigo) {
-        params.set("categoria", itinerario.tema.categoriaCodigo);
+      try {
+        const dto = construirViajeRecomendadoDto(itinerario);
+        const viaje = await crearViajeRecomendado(dto);
+        navigate(`/viajes/${viaje.id}`);
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 401) {
+          setLoginOpen(true);
+          return;
+        }
+
+        setErrorCreacion(
+          error instanceof Error
+            ? error.message
+            : "No se pudo crear el recorrido."
+        );
+      } finally {
+        creandoRef.current = false;
+        setCreandoId(null);
       }
-
-      navigate(`/planificacion?${params.toString()}`);
     },
     [isAuthenticated, navigate]
   );
@@ -224,6 +255,12 @@ export default function ItinerariosDestacados() {
         </div>
       </div>
 
+      {errorCreacion && (
+        <p className="recorridos__error" role="alert">
+          {errorCreacion}
+        </p>
+      )}
+
       <div
         className="recorridos__track"
         ref={trackRef}
@@ -241,13 +278,16 @@ export default function ItinerariosDestacados() {
               const categoria = itinerario.tema.categoriaCodigo
                 ? categoriaLabel(itinerario.tema.categoriaCodigo)
                 : "Lugares tendencia";
+              const creando = creandoId === itinerario.tema.id;
 
               return (
                 <button
                   type="button"
                   key={itinerario.tema.id}
-                  className="recorrido-card"
-                  onClick={() => handleSelect(itinerario)}
+                  className={`recorrido-card${creando ? " recorrido-card--creando" : ""}`}
+                  onClick={() => void handleSelect(itinerario)}
+                  disabled={creandoId !== null}
+                  aria-busy={creando}
                   aria-label={`Planificar el recorrido ${itinerario.tema.titulo}`}
                 >
                   <div className="recorrido-card__media">
@@ -281,7 +321,9 @@ export default function ItinerariosDestacados() {
                       ))}
                     </div>
 
-                    <span className="recorrido-card__cta">Planificar este recorrido →</span>
+                    <span className="recorrido-card__cta">
+                      {creando ? "Creando recorrido…" : "Planificar este recorrido →"}
+                    </span>
                   </div>
                 </button>
               );

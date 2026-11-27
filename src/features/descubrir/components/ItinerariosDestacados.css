@@ -47,6 +47,17 @@
   line-height: 1.5;
 }
 
+.recorridos__error {
+  margin: 0;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid #fecaca;
+  border-radius: 0.75rem;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
 .recorridos__arrows {
   display: flex;
   gap: 0.5rem;
@@ -126,6 +137,26 @@
 .recorrido-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-card-hover);
+}
+
+.recorrido-card:disabled {
+  cursor: default;
+}
+
+.recorrido-card:disabled:hover {
+  transform: none;
+}
+
+.recorrido-card:disabled:not(.recorrido-card--creando) {
+  opacity: 0.72;
+}
+
+.recorrido-card--creando {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.recorrido-card--creando .recorrido-card__cta {
+  color: var(--emerald-700);
 }
 
 .recorrido-card:focus-visible {
