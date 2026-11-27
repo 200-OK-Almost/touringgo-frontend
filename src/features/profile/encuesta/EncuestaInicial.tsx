@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import PreferenciasStep from "./PreferenciasStep";
 import { actualizarPerfil, completarEncuesta, getPerfil } from "../api/perfil";
 import FormNavigation from "../../../components/FormNavigation";
+import EncuestaBienvenida from "./EncuestaBienvenida";
+import "./EncuestaInicial.css"
 
 type EncuestaFormData = {
   requiereRecorridoSinEscalones: boolean
@@ -34,6 +36,7 @@ function EncuestaInicial() {
   const [direction, setDirection] = useState<NavigationDirection>("forward");
   const [submitLoading, setSubmitLoading] = useState<boolean>(false)
   const [perfil, setPerfil] = useState<PerfilUsuarioDTO | null>(null)
+  const [started, setStarted] = useState(false);
 
   useEffect(() => {
     const fetchPerfil = async () => {
@@ -107,16 +110,13 @@ function EncuestaInicial() {
   }
 
   function handleBack() {
-    if (currentStepCounter <= 0) {
-      navigate("/");
+    if (currentStepCounter === 0) {
+      setStarted(false);
       return;
     }
 
     setDirection("backward");
-    setCurrentStepCounter((prev) => {
-      if (prev <= 0) return prev;
-      return prev - 1;
-    });
+    setCurrentStepCounter(prev => prev - 1);
   }
 
   function handleNext() {
@@ -167,6 +167,10 @@ function EncuestaInicial() {
 
   return (
     <main className="planificacion-form-main">
+      {!started ? (
+        <EncuestaBienvenida onStart={() => setStarted(true)} />
+      ) : (
+      <>
       <StepIndicator
         currentStep={currentStepCounter}
         stepLabel={currentStep.label}
@@ -189,6 +193,8 @@ function EncuestaInicial() {
         lastStepButtonLabelLoading="Cargando..."
         isSubmitLoading={submitLoading}
       />
+      </>
+      )}
     </main>
   )
 }
