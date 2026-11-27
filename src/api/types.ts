@@ -110,6 +110,8 @@ export interface ResultadoPaginadoDto<T> {
   tamano: number;
 }
 
+export type LugarOrden = "nombre" | "puntuacion" | "resenas";
+
 export interface LugarFiltro {
   barrio?: BarrioCaba;
   tipoLugar?: TipoLugar
@@ -119,6 +121,10 @@ export interface LugarFiltro {
   aptoNinos?: boolean;
   accesibleMovilidadReducida?: boolean;
   busqueda?: string;
+  subzona?: string;
+  orden?: LugarOrden;
+  resenasMinimas?: number;
+  puntuacionMinima?: number;
   pagina?: number;
   tamano?: number;
 }

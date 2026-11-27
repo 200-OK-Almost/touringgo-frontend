@@ -21,6 +21,14 @@ function buildQuery(filtro: LugarFiltro): string {
   if (filtro.aptoNinos) params.set("aptoNinos", "true");
   if (filtro.accesibleMovilidadReducida) params.set("accesibleMovilidadReducida", "true");
   if (filtro.busqueda) params.set("busqueda", filtro.busqueda);
+  if (filtro.subzona) params.set("subzona", filtro.subzona);
+  if (filtro.orden) params.set("orden", filtro.orden);
+  if (filtro.resenasMinimas != null) {
+    params.set("resenasMinimas", String(filtro.resenasMinimas));
+  }
+  if (filtro.puntuacionMinima != null) {
+    params.set("puntuacionMinima", String(filtro.puntuacionMinima));
+  }
 
   params.set("pagina", String(filtro.pagina ?? 1));
   params.set("tamano", String(filtro.tamano ?? 24));
