@@ -9,6 +9,7 @@ import { IoClose, IoInformationCircleOutline, IoSearchOutline } from "react-icon
 import "./HospedajeSelector.css";
 
 const DEBOUNCE_BUSQUEDA_MS = 300;
+const TAMANO_PAGINA = 8;
 
 type LugarElegido = Pick<
   LugarResumenDto,
@@ -43,6 +44,8 @@ export function HospedajeSelector({
 
   // Estado de resultados
   const [lugares, setLugares] = useState<LugarResumenDto[]>([]);
+  const [total, setTotal] = useState(0);
+  const [pagina, setPagina] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
@@ -51,6 +54,7 @@ export function HospedajeSelector({
   const [confirmado, setConfirmado] = useState<LugarElegido | null>(null);
 
   const debounceRef = useRef<number | undefined>(undefined);
+  const fetchSeqRef = useRef(0);
   const prevPuntoInicioRef = useRef(puntoInicio);
   const prevbarrioRef = useRef(barrio);
 
@@ -108,37 +112,57 @@ export function HospedajeSelector({
 
   useEffect(() => () => window.clearTimeout(debounceRef.current), []);
 
-  // Consulta a la API
-  const fetchLugares = useCallback(async () => {
-    if (puntoInicio === "HospedajeSugerido" && !selectedBarrio) {
-      setLugares([]);
-      setIsLoading(false);
-      return;
-    }
+  // Consulta a la API con paginación incremental (Ver más)
+  const fetchLugares = useCallback(
+    async (paginaDestino: number, acumular: boolean) => {
+      if (puntoInicio === "HospedajeSugerido" && !selectedBarrio) {
+        setLugares([]);
+        setTotal(0);
+        setPagina(1);
+        setIsLoading(false);
+        return;
+      }
 
-    setIsLoading(true);
-    setApiError(null);
+      const secuencia = ++fetchSeqRef.current;
+      setIsLoading(true);
+      setApiError(null);
 
-    try {
-      const filtro: LugarFiltro = {
-        barrio: selectedBarrio ?? undefined,
-        tipoLugar: "Alojamiento",
-        busqueda: appliedSearch || undefined,
-        tamano: 50,
-      };
+      try {
+        const filtro: LugarFiltro = {
+          barrio: selectedBarrio ?? undefined,
+          tipoLugar: "Alojamiento",
+          busqueda: appliedSearch || undefined,
+          pagina: paginaDestino,
+          tamano: TAMANO_PAGINA,
+        };
 
-      const res = await getLugares(filtro);
-      setLugares(res.items);
-    } catch {
-      setApiError("No se pudieron cargar los alojamientos. Verificá tu conexión o intentá nuevamente.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [puntoInicio, selectedBarrio, appliedSearch]);
+        const res = await getLugares(filtro);
+
+        if (secuencia !== fetchSeqRef.current) {
+          return;
+        }
+
+        setLugares((prev) =>
+          acumular ? [...prev, ...res.items] : res.items
+        );
+        setTotal(res.total);
+        setPagina(paginaDestino);
+      } catch {
+        if (secuencia === fetchSeqRef.current) {
+          setApiError("No se pudieron cargar los alojamientos. Verificá tu conexión o intentá nuevamente.");
+        }
+      } finally {
+        if (secuencia === fetchSeqRef.current) {
+          setIsLoading(false);
+        }
+      }
+    },
+    [puntoInicio, selectedBarrio, appliedSearch]
+  );
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- carga inicial y al cambiar filtros
-    fetchLugares();
+    fetchLugares(1, false);
   }, [fetchLugares]);
 
   // En modo propio la búsqueda se aplica sola al tipear (debounce)
@@ -313,9 +337,9 @@ export function HospedajeSelector({
           {/* Contador de resultados y estado */}
           <div className="hospedaje-selector__status-bar">
             <span className="hospedaje-selector__count">
-              {isLoading
+              {isLoading && lugares.length === 0
                 ? "Cargando lugares..."
-                : `${lugares.length} ${lugares.length === 1 ? "alojamiento encontrado" : "alojamientos encontrados"}`}
+                : `${total} ${total === 1 ? "alojamiento encontrado" : "alojamientos encontrados"}`}
             </span>
             {appliedSearch && (
               <span className="hospedaje-selector__active-filter">
@@ -356,8 +380,9 @@ export function HospedajeSelector({
 
           {/* Lista de lugares */}
           <div className="hospedaje-selector__results">
-            {isLoading ? (
+            {isLoading && lugares.length === 0 ? (
               <div className="hospedaje-selector__loading">
+                <div className="hospedaje-selector__skeleton skeleton" />
                 <div className="hospedaje-selector__skeleton skeleton" />
                 <div className="hospedaje-selector__skeleton skeleton" />
                 <div className="hospedaje-selector__skeleton skeleton" />
@@ -368,42 +393,62 @@ export function HospedajeSelector({
                 <button
                   type="button"
                   className="hospedaje-selector__retry-btn"
-                  onClick={fetchLugares}
+                  onClick={() => fetchLugares(1, false)}
                 >
                   Reintentar
                 </button>
               </div>
             ) : lugares.length === 0 ? (
               <div className="hospedaje-selector__empty">
-                <p>No se encontraron alojamientos con los criterios seleccionados.</p>
+                <p>No encontramos alojamientos con esos filtros.</p>
                 <span>Probá modificando el término de búsqueda o seleccionando otro barrio.</span>
               </div>
             ) : (
-              <div className="hospedaje-selector__grid">
-                {lugares.map((lugar) => {
-                  const seleccionada = esPropio
-                    ? lugarPendiente?.id === lugar.id ||
-                      selectedLugarId === lugar.id
-                    : selectedLugarId === lugar.id;
+              <>
+                <div className="hospedaje-selector__grid">
+                  {lugares.map((lugar) => {
+                    const seleccionada = esPropio
+                      ? lugarPendiente?.id === lugar.id ||
+                        selectedLugarId === lugar.id
+                      : selectedLugarId === lugar.id;
 
-                  return (
-                    <SelectablePlaceCard
-                      key={lugar.id}
-                      lugar={lugar}
-                      selected={seleccionada}
-                      onClick={() => {
-                        if (esPropio) {
-                          setLugarPendiente(lugar);
-                          return;
+                    return (
+                      <SelectablePlaceCard
+                        key={lugar.id}
+                        lugar={lugar}
+                        selected={seleccionada}
+                        ctaLabel={
+                          selectedLugarId === lugar.id
+                            ? "Elegido"
+                            : "Elegir este hotel"
                         }
+                        onClick={() => {
+                          if (esPropio) {
+                            setLugarPendiente(lugar);
+                            return;
+                          }
 
-                        onSelectLugar(lugar.id, lugar);
-                      }}
-                      showImage={true}
-                    />
-                  );
-                })}
-              </div>
+                          onSelectLugar(lugar.id, lugar);
+                        }}
+                        showImage={true}
+                      />
+                    );
+                  })}
+                </div>
+
+                {lugares.length < total && (
+                  <button
+                    type="button"
+                    className="hospedaje-selector__ver-mas"
+                    onClick={() => fetchLugares(pagina + 1, true)}
+                    disabled={isLoading}
+                  >
+                    {isLoading
+                      ? "Cargando más alojamientos..."
+                      : "Ver más alojamientos"}
+                  </button>
+                )}
+              </>
             )}
           </div>
         </>

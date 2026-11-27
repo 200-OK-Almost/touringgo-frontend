@@ -175,4 +175,67 @@ describe("HospedajeSelector — modo Recomiéndame hospedaje", () => {
       expect.objectContaining({ id: "h1" })
     );
   });
+
+  it("carga más alojamientos con el botón Ver más", async () => {
+    const primeraPagina = Array.from({ length: 8 }, (_, i) =>
+      lugar(`h${i + 1}`, `Hotel ${i + 1}`)
+    );
+    const segundaPagina = [lugar("h9", "Hotel 9")];
+
+    vi.mocked(getLugares).mockImplementation(async (filtro) =>
+      (filtro?.pagina ?? 1) === 1
+        ? { items: primeraPagina, total: 9, pagina: 1, tamano: 8 }
+        : { items: segundaPagina, total: 9, pagina: 2, tamano: 8 }
+    );
+    vi.mocked(getLugar).mockResolvedValue({} as unknown as LugarDetalleDto);
+
+    render(
+      <HospedajeSelector
+        puntoInicio="HospedajeSugerido"
+        barrio="Palermo"
+        selectedLugarId={null}
+        onSelectLugar={vi.fn()}
+      />
+    );
+
+    expect(await screen.findAllByRole("radio", { name: /Hotel/ })).toHaveLength(
+      8
+    );
+    expect(screen.getByText("9 alojamientos encontrados")).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Ver más alojamientos" })
+    );
+
+    await waitFor(() =>
+      expect(screen.getAllByRole("radio", { name: /Hotel/ })).toHaveLength(9)
+    );
+    expect(getLugares).toHaveBeenCalledWith(
+      expect.objectContaining({ pagina: 2, tamano: 8 })
+    );
+    expect(
+      screen.queryByRole("button", { name: "Ver más alojamientos" })
+    ).not.toBeInTheDocument();
+  });
+
+  it("marca el hotel elegido con el CTA Elegido", async () => {
+    vi.mocked(getLugares).mockResolvedValue(
+      resultado([lugar("h1", "Hotel Elegido")])
+    );
+    vi.mocked(getLugar).mockResolvedValue({} as unknown as LugarDetalleDto);
+
+    render(
+      <HospedajeSelector
+        puntoInicio="HospedajeSugerido"
+        barrio="Palermo"
+        selectedLugarId="h1"
+        onSelectLugar={vi.fn()}
+      />
+    );
+
+    const card = await screen.findByRole("radio", { name: /Hotel Elegido/ });
+
+    expect(card).toHaveClass("selectable-card-option--selected");
+    expect(screen.getByText("Elegido")).toBeInTheDocument();
+  });
 });
