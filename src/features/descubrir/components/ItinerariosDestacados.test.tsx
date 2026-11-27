@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, useLocation } from "react-router-dom";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError } from "../../../api/client";
 import type { LugarResumenDto } from "../../../api/types";
 import { crearViajeRecomendado } from "../../viaje/api/viajes";
@@ -89,6 +89,24 @@ function crearItinerario(
   };
 }
 
+function crearItinerarioSecundario(): ItinerarioDestacado {
+  return crearItinerario({
+    tema: {
+      id: "palermo-soho",
+      titulo: "Palermo Soho en tendencia",
+      descripcion: "Lugares del Soho.",
+      barrio: "Palermo",
+      orden: "resenas",
+      resenasMinimas: 1000,
+      puntuacionMinima: 4.4,
+      icono: "🔥",
+    },
+    lugares: [crearLugar({ id: "5", nombre: "La Cabrera" })],
+    promedioPuntuacion: 4.6,
+    portadaUrl: "https://foto-2.jpg",
+  });
+}
+
 function LocationProbe() {
   const location = useLocation();
   return <span data-testid="location">{location.pathname + location.search}</span>;
@@ -109,12 +127,6 @@ describe("ItinerariosDestacados", () => {
     hookState.value = { itinerarios: [], loading: false, error: null };
     crearViajeMock.mockReset();
     crearViajeMock.mockResolvedValue({ id: "viaje-1" } as ViajeDto);
-    vi.stubGlobal("requestAnimationFrame", vi.fn(() => 0));
-    vi.stubGlobal("cancelAnimationFrame", vi.fn());
-  });
-
-  afterEach(() => {
-    vi.unstubAllGlobals();
   });
 
   it("muestra los recorridos con promedio de estrellas y paradas", () => {
@@ -132,6 +144,45 @@ describe("ItinerariosDestacados", () => {
     expect(screen.getByText("4 paradas")).toBeInTheDocument();
     expect(screen.getByText("★ 4.9")).toBeInTheDocument();
     expect(screen.getByText("Cassia House")).toBeInTheDocument();
+  });
+
+  it("duplica las tarjetas para el loop y no muestra flechas", () => {
+    hookState.value = {
+      itinerarios: [crearItinerario(), crearItinerarioSecundario()],
+      loading: false,
+      error: null,
+    };
+
+    const { container } = renderCarrusel();
+
+    expect(container.querySelectorAll(".recorrido-card")).toHaveLength(4);
+    expect(
+      screen.queryByRole("button", { name: "Recorrido anterior" })
+    ).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: "Siguiente recorrido" })
+    ).toBeNull();
+  });
+
+  it("oculta la copia duplicada para lectores de pantalla", () => {
+    hookState.value = {
+      itinerarios: [crearItinerario(), crearItinerarioSecundario()],
+      loading: false,
+      error: null,
+    };
+
+    const { container } = renderCarrusel();
+    const cards = Array.from(
+      container.querySelectorAll<HTMLButtonElement>(".recorrido-card")
+    );
+
+    expect(cards).toHaveLength(4);
+    expect(cards[0]).not.toHaveAttribute("aria-hidden");
+    expect(cards[1]).not.toHaveAttribute("aria-hidden");
+    expect(cards[2]).toHaveAttribute("aria-hidden", "true");
+    expect(cards[3]).toHaveAttribute("aria-hidden", "true");
+    expect(cards[2]).toHaveAttribute("tabindex", "-1");
+    expect(cards[3]).toHaveAttribute("tabindex", "-1");
   });
 
   it("crea el viaje con las paradas y navega a la vista del viaje", async () => {
