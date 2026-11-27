@@ -3,6 +3,10 @@ import { describe, expect, it, vi } from "vitest";
 import type { DiaPlanificacion } from "../planificacionFormData";
 import LocationStep from "./LocationStep";
 
+vi.mock("../components/HospedajeSelector", () => ({
+  default: () => <div data-testid="hospedaje-selector" />,
+}));
+
 function dia(
   fecha: string,
   numero: number,
@@ -133,5 +137,85 @@ describe("LocationStep", () => {
     expect(
       screen.getByText("Faltan completar: Día 2.")
     ).toBeInTheDocument();
+  });
+
+  it("muestra las tres opciones de alojamiento con la etiqueta corregida", () => {
+    render(
+      <LocationStep
+        dias={[dia("2026-11-18", 1, "Palermo")]}
+        onChangeDia={vi.fn()}
+        errors={{}}
+      />
+    );
+
+    expect(
+      screen.getByRole("radio", { name: /Ya tengo lugar/ })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("radio", { name: /Recomiéndame hospedaje/ })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("radio", { name: /Estoy de paso/ })
+    ).toBeInTheDocument();
+  });
+
+  it("muestra el panel de hospedaje debajo de las opciones cuando corresponde", () => {
+    const { rerender } = render(
+      <LocationStep
+        dias={[
+          {
+            ...dia("2026-11-18", 1, "Palermo"),
+            puntoInicio: "HospedajeSugerido",
+          },
+        ]}
+        onChangeDia={vi.fn()}
+        errors={{}}
+      />
+    );
+
+    expect(screen.getByTestId("hospedaje-selector")).toBeInTheDocument();
+
+    rerender(
+      <LocationStep
+        dias={[
+          {
+            ...dia("2026-11-18", 1, "Palermo"),
+            puntoInicio: "NodoUrbano",
+          },
+        ]}
+        onChangeDia={vi.fn()}
+        errors={{}}
+      />
+    );
+
+    expect(screen.queryByTestId("hospedaje-selector")).not.toBeInTheDocument();
+  });
+
+  it("marca la opción elegida y limpia el hospedaje al elegir Estoy de paso", () => {
+    const onChangeDia = vi.fn();
+
+    render(
+      <LocationStep
+        dias={[{ ...dia("2026-11-18", 1, "Palermo"), puntoInicio: null }]}
+        onChangeDia={onChangeDia}
+        errors={{}}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("radio", { name: /Ya tengo lugar/ }));
+
+    expect(onChangeDia).toHaveBeenCalledWith(1, {
+      puntoInicio: "HospedajePropio",
+      hospedajeLugarGuid: null,
+      hospedajeBarrio: null,
+    });
+
+    fireEvent.click(screen.getByRole("radio", { name: /Estoy de paso/ }));
+
+    expect(onChangeDia).toHaveBeenCalledWith(1, {
+      puntoInicio: "NodoUrbano",
+      hospedajeLugarGuid: null,
+      hospedajeBarrio: null,
+    });
   });
 });

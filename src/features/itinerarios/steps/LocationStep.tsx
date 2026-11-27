@@ -52,19 +52,19 @@ const BARRIOS: BarrioAndName[] = [
 const ALOJAMIENTO_OPTIONS: PuntoInicioAndName[] = [
   {
     title: "Ya tengo lugar",
-    description: "Dirección de hotel",
+    description: "Cargá tu hotel o la dirección donde te hospedás",
     icon: <IoHomeOutline />,
     value: "HospedajePropio",
   },
   {
-    title: "Recomiéndenme hospedaje",
-    description: "Cerca del recorrido",
+    title: "Recomiéndame hospedaje",
+    description: "Te mostramos alojamientos del barrio para elegir",
     icon: <IoBusinessOutline />,
     value: "HospedajeSugerido",
   },
   {
     title: "Estoy de paso",
-    description: "Punto central del barrio",
+    description: "Arrancamos desde el punto central del barrio",
     icon: <IoTrailSignOutline />,
     value: "NodoUrbano",
   },
@@ -89,115 +89,110 @@ function LocationFields({
     puntoInicio === "HospedajePropio" || puntoInicio === "HospedajeSugerido";
 
   return (
-    <div
-      className={`location-fields ${
-        showHospedajeSection ? "location-fields--with-aside" : ""
-      }`}
-    >
-      <div className="location-fields__main">
-        <CollapsibleSection
-          titleId="location-barrio-title"
-          title="¿Qué barrio querés recorrer?"
-          summary={barrio ? barrioLabel(barrio) : "Todavía sin elegir"}
-          complete={Boolean(barrio)}
-          forceOpen={Boolean(errorBarrio)}
+    <div className="location-fields">
+      <CollapsibleSection
+        titleId="location-barrio-title"
+        title="¿Qué barrio querés recorrer?"
+        summary={barrio ? barrioLabel(barrio) : "Todavía sin elegir"}
+        complete={Boolean(barrio)}
+        forceOpen={Boolean(errorBarrio)}
+      >
+        <SelectableCardGroup
+          role="radiogroup"
+          labelledBy="location-barrio-title"
+          describedBy={errorBarrio ? "location-barrio-error" : undefined}
+          className="selectable-card-group grid-5"
         >
-          <SelectableCardGroup
-            role="radiogroup"
-            labelledBy="location-barrio-title"
-            describedBy={errorBarrio ? "location-barrio-error" : undefined}
-            className="selectable-card-group grid-5"
+          {BARRIOS.map((b) => (
+            <SelectableCard
+              key={b.value}
+              title={b.title}
+              icon={<FaMapMarkerAlt />}
+              selected={barrio === b.value}
+              onClick={() => {
+                const isDifferent = barrio !== b.value;
+                onChange({
+                  barrio: b.value,
+                  ...(puntoInicio === "HospedajeSugerido" && isDifferent
+                    ? { hospedajeLugarGuid: null, hospedajeBarrio: null }
+                    : {}),
+                });
+              }}
+              variant="big"
+            />
+          ))}
+        </SelectableCardGroup>
+        {errorBarrio && (
+          <div
+            id="location-barrio-error"
+            className="planificacion-field-error"
+            role="alert"
           >
-            {BARRIOS.map((b) => (
-              <SelectableCard
-                key={b.value}
-                title={b.title}
-                icon={<FaMapMarkerAlt />}
-                selected={barrio === b.value}
-                onClick={() => {
-                  const isDifferent = barrio !== b.value;
-                  onChange({
-                    barrio: b.value,
-                    ...(puntoInicio === "HospedajeSugerido" && isDifferent
-                      ? { hospedajeLugarGuid: null, hospedajeBarrio: null }
-                      : {}),
-                  });
-                }}
-                variant="big"
-              />
-            ))}
-          </SelectableCardGroup>
-          {errorBarrio && (
-            <div
-              id="location-barrio-error"
-              className="planificacion-field-error"
-              role="alert"
-            >
-              <p>{errorBarrio}</p>
-            </div>
-          )}
-        </CollapsibleSection>
-        <CollapsibleSection
-          titleId="location-punto-title"
-          title="Punto de partida"
-          summary={puntoLabel ?? "Todavía sin elegir"}
-          complete={Boolean(puntoInicio)}
-          forceOpen={Boolean(errorPuntoInicio)}
-        >
-          <SelectableCardGroup
-            role="radiogroup"
-            labelledBy="location-punto-title"
-            describedBy={errorPuntoInicio ? "location-punto-error" : undefined}
-            className="selectable-card-group grid-3"
-          >
-            {ALOJAMIENTO_OPTIONS.map((a) => (
-              <SelectableCard
-                key={a.value}
-                title={a.title}
-                icon={a.icon}
-                selected={puntoInicio === a.value}
-                description={a.description}
-                onClick={() =>
-                  onChange({
-                    puntoInicio: a.value,
-                    hospedajeLugarGuid:
-                      a.value === "NodoUrbano" ? null : hospedajeLugarGuid,
-                    hospedajeBarrio:
-                      a.value === "NodoUrbano" ? null : hospedajeBarrio,
-                  })
-                }
-                variant="big"
-              />
-            ))}
-          </SelectableCardGroup>
-          {errorPuntoInicio && (
-            <div
-              id="location-punto-error"
-              className="planificacion-field-error"
-              role="alert"
-            >
-              <p>{errorPuntoInicio}</p>
-            </div>
-          )}
-        </CollapsibleSection>
-      </div>
+            <p>{errorBarrio}</p>
+          </div>
+        )}
+      </CollapsibleSection>
 
-      {showHospedajeSection && (
-        <div className="location-fields__aside">
-          <HospedajeSelector
-            puntoInicio={puntoInicio}
-            barrio={barrio}
-            selectedLugarId={hospedajeLugarGuid}
-            onSelectLugar={(id, lugar) =>
-              onChange({
-                hospedajeLugarGuid: id,
-                hospedajeBarrio: lugar?.barrio ?? null,
-              })
-            }
-            error={errorHospedaje}
-          />
-        </div>
-      )}
+      <CollapsibleSection
+        titleId="location-punto-title"
+        title="Punto de partida"
+        summary={puntoLabel ?? "Todavía sin elegir"}
+        complete={Boolean(puntoInicio)}
+        forceOpen={Boolean(errorPuntoInicio)}
+      >
+        <SelectableCardGroup
+          role="radiogroup"
+          labelledBy="location-punto-title"
+          describedBy={errorPuntoInicio ? "location-punto-error" : undefined}
+          className="selectable-card-group grid-3"
+        >
+          {ALOJAMIENTO_OPTIONS.map((a) => (
+            <SelectableCard
+              key={a.value}
+              title={a.title}
+              icon={a.icon}
+              selected={puntoInicio === a.value}
+              description={a.description}
+              onClick={() =>
+                onChange({
+                  puntoInicio: a.value,
+                  hospedajeLugarGuid:
+                    a.value === "NodoUrbano" ? null : hospedajeLugarGuid,
+                  hospedajeBarrio:
+                    a.value === "NodoUrbano" ? null : hospedajeBarrio,
+                })
+              }
+              variant="big"
+            />
+          ))}
+        </SelectableCardGroup>
+        {errorPuntoInicio && (
+          <div
+            id="location-punto-error"
+            className="planificacion-field-error"
+            role="alert"
+          >
+            <p>{errorPuntoInicio}</p>
+          </div>
+        )}
+
+        {showHospedajeSection && (
+          <div className="location-fields__hospedaje">
+            <HospedajeSelector
+              puntoInicio={puntoInicio}
+              barrio={barrio}
+              selectedLugarId={hospedajeLugarGuid}
+              onSelectLugar={(id, lugar) =>
+                onChange({
+                  hospedajeLugarGuid: id,
+                  hospedajeBarrio: lugar?.barrio ?? null,
+                })
+              }
+              error={errorHospedaje}
+            />
+          </div>
+        )}
+      </CollapsibleSection>
     </div>
   );
 }
