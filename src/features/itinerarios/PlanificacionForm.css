@@ -296,6 +296,29 @@
   animation: location-hospedaje-in 250ms ease-out both;
 }
 
+.location-fields__aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--primary);
+  border-radius: 10px;
+  background: var(--primary-soft, rgba(15, 118, 110, 0.04));
+}
+
+.location-fields__aviso-icon {
+  flex-shrink: 0;
+  color: var(--primary);
+  margin-top: 0.1rem;
+}
+
+.location-fields__aviso p {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+
 @keyframes location-hospedaje-in {
   from {
     opacity: 0;

@@ -4,7 +4,7 @@ import { SelectableCard } from "../../../components/SelectableCard";
 import { SelectableCardGroup } from "../../../components/SelectableCardGroup";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import type { PuntoInicio } from "../types";
-import { IoBusinessOutline, IoHomeOutline, IoTrailSignOutline } from "react-icons/io5";
+import { IoBusinessOutline, IoHomeOutline, IoInformationCircleOutline, IoTrailSignOutline } from "react-icons/io5";
 import type { FormErrors } from "../PlanificationForm.validation";
 import HospedajeSelector from "../components/HospedajeSelector";
 import DaySelectorTabs from "../components/DaySelectorTabs";
@@ -176,6 +176,20 @@ function LocationFields({
           </div>
         )}
 
+        {puntoInicio === "NodoUrbano" && (
+          <div className="location-fields__aviso">
+            <IoInformationCircleOutline
+              className="location-fields__aviso-icon"
+              size={22}
+            />
+            <p>
+              {barrio
+                ? `Usaremos el punto central de ${barrioLabel(barrio)} como inicio del día.`
+                : "Usaremos el punto central del barrio que elijas como inicio del día."}
+            </p>
+          </div>
+        )}
+
         {showHospedajeSection && (
           <div className="location-fields__hospedaje">
             <HospedajeSelector
@@ -207,20 +221,26 @@ function LocationStep({ dias, onChangeDia, errors }: LocationStepProps) {
   const puedeCopiarBarrio = Boolean(dias[0]?.barrio);
 
   function aplicarMismoBarrio() {
-    const barrio = dias[0]?.barrio;
+    const primerDia = dias[0];
 
-    if (!barrio) {
+    if (!primerDia?.barrio) {
       return;
     }
 
     dias.slice(1).forEach((diaRestante) => {
-      const cambiaBarrio = diaRestante.barrio !== barrio;
+      const cambiaBarrio = diaRestante.barrio !== primerDia.barrio;
 
       onChangeDia(diaRestante.dia, {
-        barrio,
-        ...(cambiaBarrio
-          ? { hospedajeLugarGuid: null, hospedajeBarrio: null }
-          : {}),
+        barrio: primerDia.barrio,
+        ...(primerDia.puntoInicio
+          ? {
+              puntoInicio: primerDia.puntoInicio,
+              hospedajeLugarGuid: primerDia.hospedajeLugarGuid,
+              hospedajeBarrio: primerDia.hospedajeBarrio,
+            }
+          : cambiaBarrio
+            ? { hospedajeLugarGuid: null, hospedajeBarrio: null }
+            : {}),
       });
     });
   }
@@ -242,7 +262,7 @@ function LocationStep({ dias, onChangeDia, errors }: LocationStepProps) {
               onClick={aplicarMismoBarrio}
               disabled={!puedeCopiarBarrio}
             >
-              Usar el mismo barrio para todos los días
+              Usar el mismo barrio/alojamiento para todos los días
             </button>
           </div>
 

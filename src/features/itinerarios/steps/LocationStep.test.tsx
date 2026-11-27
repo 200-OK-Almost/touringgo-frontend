@@ -42,7 +42,7 @@ describe("LocationStep", () => {
     expect(screen.queryByRole("tab")).not.toBeInTheDocument();
     expect(
       screen.queryByRole("button", {
-        name: "Usar el mismo barrio para todos los días",
+        name: "Usar el mismo barrio/alojamiento para todos los días",
       })
     ).not.toBeInTheDocument();
   });
@@ -96,7 +96,7 @@ describe("LocationStep", () => {
     );
   });
 
-  it("copia el barrio del día 1 al resto con el atajo", () => {
+  it("copia el barrio, punto de partida y alojamiento del día 1 con el atajo", () => {
     const onChangeDia = vi.fn();
 
     render(
@@ -112,14 +112,92 @@ describe("LocationStep", () => {
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: "Usar el mismo barrio para todos los días",
+        name: "Usar el mismo barrio/alojamiento para todos los días",
       })
     );
 
     expect(onChangeDia).toHaveBeenCalledWith(
       2,
-      expect.objectContaining({ barrio: "Palermo" })
+      expect.objectContaining({
+        barrio: "Palermo",
+        puntoInicio: "NodoUrbano",
+        hospedajeLugarGuid: null,
+        hospedajeBarrio: null,
+      })
     );
+  });
+
+  it("copia el hospedaje elegido del día 1 con el atajo", () => {
+    const onChangeDia = vi.fn();
+
+    render(
+      <LocationStep
+        dias={[
+          {
+            ...dia("2026-11-18", 1, "Palermo"),
+            puntoInicio: "HospedajePropio",
+            hospedajeLugarGuid: "hotel-1",
+            hospedajeBarrio: "Palermo",
+          },
+          dia("2026-11-19", 2, "Recoleta"),
+        ]}
+        onChangeDia={onChangeDia}
+        errors={{}}
+      />
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Usar el mismo barrio/alojamiento para todos los días",
+      })
+    );
+
+    expect(onChangeDia).toHaveBeenCalledWith(
+      2,
+      expect.objectContaining({
+        barrio: "Palermo",
+        puntoInicio: "HospedajePropio",
+        hospedajeLugarGuid: "hotel-1",
+        hospedajeBarrio: "Palermo",
+      })
+    );
+  });
+
+  it("confirma el punto central del barrio al elegir Estoy de paso", () => {
+    render(
+      <LocationStep
+        dias={[dia("2026-11-18", 1, "Palermo")]}
+        onChangeDia={vi.fn()}
+        errors={{}}
+      />
+    );
+
+    expect(
+      screen.getByText(
+        "Usaremos el punto central de Palermo como inicio del día."
+      )
+    ).toBeInTheDocument();
+  });
+
+  it("no muestra el aviso de punto central sin opción elegida", () => {
+    render(
+      <LocationStep
+        dias={[{ ...dia("2026-11-18", 1, "Palermo"), puntoInicio: null }]}
+        onChangeDia={vi.fn()}
+        errors={{}}
+      />
+    );
+
+    expect(
+      screen.queryByText(
+        "Usaremos el punto central de Palermo como inicio del día."
+      )
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        "Usaremos el punto central del barrio que elijas como inicio del día."
+      )
+    ).not.toBeInTheDocument();
   });
 
   it("muestra los días faltantes informados por validación", () => {
