@@ -6,8 +6,12 @@ import SmartImage from "../../../components/SmartImage";
 import { useAuth } from "../../auth/auth-context";
 import { barrioLabel, categoriaLabel, formatearPuntuacion } from "../../../lib/format";
 import { useItinerariosDestacados } from "../hooks/useItinerariosDestacados";
+import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import type { ItinerarioDestacado } from "../types";
 import "./ItinerariosDestacados.css";
+
+const AUTOPLAY_MS = 6000;
+const REANUDAR_TRAS_INTERACCION_MS = 8000;
 
 function ChevronIcon({ direction }: { direction: "left" | "right" }) {
   return (
@@ -33,9 +37,17 @@ export default function ItinerariosDestacados() {
   const navigate = useNavigate();
 
   const trackRef = useRef<HTMLDivElement | null>(null);
+  const reanudarTimerRef = useRef<number | null>(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [hoverActivo, setHoverActivo] = useState(false);
+  const [focusActivo, setFocusActivo] = useState(false);
+  const [pausaManual, setPausaManual] = useState(false);
+  const [documentoOculto, setDocumentoOculto] = useState(
+    () => typeof document !== "undefined" && document.hidden
+  );
+  const prefiereReducido = usePrefersReducedMotion();
 
   const actualizarFlechas = useCallback(() => {
     const track = trackRef.current;
@@ -62,14 +74,85 @@ export default function ItinerariosDestacados() {
     };
   }, [actualizarFlechas, itinerarios.length, loading]);
 
-  const desplazar = useCallback((direccion: -1 | 1) => {
-    const track = trackRef.current;
-    if (!track) return;
+  const desplazar = useCallback(
+    (direccion: -1 | 1) => {
+      const track = trackRef.current;
+      if (!track) return;
 
-    const card = track.querySelector<HTMLElement>(".recorrido-card");
-    const paso = card ? card.offsetWidth + 16 : track.clientWidth * 0.8;
-    track.scrollBy({ left: direccion * paso, behavior: "smooth" });
+      const card = track.querySelector<HTMLElement>(".recorrido-card");
+      const paso = card ? card.offsetWidth + 16 : track.clientWidth * 0.8;
+      track.scrollBy({
+        left: direccion * paso,
+        behavior: prefiereReducido ? "auto" : "smooth",
+      });
+    },
+    [prefiereReducido]
+  );
+
+  const pausarPorInteraccion = useCallback(() => {
+    setPausaManual(true);
+
+    if (reanudarTimerRef.current !== null) {
+      window.clearTimeout(reanudarTimerRef.current);
+    }
+
+    reanudarTimerRef.current = window.setTimeout(() => {
+      reanudarTimerRef.current = null;
+      setPausaManual(false);
+    }, REANUDAR_TRAS_INTERACCION_MS);
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (reanudarTimerRef.current !== null) {
+        window.clearTimeout(reanudarTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      setDocumentoOculto(document.hidden);
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
+
+  useEffect(() => {
+    if (prefiereReducido) return;
+    if (loading || itinerarios.length < 2) return;
+    if (hoverActivo || focusActivo || pausaManual || documentoOculto || loginOpen) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      const track = trackRef.current;
+      if (!track) return;
+
+      const alFinal =
+        track.scrollLeft + track.clientWidth >= track.scrollWidth - 8;
+
+      if (alFinal) {
+        track.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        desplazar(1);
+      }
+    }, AUTOPLAY_MS);
+
+    return () => window.clearInterval(interval);
+  }, [
+    prefiereReducido,
+    loading,
+    itinerarios.length,
+    hoverActivo,
+    focusActivo,
+    pausaManual,
+    documentoOculto,
+    loginOpen,
+    desplazar,
+  ]);
 
   const handleSelect = useCallback(
     (itinerario: ItinerarioDestacado) => {
@@ -97,7 +180,16 @@ export default function ItinerariosDestacados() {
   }
 
   return (
-    <section className="recorridos" aria-labelledby="recorridos-titulo">
+    <section
+      className="recorridos"
+      aria-labelledby="recorridos-titulo"
+      onMouseEnter={() => setHoverActivo(true)}
+      onMouseLeave={() => setHoverActivo(false)}
+      onFocusCapture={() => setFocusActivo(true)}
+      onBlurCapture={() => setFocusActivo(false)}
+      onPointerDown={pausarPorInteraccion}
+      onTouchStart={pausarPorInteraccion}
+    >
       <div className="recorridos__header">
         <div className="recorridos__heading">
           <span className="recorridos__badge">RECORRIDOS TENDENCIA</span>
