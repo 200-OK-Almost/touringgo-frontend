@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import type { BarrioCaba, LugarFiltro, LugarResumenDto } from "../../../api/types";
-import { getLugar, getLugares } from "../../../api/lugares";
+import { getLugares } from "../../../api/lugares";
 import { SelectablePlaceCard } from "../../../components/SelectablePlaceCard";
 import ChipGroup from "../../../components/ChipGroup";
 import { BARRIOS } from "../../../lib/filtros";
@@ -10,11 +10,6 @@ import "./HospedajeSelector.css";
 
 const DEBOUNCE_BUSQUEDA_MS = 300;
 const TAMANO_PAGINA = 8;
-
-type LugarElegido = Pick<
-  LugarResumenDto,
-  "id" | "nombre" | "barrio" | "subzona" | "direccion"
->;
 
 export interface HospedajeSelectorProps {
   puntoInicio: "HospedajePropio" | "HospedajeSugerido";
@@ -49,10 +44,6 @@ export function HospedajeSelector({
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
-  // Selección local del modo "Ya tengo lugar"
-  const [lugarPendiente, setLugarPendiente] = useState<LugarResumenDto | null>(null);
-  const [confirmado, setConfirmado] = useState<LugarElegido | null>(null);
-
   const debounceRef = useRef<number | undefined>(undefined);
   const fetchSeqRef = useRef(0);
   const prevPuntoInicioRef = useRef(puntoInicio);
@@ -76,39 +67,6 @@ export function HospedajeSelector({
     prevPuntoInicioRef.current = puntoInicio;
     prevbarrioRef.current = barrio;
   }, [puntoInicio, barrio]);
-
-  // En modo propio, restaura el alojamiento ya elegido (draft o cambio de día)
-  useEffect(() => {
-    if (!esPropio) {
-      return;
-    }
-
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- resetea la selección local al cambiar de día
-    setLugarPendiente(null);
-
-    if (!selectedLugarId) {
-      setConfirmado(null);
-      return;
-    }
-
-    let cancelado = false;
-
-    getLugar(selectedLugarId)
-      .then((lugar) => {
-        if (!cancelado) {
-          setConfirmado(lugar);
-        }
-      })
-      .catch(() => {
-        if (!cancelado) {
-          setConfirmado(null);
-        }
-      });
-
-    return () => {
-      cancelado = true;
-    };
-  }, [esPropio, selectedLugarId]);
 
   useEffect(() => () => window.clearTimeout(debounceRef.current), []);
 
@@ -192,16 +150,6 @@ export function HospedajeSelector({
     setAppliedSearch("");
   }
 
-  function handleConfirmarPendiente() {
-    if (!lugarPendiente) {
-      return;
-    }
-
-    onSelectLugar(lugarPendiente.id, lugarPendiente);
-    setConfirmado(lugarPendiente);
-    setLugarPendiente(null);
-  }
-
   // Si es recomendación y aún no seleccionó barrio arriba, pedir que seleccione uno
   if (puntoInicio === "HospedajeSugerido" && !barrio) {
     return (
@@ -226,10 +174,8 @@ export function HospedajeSelector({
       : "Hoteles recomendados";
 
   const subtitleSeccion = esPropio
-    ? "Buscá por nombre o dirección y confirmá el punto de partida del día."
+    ? "Buscá por nombre o dirección y elegí el punto de partida del día."
     : "Seleccioná el hotel donde te vas a alojar cerca de tu recorrido.";
-
-  const mostrarBusqueda = !esPropio || !confirmado;
 
   return (
     <section className="hospedaje-selector" aria-label="Búsqueda de hospedaje">
@@ -238,221 +184,156 @@ export function HospedajeSelector({
         <p className="hospedaje-selector__subtitle">{subtitleSeccion}</p>
       </div>
 
-      {esPropio && confirmado && (
-        <div className="hospedaje-elegido">
-          <span className="hospedaje-elegido__label">
-            Punto de partida confirmado
+      {/* Barra de búsqueda con autocompletado en modo propio */}
+      <form onSubmit={handleSearchSubmit} className="hospedaje-selector__search-form">
+        <div className="search-box hospedaje-selector__search-box">
+          <span className="search-box__icon">
+            <IoSearchOutline size={18} />
           </span>
-          <span className="hospedaje-elegido__nombre">{confirmado.nombre}</span>
-          <span className="hospedaje-elegido__detalle">
-            {confirmado.direccion} · {barrioLabel(confirmado.barrio)}
-          </span>
-          <button
-            type="button"
-            className="hospedaje-elegido__cambiar"
-            onClick={() => setConfirmado(null)}
-          >
-            Cambiar alojamiento
+          <input
+            type="search"
+            className="search-box__input"
+            placeholder={
+              esPropio
+                ? "Ej: Hotel Palermo, Thames 1234"
+                : "Buscar por nombre de hotel o dirección..."
+            }
+            value={searchTerm}
+            onChange={handleSearchChange}
+            aria-label={
+              esPropio
+                ? "Buscar alojamiento por nombre o dirección"
+                : "Buscar por nombre de hotel o dirección"
+            }
+          />
+          {searchTerm && (
+            <button
+              type="button"
+              className="hospedaje-selector__clear-btn"
+              onClick={handleClearSearch}
+              title="Limpiar búsqueda"
+              aria-label="Limpiar búsqueda"
+            >
+              <IoClose aria-hidden="true" />
+            </button>
+          )}
+        </div>
+        {!esPropio && (
+          <button type="submit" className="hospedaje-selector__search-btn">
+            Buscar
           </button>
+        )}
+      </form>
+
+      {/* Filtros por barrio con chips reutilizados */}
+      <div className="hospedaje-selector__barrios">
+        <span className="hospedaje-selector__label">FILTRAR POR BARRIO</span>
+        <ChipGroup
+          variant="ink"
+          allLabel="Todos"
+          options={BARRIOS}
+          value={selectedBarrio}
+          onChange={(b) => setSelectedBarrio(b)}
+          isOptionDisabled={
+            puntoInicio === "HospedajeSugerido" && barrio
+              ? (val) => val !== barrio
+              : undefined
+          }
+          disabledTooltip={
+            puntoInicio === "HospedajeSugerido"
+              ? `Solo se muestran hospedajes del barrio seleccionado${barrio ? ` (${barrioLabel(barrio)})` : ""}`
+              : undefined
+          }
+        />
+      </div>
+
+      {/* Mensaje de error de validación si existe */}
+      {error && (
+        <div
+          id="hospedaje-error"
+          className="planificacion-field-error"
+          role="alert"
+          tabIndex={-1}
+        >
+          <p>{error}</p>
         </div>
       )}
 
-      {mostrarBusqueda && (
-        <>
-          {/* Barra de búsqueda con autocompletado en modo propio */}
-          <form onSubmit={handleSearchSubmit} className="hospedaje-selector__search-form">
-            <div className="search-box hospedaje-selector__search-box">
-              <span className="search-box__icon">
-                <IoSearchOutline size={18} />
-              </span>
-              <input
-                type="search"
-                className="search-box__input"
-                placeholder={
-                  esPropio
-                    ? "Ej: Hotel Palermo, Thames 1234"
-                    : "Buscar por nombre de hotel o dirección..."
-                }
-                value={searchTerm}
-                onChange={handleSearchChange}
-                aria-label={
-                  esPropio
-                    ? "Buscar alojamiento por nombre o dirección"
-                    : "Buscar por nombre de hotel o dirección"
-                }
-              />
-              {searchTerm && (
-                <button
-                  type="button"
-                  className="hospedaje-selector__clear-btn"
-                  onClick={handleClearSearch}
-                  title="Limpiar búsqueda"
-                  aria-label="Limpiar búsqueda"
-                >
-                  <IoClose aria-hidden="true" />
-                </button>
-              )}
+      {/* Contador de resultados y estado */}
+      <div className="hospedaje-selector__status-bar">
+        <span className="hospedaje-selector__count">
+          {isLoading && lugares.length === 0
+            ? "Cargando lugares..."
+            : `${total} ${total === 1 ? "alojamiento encontrado" : "alojamientos encontrados"}`}
+        </span>
+        {appliedSearch && (
+          <span className="hospedaje-selector__active-filter">
+            Buscando: "{appliedSearch}"
+          </span>
+        )}
+      </div>
+
+      {/* Lista de lugares */}
+      <div className="hospedaje-selector__results">
+        {isLoading && lugares.length === 0 ? (
+          <div className="hospedaje-selector__loading">
+            <div className="hospedaje-selector__skeleton skeleton" />
+            <div className="hospedaje-selector__skeleton skeleton" />
+            <div className="hospedaje-selector__skeleton skeleton" />
+            <div className="hospedaje-selector__skeleton skeleton" />
+          </div>
+        ) : apiError ? (
+          <div className="hospedaje-selector__error">
+            <p>{apiError}</p>
+            <button
+              type="button"
+              className="hospedaje-selector__retry-btn"
+              onClick={() => fetchLugares(1, false)}
+            >
+              Reintentar
+            </button>
+          </div>
+        ) : lugares.length === 0 ? (
+          <div className="hospedaje-selector__empty">
+            <p>No encontramos alojamientos con esos filtros.</p>
+            <span>Probá modificando el término de búsqueda o seleccionando otro barrio.</span>
+          </div>
+        ) : (
+          <>
+            <div className="hospedaje-selector__grid">
+              {lugares.map((lugar) => {
+                const seleccionada = selectedLugarId === lugar.id;
+
+                return (
+                  <SelectablePlaceCard
+                    key={lugar.id}
+                    lugar={lugar}
+                    selected={seleccionada}
+                    ctaLabel={
+                      seleccionada ? "Elegido" : "Elegir este hotel"
+                    }
+                    onClick={() => onSelectLugar(lugar.id, lugar)}
+                    showImage={true}
+                  />
+                );
+              })}
             </div>
-            {!esPropio && (
-              <button type="submit" className="hospedaje-selector__search-btn">
-                Buscar
+
+            {lugares.length < total && (
+              <button
+                type="button"
+                className="hospedaje-selector__ver-mas"
+                onClick={() => fetchLugares(pagina + 1, true)}
+                disabled={isLoading}
+              >
+                {isLoading
+                  ? "Cargando más alojamientos..."
+                  : "Ver más alojamientos"}
               </button>
             )}
-          </form>
-
-          {/* Filtros por barrio con chips reutilizados */}
-          <div className="hospedaje-selector__barrios">
-            <span className="hospedaje-selector__label">FILTRAR POR BARRIO</span>
-            <ChipGroup
-              variant="ink"
-              allLabel="Todos"
-              options={BARRIOS}
-              value={selectedBarrio}
-              onChange={(b) => setSelectedBarrio(b)}
-              isOptionDisabled={
-                puntoInicio === "HospedajeSugerido" && barrio
-                  ? (val) => val !== barrio
-                  : undefined
-              }
-              disabledTooltip={
-                puntoInicio === "HospedajeSugerido"
-                  ? `Solo se muestran hospedajes del barrio seleccionado${barrio ? ` (${barrioLabel(barrio)})` : ""}`
-                  : undefined
-              }
-            />
-          </div>
-
-          {/* Mensaje de error de validación si existe */}
-          {error && (
-            <div
-              id="hospedaje-error"
-              className="planificacion-field-error"
-              role="alert"
-              tabIndex={-1}
-            >
-              <p>{error}</p>
-            </div>
-          )}
-
-          {/* Contador de resultados y estado */}
-          <div className="hospedaje-selector__status-bar">
-            <span className="hospedaje-selector__count">
-              {isLoading && lugares.length === 0
-                ? "Cargando lugares..."
-                : `${total} ${total === 1 ? "alojamiento encontrado" : "alojamientos encontrados"}`}
-            </span>
-            {appliedSearch && (
-              <span className="hospedaje-selector__active-filter">
-                Buscando: "{appliedSearch}"
-              </span>
-            )}
-          </div>
-
-          {/* Confirmación del lugar pendiente en modo propio */}
-          {esPropio && lugarPendiente && (
-            <div className="hospedaje-selector__confirmar" role="status">
-              <div className="hospedaje-selector__confirmar-info">
-                <span className="hospedaje-selector__confirmar-nombre">
-                  {lugarPendiente.nombre}
-                </span>
-                <span className="hospedaje-selector__confirmar-detalle">
-                  {lugarPendiente.direccion} · {barrioLabel(lugarPendiente.barrio)}
-                </span>
-              </div>
-              <div className="hospedaje-selector__confirmar-acciones">
-                <button
-                  type="button"
-                  className="hospedaje-selector__confirmar-btn"
-                  onClick={handleConfirmarPendiente}
-                >
-                  Confirmar
-                </button>
-                <button
-                  type="button"
-                  className="hospedaje-selector__descartar-btn"
-                  onClick={() => setLugarPendiente(null)}
-                >
-                  Cambiar
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Lista de lugares */}
-          <div className="hospedaje-selector__results">
-            {isLoading && lugares.length === 0 ? (
-              <div className="hospedaje-selector__loading">
-                <div className="hospedaje-selector__skeleton skeleton" />
-                <div className="hospedaje-selector__skeleton skeleton" />
-                <div className="hospedaje-selector__skeleton skeleton" />
-                <div className="hospedaje-selector__skeleton skeleton" />
-              </div>
-            ) : apiError ? (
-              <div className="hospedaje-selector__error">
-                <p>{apiError}</p>
-                <button
-                  type="button"
-                  className="hospedaje-selector__retry-btn"
-                  onClick={() => fetchLugares(1, false)}
-                >
-                  Reintentar
-                </button>
-              </div>
-            ) : lugares.length === 0 ? (
-              <div className="hospedaje-selector__empty">
-                <p>No encontramos alojamientos con esos filtros.</p>
-                <span>Probá modificando el término de búsqueda o seleccionando otro barrio.</span>
-              </div>
-            ) : (
-              <>
-                <div className="hospedaje-selector__grid">
-                  {lugares.map((lugar) => {
-                    const seleccionada = esPropio
-                      ? lugarPendiente?.id === lugar.id ||
-                        selectedLugarId === lugar.id
-                      : selectedLugarId === lugar.id;
-
-                    return (
-                      <SelectablePlaceCard
-                        key={lugar.id}
-                        lugar={lugar}
-                        selected={seleccionada}
-                        ctaLabel={
-                          selectedLugarId === lugar.id
-                            ? "Elegido"
-                            : "Elegir este hotel"
-                        }
-                        onClick={() => {
-                          if (esPropio) {
-                            setLugarPendiente(lugar);
-                            return;
-                          }
-
-                          onSelectLugar(lugar.id, lugar);
-                        }}
-                        showImage={true}
-                      />
-                    );
-                  })}
-                </div>
-
-                {lugares.length < total && (
-                  <button
-                    type="button"
-                    className="hospedaje-selector__ver-mas"
-                    onClick={() => fetchLugares(pagina + 1, true)}
-                    disabled={isLoading}
-                  >
-                    {isLoading
-                      ? "Cargando más alojamientos..."
-                      : "Ver más alojamientos"}
-                  </button>
-                )}
-              </>
-            )}
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </div>
     </section>
   );
 }

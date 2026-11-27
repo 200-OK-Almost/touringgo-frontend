@@ -190,6 +190,12 @@
   color: var(--on-primary, #ffffff);
 }
 
+.selectable-card-option:hover .selectable-place-card__cta--selected {
+  background: var(--primary-hover, #0b5f58);
+  border-color: var(--primary-hover, #0b5f58);
+  color: var(--on-primary, #ffffff);
+}
+
 .selectable-place-card__cta-check {
   width: 12px;
   height: 12px;

@@ -1,16 +1,11 @@
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import type {
-  LugarDetalleDto,
-  LugarResumenDto,
-  ResultadoPaginadoDto,
-} from "../../../api/types";
-import { getLugar, getLugares } from "../../../api/lugares";
+import type { LugarResumenDto, ResultadoPaginadoDto } from "../../../api/types";
+import { getLugares } from "../../../api/lugares";
 import HospedajeSelector from "./HospedajeSelector";
 
 vi.mock("../../../api/lugares", () => ({
   getLugares: vi.fn(),
-  getLugar: vi.fn(),
 }));
 
 function lugar(id: string, nombre: string): LugarResumenDto {
@@ -44,7 +39,6 @@ function resultado(items: LugarResumenDto[]): ResultadoPaginadoDto<LugarResumenD
 describe("HospedajeSelector — modo Ya tengo lugar", () => {
   it("autocompleta la búsqueda con debounce mientras se tipea", async () => {
     vi.mocked(getLugares).mockResolvedValue(resultado([]));
-    vi.mocked(getLugar).mockResolvedValue({} as unknown as LugarDetalleDto);
 
     render(
       <HospedajeSelector
@@ -76,11 +70,10 @@ describe("HospedajeSelector — modo Ya tengo lugar", () => {
     );
   });
 
-  it("confirma el lugar elegido y permite cambiarlo", async () => {
+  it("elige el hotel directamente al hacer click, como en recomendados", async () => {
     vi.mocked(getLugares).mockResolvedValue(
       resultado([lugar("h1", "Hotel Ficticio")])
     );
-    vi.mocked(getLugar).mockResolvedValue({} as unknown as LugarDetalleDto);
     const onSelectLugar = vi.fn();
 
     render(
@@ -96,37 +89,16 @@ describe("HospedajeSelector — modo Ya tengo lugar", () => {
       await screen.findByRole("radio", { name: /Hotel Ficticio/ })
     );
 
-    const confirmacion = screen.getByRole("status");
-    expect(
-      within(confirmacion).getByText("Hotel Ficticio")
-    ).toBeInTheDocument();
-    expect(onSelectLugar).not.toHaveBeenCalled();
-
-    fireEvent.click(screen.getByRole("button", { name: "Confirmar" }));
-
     expect(onSelectLugar).toHaveBeenCalledWith(
       "h1",
       expect.objectContaining({ id: "h1", nombre: "Hotel Ficticio" })
     );
-    expect(
-      screen.getByText("Punto de partida confirmado")
-    ).toBeInTheDocument();
-    expect(screen.queryByRole("searchbox")).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole("button", { name: "Cambiar alojamiento" }));
-
-    expect(screen.getByRole("searchbox")).toBeInTheDocument();
   });
 
-  it("muestra el alojamiento ya elegido al restaurar el día", async () => {
-    vi.mocked(getLugares).mockResolvedValue(resultado([]));
-    vi.mocked(getLugar).mockResolvedValue({
-      id: "h1",
-      nombre: "Hotel Restaurado",
-      barrio: "Palermo",
-      subzona: null,
-      direccion: "Av. Santa Fe 1234",
-    } as unknown as LugarDetalleDto);
+  it("marca el hotel elegido con el CTA Elegido al restaurar el día", async () => {
+    vi.mocked(getLugares).mockResolvedValue(
+      resultado([lugar("h1", "Hotel Restaurado")])
+    );
 
     render(
       <HospedajeSelector
@@ -137,11 +109,10 @@ describe("HospedajeSelector — modo Ya tengo lugar", () => {
       />
     );
 
-    expect(await screen.findByText("Hotel Restaurado")).toBeInTheDocument();
-    expect(
-      screen.getByText("Punto de partida confirmado")
-    ).toBeInTheDocument();
-    expect(screen.queryByRole("searchbox")).not.toBeInTheDocument();
+    const card = await screen.findByRole("radio", { name: /Hotel Restaurado/ });
+
+    expect(card).toHaveClass("selectable-card-option--selected");
+    expect(screen.getByText("Elegido")).toBeInTheDocument();
   });
 });
 
@@ -150,7 +121,6 @@ describe("HospedajeSelector — modo Recomiéndame hospedaje", () => {
     vi.mocked(getLugares).mockResolvedValue(
       resultado([lugar("h1", "Hotel Sugerido")])
     );
-    vi.mocked(getLugar).mockResolvedValue({} as unknown as LugarDetalleDto);
     const onSelectLugar = vi.fn();
 
     render(
@@ -187,7 +157,6 @@ describe("HospedajeSelector — modo Recomiéndame hospedaje", () => {
         ? { items: primeraPagina, total: 9, pagina: 1, tamano: 8 }
         : { items: segundaPagina, total: 9, pagina: 2, tamano: 8 }
     );
-    vi.mocked(getLugar).mockResolvedValue({} as unknown as LugarDetalleDto);
 
     render(
       <HospedajeSelector
@@ -222,7 +191,6 @@ describe("HospedajeSelector — modo Recomiéndame hospedaje", () => {
     vi.mocked(getLugares).mockResolvedValue(
       resultado([lugar("h1", "Hotel Elegido")])
     );
-    vi.mocked(getLugar).mockResolvedValue({} as unknown as LugarDetalleDto);
 
     render(
       <HospedajeSelector
