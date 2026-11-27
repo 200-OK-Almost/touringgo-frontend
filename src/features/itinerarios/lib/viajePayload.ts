@@ -29,7 +29,13 @@ export function construirViajeCreateDto(
 ): ViajeCreateDto {
   const primerDia = formData.dias[0];
 
-  if (!primerDia?.barrio || !primerDia.puntoInicio || !primerDia.modalidadViaje) {
+  if (
+    !primerDia?.barrio ||
+    !primerDia.puntoInicio ||
+    !primerDia.modalidadViaje ||
+    !primerDia.ritmoVisita ||
+    !primerDia.presupuestoNivel
+  ) {
     throw new Error("El viaje necesita al menos un día completo.");
   }
 
@@ -40,8 +46,8 @@ export function construirViajeCreateDto(
     alcanceTemporal: formData.disponibilidadDiaria!,
     fechaInicio: formData.fechaInicio!,
     fechaFin: formData.fechaFin!,
-    nivelPresupuesto: formData.presupuestoNivel!,
-    ritmoCaminata: formData.ritmoVisita!,
+    nivelPresupuesto: primerDia.presupuestoNivel,
+    ritmoCaminata: primerDia.ritmoVisita,
     tipoPuntoPartida: primerDia.puntoInicio,
     lugarPartidaId: primerDia.hospedajeLugarGuid ?? undefined,
     categoriaCodigos: primerDia.categoriasPrioritarias.map(

@@ -7,6 +7,7 @@ import { generateViaje, getMiembrosViaje, getViaje } from "../features/viaje/api
 import type { LugarDetalleDto } from "../api/types";
 import { getLugar, getLugaresDetalle } from "../api/lugares";
 import { ViajeViewSkeleton } from "../features/viaje/components/ViajeViewSkeleton";
+import { GeneracionItinerarioOverlay } from "../features/viaje/components/GeneracionItinerarioOverlay";
 
 
 function construirParadasViewModel(
@@ -22,6 +23,12 @@ function construirParadasViewModel(
 
       return lugar ? [{ parada, lugar }] : [];
     });
+}
+
+function estaGenerando(
+  viaje: ViajeDto | null
+): viaje is ViajeDto & { estado: "Borrador" | "EnPlanificacion" } {
+  return viaje?.estado === "Borrador" || viaje?.estado === "EnPlanificacion";
 }
 
 function ViajePage() {
@@ -169,13 +176,21 @@ function ViajePage() {
   };
 
   if (loading) {
-    const isGenerating = viaje?.estado === "Borrador" || viaje?.estado === "EnPlanificacion";
+    const generando = estaGenerando(viaje);
+
+    if (generando && viaje) {
+      return (
+        <>
+          <Navbar />
+          <GeneracionItinerarioOverlay estado={viaje.estado} />
+        </>
+      );
+    }
+
     return (
       <>
         <Navbar />
-        <ViajeViewSkeleton 
-          isGenerating={isGenerating} 
-        />
+        <ViajeViewSkeleton />
       </>
     );
   }

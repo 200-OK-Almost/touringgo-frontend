@@ -74,6 +74,11 @@
   color: var(--text-heading, #17141c);
   margin: 0;
   word-break: break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
 }
 
 .selectable-place-card__direccion {
@@ -156,8 +161,44 @@
   color: #6d28d9;
 }
 
-.selectable-place-card__accessibility--not-accessible {
-  background-color: var(--bg-subtle, #f3f4f6);
-  color: var(--text-muted, #6b7280);
+/* CTA de la card (Elegir este hotel) */
+.selectable-place-card__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  width: 100%;
+  min-height: 40px;
+  padding: 0.4rem 0.75rem;
+  box-sizing: border-box;
+  border: 1px solid var(--primary, #0f766e);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--primary, #0f766e);
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.selectable-card-option:hover .selectable-place-card__cta {
+  background-color: rgba(15, 118, 110, 0.06);
+}
+
+.selectable-place-card__cta--selected {
+  background: var(--primary, #0f766e);
+  border-color: var(--primary, #0f766e);
+  color: var(--on-primary, #ffffff);
+}
+
+.selectable-card-option:hover .selectable-place-card__cta--selected {
+  background: var(--primary-hover, #0b5f58);
+  border-color: var(--primary-hover, #0b5f58);
+  color: var(--on-primary, #ffffff);
+}
+
+.selectable-place-card__cta-check {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
 }
 

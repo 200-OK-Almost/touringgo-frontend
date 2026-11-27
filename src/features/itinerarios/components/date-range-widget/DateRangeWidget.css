@@ -8,23 +8,28 @@
   max-width: min(100%, 720px);
   margin: 0 auto;
   padding: clamp(0.65rem, 1.25vw, 1rem);
-  border: 1px solid rgba(15, 118, 110, 0.12);
+  border: 1px solid var(--primary-border-subtle, rgba(15, 118, 110, 0.12));
   border-radius: clamp(26px, 2.5vw, 32px);
   background:
     radial-gradient(
       ellipse 85% 65% at 72% 8%,
-      rgba(209, 250, 229, 0.9),
+      var(--primary-glow-soft, rgba(209, 250, 229, 0.9)),
       transparent 62%
     ),
     radial-gradient(
       ellipse 70% 55% at 18% 88%,
-      rgba(16, 185, 129, 0.14),
+      var(--primary-glow-strong, rgba(16, 185, 129, 0.14)),
       transparent 58%
     ),
-    linear-gradient(160deg, #ffffff 0%, #f5fbf8 48%, #e8f6f0 100%);
+    linear-gradient(
+      160deg,
+      var(--surface, #ffffff) 0%,
+      var(--surface-tint, #f5fbf8) 48%,
+      var(--surface-tint-strong, #e8f6f0) 100%
+    );
   box-shadow:
-    0 24px 60px -34px rgba(15, 118, 110, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    0 24px 60px -34px var(--primary-shadow, rgba(15, 118, 110, 0.35)),
+    inset 0 1px 0 var(--white-glow, rgba(255, 255, 255, 0.9));
 }
 
 .date-widget::before {
@@ -35,12 +40,12 @@
   background:
     radial-gradient(
       circle at 26% 16%,
-      rgba(255, 255, 255, 0.95),
+      var(--white-glow-strong, rgba(255, 255, 255, 0.95)),
       transparent 45%
     ),
     radial-gradient(
       circle at 80% 90%,
-      rgba(16, 185, 129, 0.12),
+      var(--primary-glow, rgba(16, 185, 129, 0.12)),
       transparent 52%
     );
   pointer-events: none;
@@ -57,12 +62,12 @@
 
 .date-widget__card {
   padding: clamp(0.85rem, 1.5vw, 1.25rem);
-  border: 1px solid rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--white-glow-soft, rgba(255, 255, 255, 0.85));
   border-radius: clamp(24px, 2.2vw, 28px);
-  background: rgba(255, 255, 255, 0.58);
+  background: var(--scrim-card, rgba(255, 255, 255, 0.58));
   box-shadow:
-    0 20px 40px -28px rgba(15, 118, 110, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    0 20px 40px -28px var(--primary-shadow, rgba(15, 118, 110, 0.35)),
+    inset 0 1px 0 var(--white-glow-strong, rgba(255, 255, 255, 0.95));
   color: var(--text-heading);
   -webkit-backdrop-filter: blur(24px) saturate(130%);
   backdrop-filter: blur(24px) saturate(130%);
@@ -97,7 +102,7 @@
 }
 
 .date-widget__day:not(:disabled):hover {
-  background: rgba(15, 118, 110, 0.08);
+  background: var(--primary-soft-hover, rgba(15, 118, 110, 0.08));
 }
 
 .date-widget__day:focus-visible {
@@ -106,7 +111,7 @@
 }
 
 .date-widget__day--in-range {
-  background: rgba(16, 185, 129, 0.16);
+  background: var(--primary-range, rgba(16, 185, 129, 0.16));
 }
 
 .date-widget__day--outside {
@@ -116,10 +121,10 @@
 .date-widget__day--selected,
 .date-widget__day--selected:not(:disabled):hover {
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary, #fff);
   font-weight: 700;
   opacity: 1;
-  box-shadow: 0 8px 18px -6px rgba(15, 118, 110, 0.45);
+  box-shadow: 0 8px 18px -6px var(--primary-shadow-strong, rgba(15, 118, 110, 0.45));
 }
 
 .date-widget__day--disabled {
@@ -144,7 +149,7 @@
 }
 
 .date-widget__day--selected .date-widget__event-dot {
-  background: #fff;
+  background: var(--on-primary, #fff);
 }
 
 .date-widget__topbar {
@@ -159,9 +164,9 @@
   display: inline-flex;
   align-items: center;
   padding: 4px;
-  border: 1px solid rgba(15, 118, 110, 0.12);
+  border: 1px solid var(--primary-border-subtle, rgba(15, 118, 110, 0.12));
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--scrim-soft, rgba(255, 255, 255, 0.6));
 }
 
 .date-widget__toggle-button {
@@ -186,7 +191,7 @@
 .date-widget__toggle-button--active,
 .date-widget__toggle-button--active:hover {
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary, #fff);
 }
 
 .date-widget__toggle-button:focus-visible,
@@ -205,9 +210,9 @@
 
 .date-widget__chip {
   padding: clamp(0.3rem, 0.4vw, 0.42rem) clamp(0.65rem, 0.85vw, 0.9rem);
-  border: 1px solid rgba(15, 118, 110, 0.14);
+  border: 1px solid var(--primary-border-soft, rgba(15, 118, 110, 0.14));
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.62);
+  background: var(--scrim-chip, rgba(255, 255, 255, 0.62));
   color: var(--text-muted);
   font-size: clamp(0.75rem, 0.85vw, 0.84rem);
   font-weight: 600;
@@ -220,8 +225,8 @@
 }
 
 .date-widget__chip:hover {
-  border-color: rgba(15, 118, 110, 0.28);
-  background: rgba(255, 255, 255, 0.9);
+  border-color: var(--primary-border-strong, rgba(15, 118, 110, 0.28));
+  background: var(--white-glow, rgba(255, 255, 255, 0.9));
   color: var(--primary);
 }
 
@@ -229,7 +234,7 @@
 .date-widget__chip--active:hover {
   border-color: var(--primary);
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary, #fff);
 }
 
 .date-widget__header {
@@ -279,7 +284,7 @@
 }
 
 .date-widget__nav:hover:not(:disabled) {
-  background: rgba(15, 118, 110, 0.08);
+  background: var(--primary-soft-hover, rgba(15, 118, 110, 0.08));
   color: var(--primary);
 }
 
@@ -371,7 +376,7 @@
     (-webkit-backdrop-filter: blur(1px))
 ) {
   .date-widget__card {
-    background: rgba(255, 255, 255, 0.94);
+    background: var(--surface-solid, rgba(255, 255, 255, 0.94));
   }
 }
 
@@ -421,5 +426,24 @@
   .date-widget__chip {
     padding: 0.3rem 0.65rem;
     font-size: 0.75rem;
+  }
+}
+
+@media (pointer: coarse) {
+  .date-widget__nav {
+    width: 44px;
+    height: 44px;
+  }
+
+  .date-widget__chip {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .date-widget__toggle-button {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
   }
 }

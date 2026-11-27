@@ -45,6 +45,8 @@ export function construirDias(
       hospedajeBarrio: previo?.hospedajeBarrio ?? null,
       modalidadViaje: previo?.modalidadViaje ?? null,
       categoriasPrioritarias: previo?.categoriasPrioritarias ?? [],
+      ritmoVisita: previo?.ritmoVisita ?? null,
+      presupuestoNivel: previo?.presupuestoNivel ?? null,
     };
   });
 }
@@ -85,7 +87,9 @@ export function preferenciasDiaCompletas(dia: DiaPlanificacion): boolean {
   return Boolean(
     dia.modalidadViaje &&
       dia.categoriasPrioritarias.length >= 2 &&
-      dia.categoriasPrioritarias.length <= 4
+      dia.categoriasPrioritarias.length <= 4 &&
+      dia.ritmoVisita &&
+      dia.presupuestoNivel
   );
 }
 

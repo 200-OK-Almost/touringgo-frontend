@@ -11,8 +11,6 @@ function crearFormData(): ItineraryFormData {
     fechaInicio: "2026-11-18",
     fechaFin: "2026-11-19",
     disponibilidadDiaria: "DiaCompleto",
-    ritmoVisita: "Activo",
-    presupuestoNivel: "Equilibrado",
     duracion: 2,
     dias: [
       {
@@ -27,6 +25,8 @@ function crearFormData(): ItineraryFormData {
           { id: 1, codigo: "cafe_especialidad", nombre: "Café de especialidad" },
           { id: 2, codigo: "museos_galerias", nombre: "Museos y galerías" },
         ],
+        ritmoVisita: "Activo",
+        presupuestoNivel: "Equilibrado",
       },
       {
         fecha: "2026-11-19",
@@ -40,6 +40,8 @@ function crearFormData(): ItineraryFormData {
           { id: 3, codigo: "parques_aire_libre", nombre: "Parques y aire libre" },
           { id: 4, codigo: "gastronomia_clasica", nombre: "Gastronomía clásica" },
         ],
+        ritmoVisita: "Tranquilo",
+        presupuestoNivel: "Economico",
       },
     ],
   };
@@ -76,11 +78,25 @@ describe("construirViajeCreateDto", () => {
 
     expect(dto.titulo).toBe("Salida por Buenos Aires");
     expect(dto.tipoViaje).toBe("Solo");
+    expect(dto.ritmoCaminata).toBe("Activo");
+    expect(dto.nivelPresupuesto).toBe("Equilibrado");
     expect(dto.lugarPartidaId).toBeUndefined();
     expect(dto.categoriaCodigos).toEqual([
       "cafe_especialidad",
       "museos_galerias",
     ]);
+  });
+
+  it("falla si el primer día no tiene ritmo o presupuesto", () => {
+    const formData = crearFormData();
+    formData.dias[0] = {
+      ...formData.dias[0],
+      ritmoVisita: null,
+    };
+
+    expect(() => construirViajeCreateDto(formData)).toThrow(
+      "El viaje necesita al menos un día completo."
+    );
   });
 
   it("falla si un día está incompleto", () => {
