@@ -1,6 +1,6 @@
 import { http } from "../../../api/client";
 import type { ResultadoPaginadoDto } from "../../../api/types";
-import type { ActualizarGastoRequestDto, CrearGastoRequestDto, FiltroGastosDto, GastoDto, ItinerarioDto, LiquidacionDto, LiquidarGastosRequestDto, MiembroViajeDto, PrevisualizacionLiquidacionDto, ViajeCreateDto, ViajeDto, ViajeUpdateDto } from "../types";
+import type { ActualizarGastoRequestDto, CrearGastoRequestDto, FiltroGastosDto, GastoDto, ItinerarioDto, LiquidacionDto, LiquidarGastosRequestDto, MiembroViajeDto, PrevisualizacionLiquidacionDto, ViajeCreateDto, ViajeDto, ViajeRecomendadoCreateDto, ViajeUpdateDto } from "../types";
 
 const VIAJES_BASE = "/itinerarios/api/viajes";
 
@@ -10,6 +10,12 @@ export function getViaje(id: string): Promise<ViajeDto> {
 
 export function createViaje(viajeCreateDto: ViajeCreateDto) : Promise<ViajeDto>{
   return http.post(`${VIAJES_BASE}`, viajeCreateDto)
+}
+
+export function crearViajeRecomendado(
+  dto: ViajeRecomendadoCreateDto
+): Promise<ViajeDto> {
+  return http.post(`${VIAJES_BASE}/recomendado`, dto)
 }
 
 export function generateViaje(id: string) : Promise<ItinerarioDto[]> {

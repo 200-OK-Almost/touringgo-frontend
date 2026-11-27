@@ -179,6 +179,15 @@ export type ViajeCreateDto = {
   parametrosFamilia?: ParametrosFamiliaDto
 }
 
+export type ViajeRecomendadoCreateDto = {
+  titulo: string
+  barrio: BarrioCaba
+  categoriaCodigo?: string | null
+  lugarIds: string[]
+  fechaInicio?: string | null
+  fechaFin?: string | null
+}
+
 export type MensajeHistorialDto = {
   rol: "user" | "assistant"
   contenido: string
