@@ -1,6 +1,6 @@
 .planificacion-form-main {
   width: 100%;
-  max-width: 1100px;
+  max-width: 900px;
   margin: 0.5rem auto;
   padding: 1rem 2rem;
   box-sizing: border-box;
@@ -15,24 +15,6 @@
 .planificacion-form-main > * {
   grid-column: 1;
   min-width: 0;
-}
-
-.planificacion-form-aside {
-  grid-column: 1;
-}
-
-@media (min-width: 1080px) {
-  .planificacion-form-main {
-    grid-template-columns: minmax(0, 1fr) 340px;
-  }
-
-  .planificacion-form-main > .planificacion-form-aside {
-    grid-column: 2;
-    grid-row: 1 / span 9;
-    position: sticky;
-    top: 1rem;
-    align-self: start;
-  }
 }
 
 .planificacion-step-content {

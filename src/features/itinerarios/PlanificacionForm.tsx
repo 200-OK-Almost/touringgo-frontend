@@ -303,7 +303,7 @@ function PlanificacionForm() {
         </div>
       )}
 
-      <aside className="planificacion-form-aside" aria-label="Resumen del viaje">
+      <aside className="planificacion-form-resumen" aria-label="Resumen del viaje">
         <ResumenPlanificacion formData={formData} />
       </aside>
 
