@@ -22,6 +22,10 @@ import { usePlanificacionDraft } from "./hooks/usePlanificacionDraft";
 import { construirDias } from "./lib/diasPlanificacion";
 import { construirViajeCreateDto } from "./lib/viajePayload";
 import { crearMensajeErrorEnvio } from "./lib/erroresEnvio";
+import {
+  leerTemaPlanificacion,
+  type TemaPlanificacion,
+} from "./lib/temaPlanificacion";
 
 const PASOS = [
   { label: "Fechas y duración", shortLabel: "Fechas" },
@@ -48,8 +52,13 @@ function PlanificacionForm() {
   const errorSummaryRef = useRef<HTMLDivElement | null>(null);
   const submitErrorRef = useRef<HTMLDivElement | null>(null);
   const isFirstRenderRef = useRef(true);
+  const temaAplicadoRef = useRef(false);
   const [direction, setDirection] = useState<NavigationDirection>("forward");
   const [categorias, setCategorias] = useState<CategoriaDto[]>([]);
+  const [categoriasCargadas, setCategoriasCargadas] = useState(false);
+  const [temaInicial] = useState<TemaPlanificacion | null>(() =>
+    leerTemaPlanificacion(searchParams)
+  );
   const [formData, setFormData] = useState<ItineraryFormData>(() =>
     reiniciar
       ? crearItineraryFormDataInicial()
@@ -113,11 +122,46 @@ function PlanificacionForm() {
         setCategorias(await getCategorias());
       } catch {
         // Ignore error
+      } finally {
+        setCategoriasCargadas(true);
       }
     };
 
     fetchCategorias();
   }, []);
+
+  useEffect(() => {
+    if (!temaInicial || temaAplicadoRef.current) {
+      return;
+    }
+
+    if (formData.dias.length === 0) {
+      return;
+    }
+
+    if (temaInicial.categoriaCodigo && !categoriasCargadas) {
+      return;
+    }
+
+    const categoria = temaInicial.categoriaCodigo
+      ? categorias.find((item) => item.codigo === temaInicial.categoriaCodigo) ?? null
+      : null;
+
+    temaAplicadoRef.current = true;
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- precarga explícita desde un recorrido
+    setFormData((prev) => ({
+      ...prev,
+      dias: prev.dias.map((dia) => ({
+        ...dia,
+        barrio: dia.barrio ?? temaInicial.barrio,
+        categoriasPrioritarias:
+          dia.categoriasPrioritarias.length > 0 || !categoria
+            ? dia.categoriasPrioritarias
+            : [categoria],
+      })),
+    }));
+  }, [temaInicial, categoriasCargadas, categorias, formData.dias]);
 
   function scrollToFormTop() {
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
