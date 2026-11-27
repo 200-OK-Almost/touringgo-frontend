@@ -61,14 +61,6 @@ function unicos<T>(values: (T | null | undefined)[]): T[] {
   );
 }
 
-function abiertoPorDefecto(): boolean {
-  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
-    return true;
-  }
-
-  return window.matchMedia("(min-width: 1080px)").matches;
-}
-
 function clasePendiente(texto: string) {
   return texto === PENDIENTE ? "resumen-viaje__valor--pendiente" : undefined;
 }
@@ -118,7 +110,7 @@ function LineaDia({ dia, lugaresPartida }: LineaDiaProps) {
 }
 
 export function ResumenPlanificacion({ formData }: ResumenPlanificacionProps) {
-  const [abierto, setAbierto] = useState(abiertoPorDefecto);
+  const [abierto, setAbierto] = useState(false);
   const [lugaresPartida, setLugaresPartida] = useState<
     Record<string, LugarDetalleDto>
   >({});
