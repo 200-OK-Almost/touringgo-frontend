@@ -13,8 +13,8 @@ function UnirseViajeModal({isOpen, onClose} : UnirseViajeModalProps) {
   const navigate = useNavigate();
 
   const [codigo, setCodigo] = useState('');
-  const [error, setError] = useState('');
-  const [submitLoading, setSubmitLoading] = useState(false)
+  const [, setError] = useState('');
+  const [, setSubmitLoading] = useState(false)
 
   const handlePaste = async () => {
     try {
@@ -40,7 +40,7 @@ function UnirseViajeModal({isOpen, onClose} : UnirseViajeModalProps) {
     try {
       const response = await unirseViaje(codigo);
       navigate(`/viajes/${response.id}`);
-    } catch (err) {
+    } catch {
       // handle unauthorized and else here
     } finally {
       setSubmitLoading(false);

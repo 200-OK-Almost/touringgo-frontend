@@ -5,6 +5,7 @@ import {
   type ItineraryFormData,
 } from "../planificacionFormData";
 import { getLugaresDetalle } from "../../../api/lugares";
+import type { CategoriaDto } from "../../../api/types";
 import ResumenPlanificacion from "./ResumenPlanificacion";
 
 vi.mock("../../../api/lugares", () => ({
@@ -13,7 +14,7 @@ vi.mock("../../../api/lugares", () => ({
   ]),
 }));
 
-const CATEGORIA = {
+const CATEGORIA: CategoriaDto = {
   id: 1,
   codigo: "cafe_especialidad",
   nombre: "Café de especialidad",

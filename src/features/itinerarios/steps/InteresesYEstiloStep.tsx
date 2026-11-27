@@ -1,16 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import {
-  IoBeerOutline,
   IoCafeOutline,
-  IoColorPaletteOutline,
   IoFlashOutline,
-  IoLeafOutline,
-  IoLibraryOutline,
   IoPeople,
   IoPeopleOutline,
   IoPersonOutline,
-  IoPizzaOutline,
-  IoWineOutline,
 } from "react-icons/io5";
 import { BsGem, BsPiggyBank, BsWallet2 } from "react-icons/bs";
 import { SelectableCard } from "../../../components/SelectableCard";

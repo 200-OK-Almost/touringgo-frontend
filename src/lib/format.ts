@@ -7,9 +7,6 @@ import {
   IoColorPaletteOutline,
   IoLeafOutline,
   IoLibraryOutline,
-  IoPeople,
-  IoPeopleOutline,
-  IoPersonOutline,
   IoPizzaOutline,
   IoWineOutline,
 } from "react-icons/io5";

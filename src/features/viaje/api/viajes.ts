@@ -1,6 +1,6 @@
 import { http } from "../../../api/client";
 import type { ResultadoPaginadoDto } from "../../../api/types";
-import type { ActualizarGastoRequestDto, CrearGastoRequestDto, EstadoGastoFiltro, FiltroGastosDto, GastoDto, ItinerarioDto, LiquidacionDto, LiquidarGastosRequestDto, MiembroViajeDto, PrevisualizacionLiquidacionDto, ViajeCreateDto, ViajeDto, ViajeUpdateDto } from "../types";
+import type { ActualizarGastoRequestDto, CrearGastoRequestDto, FiltroGastosDto, GastoDto, ItinerarioDto, LiquidacionDto, LiquidarGastosRequestDto, MiembroViajeDto, PrevisualizacionLiquidacionDto, ViajeCreateDto, ViajeDto, ViajeUpdateDto } from "../types";
 
 const VIAJES_BASE = "/itinerarios/api/viajes";
 

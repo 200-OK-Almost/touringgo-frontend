@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { actualizarPreferencias, actualizarRestricciones, getPerfil } from "../api/perfil";
-import type { CategoriaCodigo, PerfilUsuarioDTO, RitmoVisita, TipoDieta, TipoTransporte } from "../types";
+import type { PerfilUsuarioDTO, RitmoVisita, TipoDieta, TipoTransporte } from "../types";
+import type { CategoriaCodigo } from "../../../api/types";
 import type { SaveStatus } from "../../../components/StatusBar";
 
 export function useProfileManager(isOpen: boolean) {
