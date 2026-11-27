@@ -73,6 +73,8 @@ export function UserMenu({ onOpenProfile, className = "" }: UserMenuProps) {
             </svg>
           }
           onClick={onOpenProfile}
+          disabled={!user.completoEncuesta}
+          disabledToolTipText={!user.completoEncuesta ? "Aún no completaste la encuesta inicial" : ""}
         >
           Perfil
         </DropdownItem>

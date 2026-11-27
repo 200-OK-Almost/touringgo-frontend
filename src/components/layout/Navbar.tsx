@@ -9,13 +9,14 @@ import "./Navbar.css";
 import MisViajesModal from "../../features/profile/components/MisViajesModal";
 import { NuevoViajeButton } from "../../features/itinerarios/components/NuevoViajeButton";
 import UnirseViajeModal from "../UnirseViajeModal";
+import GoogleLoginButton from "../GoogleLoginButton";
 
 export interface NavbarProps {
   showNuevoViaje?: boolean;
 }
 
 export default function Navbar({ showNuevoViaje = false }: NavbarProps) {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMisViajesOpen, setIsMisViajesOpen] = useState(false);
   const [isUnirseViajeOpen, setIsUnirseViajeOpen] = useState(false);
@@ -36,6 +37,8 @@ export default function Navbar({ showNuevoViaje = false }: NavbarProps) {
             </div>
           ) : isAuthenticated ? (
             <>
+            {user?.completoEncuesta && 
+            <>
             <button
               type="button"
               className="mis-viajes-btn"
@@ -54,18 +57,15 @@ export default function Navbar({ showNuevoViaje = false }: NavbarProps) {
               <IoPersonAddOutline aria-hidden="true" />
               <span className="mis-viajes-btn__label">Unirse a un viaje</span>
             </button>
+            </>
+            }
             {showNuevoViaje && <NuevoViajeButton variant="nav" />}
             <div className="nav-divider"/>
             <UserMenu onOpenProfile={() => setIsProfileOpen(true)} />
             </>
           ) : (
             <div className="nav-profile-container">
-              <button
-                className="login-btn"
-                onClick={() => window.location.assign("/api/usuarios/auth/google")}
-              >
-                Iniciar sesión con Google
-              </button>
+              <GoogleLoginButton />
             </div>
           )}
             

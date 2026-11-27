@@ -22,6 +22,7 @@ import type { ModalidadViaje, RitmoCaminata } from "../types";
 import type { NivelPresupuesto } from "../../viaje/types";
 import DaySelectorTabs from "../components/DaySelectorTabs";
 import { preferenciasDiaCompletas } from "../lib/diasPlanificacion";
+import { getCategoriaIcon } from "../../../lib/format";
 
 interface InteresesYEstiloStepProps {
   dias: DiaPlanificacion[];
@@ -129,16 +130,6 @@ const PRESUPUESTO_OPTIONS: PresupuestoOption[] = [
   },
 ];
 
-const ICON_MAP: { [key: string]: React.ReactNode } = {
-  cafe_especialidad: <IoCafeOutline />,
-  museos_galerias: <IoColorPaletteOutline />,
-  parques_aire_libre: <IoLeafOutline />,
-  librerias_diseno: <IoLibraryOutline />,
-  bares_vermu: <IoBeerOutline />,
-  gastronomia_clasica: <IoPizzaOutline />,
-  cocteleria_autor: <IoWineOutline />,
-};
-
 function PreferenciasDia({
   dia,
   categorias,
@@ -157,7 +148,7 @@ function PreferenciasDia({
   const categoriaOptions: CategoriaOption[] = categorias.map((categoria) => ({
     title: categoria.nombre,
     value: categoria,
-    icon: ICON_MAP[categoria.codigo],
+    icon: getCategoriaIcon(categoria.codigo),
   }));
 
   return (

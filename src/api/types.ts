@@ -48,7 +48,7 @@ export interface LugarResumenDto {
 
 export interface CategoriaDto {
   id: number;
-  codigo: string;
+  codigo: CategoriaCodigo;
   nombre: string;
 }
 

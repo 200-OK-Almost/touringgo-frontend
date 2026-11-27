@@ -1,3 +1,5 @@
+import type { CategoriaCodigo } from "../../api/types";
+
 export interface UsuarioDTO {
   id: string;
   email: string;
@@ -5,6 +7,7 @@ export interface UsuarioDTO {
   fotoUrl: string | null;
   fechaCreacion: string;
   ultimoAcceso: string;
+  completoEncuesta: boolean;
 }
 
 export type RitmoVisita = "Relajado" | "Moderado" | "Activo";
@@ -22,7 +25,7 @@ export type TipoDieta =
 
 export interface PreferenciasCategoriaDTO {
   id: string;
-  categoriaId: string;
+  categoriaCodigo: CategoriaCodigo;
   afinidad: number;
 }
 
@@ -36,6 +39,7 @@ export interface PreferenciasUsuarioDTO {
 export interface ActualizarPreferenciasUsuarioDTO {
   ritmoVisitaPreferido?: RitmoVisita;
   transportesPreferidos?: TipoTransporte[];
+  categorias?: ActualizarPreferenciasCategoriaDTO[]
 }
 
 export interface RestriccionesUsuarioDTO {
@@ -51,8 +55,34 @@ export interface ActualizarRestriccionesUsuarioDTO {
   requiereBanoAccesible?: boolean;
 }
 
+export interface ActualizarPreferenciasCategoriaDTO {
+  categoriaCodigo: CategoriaCodigo
+  afinidad: number
+}
+
 export interface PerfilUsuarioDTO {
   usuario: UsuarioDTO;
   preferencias: PreferenciasUsuarioDTO;
   restricciones: RestriccionesUsuarioDTO;
+}
+
+// types de put endpoint de perfil
+export type ActualizarPerfilUsuarioDTO = {
+  preferencias: ActualizarPreferenciasPerfilDTO
+  restricciones: ActualizarRestriccionesPerfilDTO
+}
+export type ActualizarPreferenciasPerfilDTO = {
+  ritmoVisitaPreferido: RitmoVisita
+  transportesPreferidos: TipoTransporte[]
+  categorias: ActualizarPreferenciaCategoriaDTO[]
+}
+export type ActualizarPreferenciaCategoriaDTO = {
+  categoriaCodigo: CategoriaCodigo
+  afinidad: number
+}
+
+export type ActualizarRestriccionesPerfilDTO = {
+  dieta: TipoDieta[]
+  requiereRecorridoSinEscalones: boolean
+  requiereBanoAccesible: boolean
 }

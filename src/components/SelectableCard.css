@@ -46,6 +46,11 @@
 .selectable-card-option__icon {
   flex-shrink: 0;
 }
+.selectable-card-option__icon svg {
+  width: 1em;
+  height: 1em;
+  display: block;
+}
 .selectable-card-colored-icon {
   color: var(--primary);
 }

@@ -93,17 +93,3 @@
     display: none;
   }
 }
-
-.login-btn {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--primary);
-    border: 1px solid var(--primary);
-    border-radius: var(--border-radius);
-    transition: background-color 0.2s ease, color 0.2s ease;
-
-    &:hover { 
-        background-color: var(--primary);
-        color: white;
-    }
-}

@@ -10,8 +10,19 @@ export default function AuthCallback() {
   useEffect(() => {
     async function completeSignIn() {
       try {
-        await checkAuth();
-        navigate("/", { replace: true });
+        const loggedUser = await checkAuth();
+
+        if (!loggedUser) {
+          navigate("/", { replace: true });
+          return;
+        } 
+
+        // Si aún no completó la encuesta, redirigir a la encuesta
+        if (!loggedUser.completoEncuesta) {
+          navigate("/encuesta-inicial", { replace: true });
+        } else {
+          navigate("/", { replace: true });
+        }
       } catch {
         setError("No se pudo completar el inicio de sesión. Por favor, intenta de nuevo.");
       }

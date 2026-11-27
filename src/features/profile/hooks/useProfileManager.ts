@@ -1,6 +1,6 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { actualizarPreferencias, actualizarRestricciones, getPerfil } from "../api/perfil";
-import type { PerfilUsuarioDTO, RitmoVisita, TipoDieta, TipoTransporte } from "../types";
+import type { CategoriaCodigo, PerfilUsuarioDTO, RitmoVisita, TipoDieta, TipoTransporte } from "../types";
 import type { SaveStatus } from "../../../components/StatusBar";
 
 export function useProfileManager(isOpen: boolean) {
@@ -9,6 +9,12 @@ export function useProfileManager(isOpen: boolean) {
   const [error, setError] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+
+  // Buffer de cambios pendientes de afinidad por categoría y temporizador debounce
+  const pendingCategoriasRef = useRef<Map<CategoriaCodigo, number>>(new Map());
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const perfilRef = useRef<PerfilUsuarioDTO | null>(null);
+  perfilRef.current = perfil;
 
   const loadPerfil = useCallback(async () => {
     setIsLoading(true);
@@ -23,22 +29,58 @@ export function useProfileManager(isOpen: boolean) {
     }
   }, []);
 
-  // Fetch data when modal opens
-  useEffect(() => {
-    if (isOpen) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- carga al abrir el modal
-      void loadPerfil();
-      setSaveStatus("idle");
-      setFeedbackMessage(null);
-    }
-  }, [isOpen, loadPerfil]);
-
-  const notifySaved = () => {
+  const notifySaved = useCallback(() => {
     setSaveStatus("saved");
     setTimeout(() => {
       setSaveStatus((prev) => (prev === "saved" ? "idle" : prev));
     }, 2500);
-  };
+  }, []);
+
+  // Función para ejecutar el guardado del batch de categorías pendientes
+  const flushCategoriasUpdate = useCallback(async () => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = null;
+    }
+
+    if (pendingCategoriasRef.current.size === 0) return;
+
+    const payloadCategorias = Array.from(pendingCategoriasRef.current.entries()).map(
+      ([categoriaCodigo, afinidad]) => ({
+        categoriaCodigo,
+        afinidad,
+      })
+    );
+
+    pendingCategoriasRef.current.clear();
+    setSaveStatus("saving");
+
+    try {
+      await actualizarPreferencias({ categorias: payloadCategorias });
+      notifySaved();
+    } catch {
+      setSaveStatus("error");
+      setFeedbackMessage("No se pudieron guardar las preferencias de categorías.");
+    }
+  }, [notifySaved]);
+
+  // Fetch data when modal opens and flush/clear on close
+  useEffect(() => {
+    if (isOpen) {
+      void loadPerfil();
+      setSaveStatus("idle");
+      setFeedbackMessage(null);
+    } else {
+      // Si el modal se cierra y había guardados pendientes, los enviamos
+      void flushCategoriasUpdate();
+    }
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [isOpen, loadPerfil, flushCategoriasUpdate]);
 
   const updateRitmo = async (ritmo: RitmoVisita) => {
     if (!perfil || perfil.preferencias.ritmoVisitaPreferido === ritmo) return;
@@ -120,6 +162,39 @@ export function useProfileManager(isOpen: boolean) {
     }
   };
 
+  // Actualización optimista inmediata en UI al mover el slider
+  const updateCategoriaAfinidadLocal = (categoriaCodigo: CategoriaCodigo, afinidad: number) => {
+    setPerfil((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        preferencias: {
+          ...prev.preferencias,
+          categorias: prev.preferencias.categorias.map((c) =>
+            c.categoriaCodigo === categoriaCodigo ? { ...c, afinidad } : c
+          ),
+        },
+      };
+    });
+
+    // Guardar en buffer pendiente
+    pendingCategoriasRef.current.set(categoriaCodigo, afinidad);
+
+    // Reiniciar temporizador debounce (600ms)
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+    debounceTimerRef.current = setTimeout(() => {
+      void flushCategoriasUpdate();
+    }, 600);
+  };
+
+  // Callback opcional cuando el usuario suelta el slider (pointerUp / keyUp): persiste inmediatamente
+  const updateCategoriaAfinidadEnd = (categoriaCodigo: CategoriaCodigo, afinidad: number) => {
+    pendingCategoriasRef.current.set(categoriaCodigo, afinidad);
+    void flushCategoriasUpdate();
+  };
+
   return {
     perfil,
     isLoading,
@@ -131,5 +206,7 @@ export function useProfileManager(isOpen: boolean) {
     toggleTransporte,
     toggleDieta,
     toggleAccesibilidad,
+    updateCategoriaAfinidadLocal,
+    updateCategoriaAfinidadEnd,
   };
 }
