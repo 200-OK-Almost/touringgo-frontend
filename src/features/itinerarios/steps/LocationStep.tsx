@@ -96,7 +96,6 @@ function LocationFields({
         title="¿Qué barrio querés recorrer?"
         summary={barrio ? barrioLabel(barrio) : "Todavía sin elegir"}
         complete={Boolean(barrio)}
-        forceOpen={Boolean(errorBarrio)}
       >
         <SelectableCardGroup
           role="radiogroup"
@@ -139,7 +138,6 @@ function LocationFields({
         title="Punto de partida"
         summary={puntoLabel ?? "Todavía sin elegir"}
         complete={Boolean(puntoInicio)}
-        forceOpen={Boolean(errorPuntoInicio)}
       >
         <SelectableCardGroup
           role="radiogroup"
