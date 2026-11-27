@@ -1,12 +1,11 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import StepIndicator from "./StepIndicator";
 
 const STEPS = [
   { label: "Fechas y duración", shortLabel: "Fechas" },
   { label: "Barrio y punto de partida", shortLabel: "Barrio" },
-  { label: "Compañía e intereses", shortLabel: "Intereses" },
-  { label: "Estilo del viaje", shortLabel: "Estilo" },
+  { label: "Intereses y estilo", shortLabel: "Intereses y estilo" },
 ];
 
 describe("StepIndicator", () => {
@@ -14,7 +13,7 @@ describe("StepIndicator", () => {
     render(
       <StepIndicator
         currentStep={1}
-        totalSteps={4}
+        totalSteps={3}
         stepLabel="Barrio y punto de partida"
         steps={STEPS}
       />
@@ -25,15 +24,38 @@ describe("StepIndicator", () => {
     });
 
     expect(progressbar).toHaveAttribute("aria-valuemin", "1");
-    expect(progressbar).toHaveAttribute("aria-valuemax", "4");
+    expect(progressbar).toHaveAttribute("aria-valuemax", "3");
     expect(progressbar).toHaveAttribute("aria-valuenow", "2");
     expect(progressbar).toHaveAttribute(
       "aria-valuetext",
-      "Paso 2 de 4: Barrio y punto de partida"
+      "Paso 2 de 3: Barrio y punto de partida"
     );
-    expect(screen.getByText("Paso 2 de 4")).toBeInTheDocument();
+    expect(screen.getByText("Paso 2 de 3")).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "Barrio y punto de partida" })
+    ).toBeInTheDocument();
+  });
+
+  it("muestra la etiqueta completa del último paso aunque sea larga", () => {
+    render(
+      <StepIndicator
+        currentStep={2}
+        totalSteps={3}
+        stepLabel="Intereses y estilo"
+        steps={STEPS}
+      />
+    );
+
+    const nav = screen.getByRole("navigation", {
+      name: "Pasos del planificador",
+    });
+
+    expect(within(nav).getByText("Intereses y estilo")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Intereses y estilo" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Paso 3: Intereses y estilo/ })
     ).toBeInTheDocument();
   });
 
@@ -43,8 +65,8 @@ describe("StepIndicator", () => {
     render(
       <StepIndicator
         currentStep={2}
-        totalSteps={4}
-        stepLabel="Compañía e intereses"
+        totalSteps={3}
+        stepLabel="Intereses y estilo"
         steps={STEPS}
         onStepSelect={onStepSelect}
       />
@@ -58,15 +80,12 @@ describe("StepIndicator", () => {
       name: /Paso 1: Fechas y duración \(completado\)/,
     });
     const paso3 = screen.getByRole("button", {
-      name: /Paso 3: Compañía e intereses/,
+      name: /Paso 3: Intereses y estilo/,
     });
 
     expect(paso1).toBeEnabled();
     expect(paso3).toHaveAttribute("aria-current", "step");
     expect(paso3).toBeDisabled();
-    expect(
-      screen.getByRole("button", { name: /Paso 4: Estilo del viaje/ })
-    ).toBeDisabled();
 
     fireEvent.click(paso1);
 
