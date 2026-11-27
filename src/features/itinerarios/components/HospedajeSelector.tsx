@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { BarrioCaba, LugarFiltro, LugarResumenDto } from "../../../api/types";
 import { getLugares } from "../../../api/lugares";
 import { SelectablePlaceCard } from "../../../components/SelectablePlaceCard";
@@ -10,6 +10,21 @@ import "./HospedajeSelector.css";
 
 const DEBOUNCE_BUSQUEDA_MS = 300;
 const TAMANO_PAGINA = 8;
+const TAMANO_FETCH = 100;
+const MAX_PAGINAS_FETCH = 10;
+
+function ordenarPorPuntuacion(lugares: LugarResumenDto[]): LugarResumenDto[] {
+  return [...lugares].sort((a, b) => {
+    const puntuacionA = a.puntuacion ?? -1;
+    const puntuacionB = b.puntuacion ?? -1;
+
+    if (puntuacionB !== puntuacionA) {
+      return puntuacionB - puntuacionA;
+    }
+
+    return b.cantidadResenas - a.cantidadResenas;
+  });
+}
 
 export interface HospedajeSelectorProps {
   puntoInicio: "HospedajePropio" | "HospedajeSugerido";
@@ -37,12 +52,16 @@ export function HospedajeSelector({
   const [searchTerm, setSearchTerm] = useState("");
   const [appliedSearch, setAppliedSearch] = useState("");
 
-  // Estado de resultados
-  const [lugares, setLugares] = useState<LugarResumenDto[]>([]);
-  const [total, setTotal] = useState(0);
+  // Estado de resultados (lista completa ordenada por ranking + paginación local)
+  const [todosLosLugares, setTodosLosLugares] = useState<LugarResumenDto[]>([]);
   const [pagina, setPagina] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
+
+  const lugares = useMemo(
+    () => todosLosLugares.slice(0, pagina * TAMANO_PAGINA),
+    [todosLosLugares, pagina]
+  );
 
   const debounceRef = useRef<number | undefined>(undefined);
   const fetchSeqRef = useRef(0);
@@ -64,28 +83,31 @@ export function HospedajeSelector({
 
   useEffect(() => () => window.clearTimeout(debounceRef.current), []);
 
-  // Consulta a la API con paginación incremental (Ver más)
-  const fetchLugares = useCallback(
-    async (paginaDestino: number, acumular: boolean) => {
-      if (!selectedBarrio) {
-        setLugares([]);
-        setTotal(0);
-        setPagina(1);
-        setIsLoading(false);
-        return;
-      }
+  // Consulta a la API, ordena por ranking descendente y pagina localmente
+  const fetchLugares = useCallback(async () => {
+    if (!selectedBarrio) {
+      setTodosLosLugares([]);
+      setPagina(1);
+      setIsLoading(false);
+      return;
+    }
 
-      const secuencia = ++fetchSeqRef.current;
-      setIsLoading(true);
-      setApiError(null);
+    const secuencia = ++fetchSeqRef.current;
+    setIsLoading(true);
+    setApiError(null);
 
-      try {
+    try {
+      const acumulado: LugarResumenDto[] = [];
+      let paginaActual = 1;
+      let total = 0;
+
+      do {
         const filtro: LugarFiltro = {
-          barrio: selectedBarrio ?? undefined,
+          barrio: selectedBarrio,
           tipoLugar: "Alojamiento",
           busqueda: appliedSearch || undefined,
-          pagina: paginaDestino,
-          tamano: TAMANO_PAGINA,
+          pagina: paginaActual,
+          tamano: TAMANO_FETCH,
         };
 
         const res = await getLugares(filtro);
@@ -94,27 +116,27 @@ export function HospedajeSelector({
           return;
         }
 
-        setLugares((prev) =>
-          acumular ? [...prev, ...res.items] : res.items
-        );
-        setTotal(res.total);
-        setPagina(paginaDestino);
-      } catch {
-        if (secuencia === fetchSeqRef.current) {
-          setApiError("No se pudieron cargar los alojamientos. Verificá tu conexión o intentá nuevamente.");
-        }
-      } finally {
-        if (secuencia === fetchSeqRef.current) {
-          setIsLoading(false);
-        }
+        total = res.total;
+        acumulado.push(...res.items);
+        paginaActual += 1;
+      } while (acumulado.length < total && paginaActual <= MAX_PAGINAS_FETCH);
+
+      setTodosLosLugares(ordenarPorPuntuacion(acumulado));
+      setPagina(1);
+    } catch {
+      if (secuencia === fetchSeqRef.current) {
+        setApiError("No se pudieron cargar los alojamientos. Verificá tu conexión o intentá nuevamente.");
       }
-    },
-    [selectedBarrio, appliedSearch]
-  );
+    } finally {
+      if (secuencia === fetchSeqRef.current) {
+        setIsLoading(false);
+      }
+    }
+  }, [selectedBarrio, appliedSearch]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- carga inicial y al cambiar filtros
-    fetchLugares(1, false);
+    fetchLugares();
   }, [fetchLugares]);
 
   // En modo propio la búsqueda se aplica sola al tipear (debounce)
@@ -248,9 +270,9 @@ export function HospedajeSelector({
       {/* Contador de resultados y estado */}
       <div className="hospedaje-selector__status-bar">
         <span className="hospedaje-selector__count">
-          {isLoading && lugares.length === 0
+          {isLoading && todosLosLugares.length === 0
             ? "Cargando lugares..."
-            : `${total} ${total === 1 ? "alojamiento encontrado" : "alojamientos encontrados"}`}
+            : `${todosLosLugares.length} ${todosLosLugares.length === 1 ? "alojamiento encontrado" : "alojamientos encontrados"}`}
         </span>
         {appliedSearch && (
           <span className="hospedaje-selector__active-filter">
@@ -261,7 +283,7 @@ export function HospedajeSelector({
 
       {/* Lista de lugares */}
       <div className="hospedaje-selector__results">
-        {isLoading && lugares.length === 0 ? (
+        {isLoading && todosLosLugares.length === 0 ? (
           <div className="hospedaje-selector__loading">
             <div className="hospedaje-selector__skeleton skeleton" />
             <div className="hospedaje-selector__skeleton skeleton" />
@@ -274,12 +296,12 @@ export function HospedajeSelector({
             <button
               type="button"
               className="hospedaje-selector__retry-btn"
-              onClick={() => fetchLugares(1, false)}
+                  onClick={fetchLugares}
             >
               Reintentar
             </button>
           </div>
-        ) : lugares.length === 0 ? (
+        ) : todosLosLugares.length === 0 ? (
           <div className="hospedaje-selector__empty">
             <p>No encontramos alojamientos con esos filtros.</p>
             <span>Probá modificando el término de búsqueda o seleccionando otro barrio.</span>
@@ -305,16 +327,13 @@ export function HospedajeSelector({
               })}
             </div>
 
-            {lugares.length < total && (
+            {lugares.length < todosLosLugares.length && (
               <button
                 type="button"
                 className="hospedaje-selector__ver-mas"
-                onClick={() => fetchLugares(pagina + 1, true)}
-                disabled={isLoading}
+                onClick={() => setPagina((actual) => actual + 1)}
               >
-                {isLoading
-                  ? "Cargando más alojamientos..."
-                  : "Ver más alojamientos"}
+                Ver más alojamientos
               </button>
             )}
           </>

@@ -182,14 +182,9 @@
   transition: border-color 0.15s ease, color 0.15s ease;
 }
 
-.hospedaje-selector__ver-mas:hover:not(:disabled) {
+.hospedaje-selector__ver-mas:hover {
   border-color: var(--primary, #0f766e);
   color: var(--primary, #0f766e);
-}
-
-.hospedaje-selector__ver-mas:disabled {
-  opacity: 0.6;
-  cursor: wait;
 }
 
 /* Skeletons */

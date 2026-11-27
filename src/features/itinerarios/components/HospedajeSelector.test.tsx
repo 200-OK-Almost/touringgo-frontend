@@ -171,8 +171,8 @@ describe("HospedajeSelector — modo Recomiéndame hospedaje", () => {
 
     vi.mocked(getLugares).mockImplementation(async (filtro) =>
       (filtro?.pagina ?? 1) === 1
-        ? { items: primeraPagina, total: 9, pagina: 1, tamano: 8 }
-        : { items: segundaPagina, total: 9, pagina: 2, tamano: 8 }
+        ? { items: primeraPagina, total: 9, pagina: 1, tamano: 100 }
+        : { items: segundaPagina, total: 9, pagina: 2, tamano: 100 }
     );
 
     render(
@@ -197,11 +197,36 @@ describe("HospedajeSelector — modo Recomiéndame hospedaje", () => {
       expect(screen.getAllByRole("radio", { name: /Hotel/ })).toHaveLength(9)
     );
     expect(getLugares).toHaveBeenCalledWith(
-      expect.objectContaining({ pagina: 2, tamano: 8 })
+      expect.objectContaining({ pagina: 2, tamano: 100 })
     );
     expect(
       screen.queryByRole("button", { name: "Ver más alojamientos" })
     ).not.toBeInTheDocument();
+  });
+
+  it("muestra primero los alojamientos mejor rankeados", async () => {
+    vi.mocked(getLugares).mockResolvedValue(
+      resultado([
+        { ...lugar("h1", "Hotel Regular"), puntuacion: 3.3 },
+        { ...lugar("h2", "Hotel Top"), puntuacion: 4.9 },
+        { ...lugar("h3", "Hotel Medio"), puntuacion: 4.2 },
+      ])
+    );
+
+    render(
+      <HospedajeSelector
+        puntoInicio="HospedajeSugerido"
+        barrio="Palermo"
+        selectedLugarId={null}
+        onSelectLugar={vi.fn()}
+      />
+    );
+
+    const cards = await screen.findAllByRole("radio", { name: /Hotel/ });
+
+    expect(cards[0]).toHaveTextContent("Hotel Top");
+    expect(cards[1]).toHaveTextContent("Hotel Medio");
+    expect(cards[2]).toHaveTextContent("Hotel Regular");
   });
 
   it("marca el hotel elegido con el CTA Elegido", async () => {
