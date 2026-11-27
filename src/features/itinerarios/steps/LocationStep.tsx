@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { BarrioCaba } from "../../../api/types";
 import { SelectableCard } from "../../../components/SelectableCard";
 import { SelectableCardGroup } from "../../../components/SelectableCardGroup";
@@ -11,6 +11,7 @@ import DaySelectorTabs from "../components/DaySelectorTabs";
 import CollapsibleSection from "../components/CollapsibleSection";
 import type { DiaPlanificacion } from "../planificacionFormData";
 import { barrioLabel } from "../../../lib/format";
+import { diaEstaCompleto } from "../lib/diasPlanificacion";
 
 interface LocationStepProps {
   dias: DiaPlanificacion[];
@@ -219,6 +220,38 @@ function LocationStep({ dias, onChangeDia, errors }: LocationStepProps) {
     : dias[0]?.dia ?? 1;
   const dia = dias.find((d) => d.dia === diaSeleccionado) ?? null;
   const puedeCopiarBarrio = Boolean(dias[0]?.barrio);
+  const tabsRef = useRef<HTMLDivElement | null>(null);
+  const completitudRef = useRef<{ dia: number; completa: boolean } | null>(
+    null
+  );
+
+  // Al completar el día activo, lleva al selector de días para elegir el siguiente
+  useEffect(() => {
+    const completa = dia ? diaEstaCompleto(dia) : false;
+    const anterior = completitudRef.current;
+    completitudRef.current = { dia: diaSeleccionado, completa };
+
+    if (!anterior || anterior.dia !== diaSeleccionado) {
+      return;
+    }
+
+    const esUltimoDia = diaSeleccionado === dias[dias.length - 1]?.dia;
+    const debeDesplazar =
+      !anterior.completa && completa && !esUnDia && !esUltimoDia;
+
+    if (!debeDesplazar) {
+      return;
+    }
+
+    const prefiereReducirMovimiento =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    tabsRef.current?.scrollIntoView?.({
+      behavior: prefiereReducirMovimiento ? "auto" : "smooth",
+      block: "center",
+    });
+  }, [dias, dia, diaSeleccionado, esUnDia]);
 
   function aplicarMismoBarrio() {
     const primerDia = dias[0];
@@ -266,13 +299,15 @@ function LocationStep({ dias, onChangeDia, errors }: LocationStepProps) {
             </button>
           </div>
 
-          <DaySelectorTabs
-            dias={dias}
-            diaActivo={diaSeleccionado}
-            onChange={setDiaActivo}
-            idPrefix="location-day"
-            panelId="location-day-panel"
-          />
+          <div ref={tabsRef} className="location-days__tabs">
+            <DaySelectorTabs
+              dias={dias}
+              diaActivo={diaSeleccionado}
+              onChange={setDiaActivo}
+              idPrefix="location-day"
+              panelId="location-day-panel"
+            />
+          </div>
         </div>
       )}
 

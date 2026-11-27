@@ -200,6 +200,74 @@ describe("LocationStep", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("desplaza a los días cuando se completa el día activo y hay más días", () => {
+    const original = Element.prototype.scrollIntoView;
+    const scrollSpy = vi.fn();
+    Element.prototype.scrollIntoView = scrollSpy;
+
+    const { rerender } = render(
+      <LocationStep
+        dias={[
+          { ...dia("2026-11-18", 1, "Palermo"), puntoInicio: null },
+          dia("2026-11-19", 2),
+        ]}
+        onChangeDia={vi.fn()}
+        errors={{}}
+      />
+    );
+
+    expect(scrollSpy).not.toHaveBeenCalled();
+
+    rerender(
+      <LocationStep
+        dias={[
+          dia("2026-11-18", 1, "Palermo"),
+          dia("2026-11-19", 2),
+        ]}
+        onChangeDia={vi.fn()}
+        errors={{}}
+      />
+    );
+
+    expect(scrollSpy).toHaveBeenCalled();
+
+    Element.prototype.scrollIntoView = original;
+  });
+
+  it("no desplaza si el día completado es el último", () => {
+    const original = Element.prototype.scrollIntoView;
+    const scrollSpy = vi.fn();
+    Element.prototype.scrollIntoView = scrollSpy;
+
+    const { rerender } = render(
+      <LocationStep
+        dias={[
+          dia("2026-11-18", 1, "Palermo"),
+          { ...dia("2026-11-19", 2, "Recoleta"), puntoInicio: null },
+        ]}
+        onChangeDia={vi.fn()}
+        errors={{}}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("tab", { name: /Día 2/ }));
+
+    rerender(
+      <LocationStep
+        dias={[
+          dia("2026-11-18", 1, "Palermo"),
+          dia("2026-11-19", 2, "Recoleta"),
+        ]}
+        onChangeDia={vi.fn()}
+        errors={{}}
+      />
+    );
+
+    expect(scrollSpy).not.toHaveBeenCalled();
+
+    Element.prototype.scrollIntoView = original;
+  });
+
   it("muestra los días faltantes informados por validación", () => {
     render(
       <LocationStep

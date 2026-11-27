@@ -344,6 +344,14 @@
   flex-wrap: wrap;
 }
 
+.location-days__tabs {
+  scroll-margin-top: 1rem;
+}
+
+.preferences-days__tabs {
+  scroll-margin-top: 1rem;
+}
+
 .location-days__shortcut {
   border: 1px solid var(--primary);
   border-radius: 10px;

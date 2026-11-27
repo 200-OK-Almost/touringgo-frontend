@@ -251,4 +251,104 @@ describe("InteresesYEstiloStep", () => {
       screen.getByText("Faltan completar: Día 1, Día 2.")
     ).toBeInTheDocument();
   });
+
+  it("desplaza a los días cuando se completa el día activo y hay más días", () => {
+    const original = Element.prototype.scrollIntoView;
+    const scrollSpy = vi.fn();
+    Element.prototype.scrollIntoView = scrollSpy;
+
+    const { rerender } = render(
+      <InteresesYEstiloStep
+        dias={[
+          dia("2026-11-18", 1, {
+            modalidadViaje: "Solo",
+            categoriasPrioritarias: CATEGORIAS.slice(0, 2),
+            ritmoVisita: "Activo",
+          }),
+          dia("2026-11-19", 2),
+        ]}
+        categorias={CATEGORIAS}
+        onChangeDia={vi.fn()}
+        errors={{}}
+      />
+    );
+
+    expect(scrollSpy).not.toHaveBeenCalled();
+
+    rerender(
+      <InteresesYEstiloStep
+        dias={[
+          dia("2026-11-18", 1, {
+            modalidadViaje: "Solo",
+            categoriasPrioritarias: CATEGORIAS.slice(0, 2),
+            ritmoVisita: "Activo",
+            presupuestoNivel: "Equilibrado",
+          }),
+          dia("2026-11-19", 2),
+        ]}
+        categorias={CATEGORIAS}
+        onChangeDia={vi.fn()}
+        errors={{}}
+      />
+    );
+
+    expect(scrollSpy).toHaveBeenCalled();
+
+    Element.prototype.scrollIntoView = original;
+  });
+
+  it("no desplaza si el día completado es el último", () => {
+    const original = Element.prototype.scrollIntoView;
+    const scrollSpy = vi.fn();
+    Element.prototype.scrollIntoView = scrollSpy;
+
+    const { rerender } = render(
+      <InteresesYEstiloStep
+        dias={[
+          dia("2026-11-18", 1, {
+            modalidadViaje: "Solo",
+            categoriasPrioritarias: CATEGORIAS.slice(0, 2),
+            ritmoVisita: "Activo",
+            presupuestoNivel: "Equilibrado",
+          }),
+          dia("2026-11-19", 2, {
+            modalidadViaje: "Familia",
+            categoriasPrioritarias: CATEGORIAS.slice(2, 4),
+            ritmoVisita: "Activo",
+          }),
+        ]}
+        categorias={CATEGORIAS}
+        onChangeDia={vi.fn()}
+        errors={{}}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("tab", { name: /Día 2/ }));
+
+    rerender(
+      <InteresesYEstiloStep
+        dias={[
+          dia("2026-11-18", 1, {
+            modalidadViaje: "Solo",
+            categoriasPrioritarias: CATEGORIAS.slice(0, 2),
+            ritmoVisita: "Activo",
+            presupuestoNivel: "Equilibrado",
+          }),
+          dia("2026-11-19", 2, {
+            modalidadViaje: "Familia",
+            categoriasPrioritarias: CATEGORIAS.slice(2, 4),
+            ritmoVisita: "Activo",
+            presupuestoNivel: "Economico",
+          }),
+        ]}
+        categorias={CATEGORIAS}
+        onChangeDia={vi.fn()}
+        errors={{}}
+      />
+    );
+
+    expect(scrollSpy).not.toHaveBeenCalled();
+
+    Element.prototype.scrollIntoView = original;
+  });
 });

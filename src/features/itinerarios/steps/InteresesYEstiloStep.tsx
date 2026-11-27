@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   IoBeerOutline,
   IoCafeOutline,
@@ -365,6 +365,38 @@ function InteresesYEstiloStep({
     : dias[0]?.dia ?? 1;
   const dia = dias.find((item) => item.dia === diaSeleccionado) ?? null;
   const primerDia = dias[0];
+  const tabsRef = useRef<HTMLDivElement | null>(null);
+  const completitudRef = useRef<{ dia: number; completa: boolean } | null>(
+    null
+  );
+
+  // Al completar el día activo, lleva al selector de días para configurar el siguiente
+  useEffect(() => {
+    const completa = dia ? preferenciasDiaCompletas(dia) : false;
+    const anterior = completitudRef.current;
+    completitudRef.current = { dia: diaSeleccionado, completa };
+
+    if (!anterior || anterior.dia !== diaSeleccionado) {
+      return;
+    }
+
+    const esUltimoDia = diaSeleccionado === dias[dias.length - 1]?.dia;
+    const debeDesplazar =
+      !anterior.completa && completa && !esUnDia && !esUltimoDia;
+
+    if (!debeDesplazar) {
+      return;
+    }
+
+    const prefiereReducirMovimiento =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    tabsRef.current?.scrollIntoView?.({
+      behavior: prefiereReducirMovimiento ? "auto" : "smooth",
+      block: "center",
+    });
+  }, [dias, dia, diaSeleccionado, esUnDia]);
   const puedeCopiarPreferencias = Boolean(
     primerDia?.modalidadViaje ||
       primerDia?.ritmoVisita ||
@@ -409,14 +441,16 @@ function InteresesYEstiloStep({
             </button>
           </div>
 
-          <DaySelectorTabs
-            dias={dias}
-            diaActivo={diaSeleccionado}
-            onChange={setDiaActivo}
-            isComplete={preferenciasDiaCompletas}
-            idPrefix="preferences-day"
-            panelId="preferences-day-panel"
-          />
+          <div ref={tabsRef} className="preferences-days__tabs">
+            <DaySelectorTabs
+              dias={dias}
+              diaActivo={diaSeleccionado}
+              onChange={setDiaActivo}
+              isComplete={preferenciasDiaCompletas}
+              idPrefix="preferences-day"
+              panelId="preferences-day-panel"
+            />
+          </div>
         </div>
       )}
 
