@@ -2,7 +2,8 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { CategoriaDto } from "../../../api/types";
 import type { DiaPlanificacion } from "../planificacionFormData";
-import TravelCompanionsAndInterestsStep from "./TravelCompanionsAndInterestsStep";
+import type { FormErrors } from "../PlanificationForm.validation";
+import InteresesYEstiloStep from "./InteresesYEstiloStep";
 
 const CATEGORIAS: CategoriaDto[] = [
   { id: 1, codigo: "cafe_especialidad", nombre: "Café de especialidad" },
@@ -26,6 +27,8 @@ function dia(
     hospedajeBarrio: null,
     modalidadViaje: null,
     categoriasPrioritarias: [],
+    ritmoVisita: null,
+    presupuestoNivel: null,
     ...sobrescribir,
   };
 }
@@ -33,10 +36,10 @@ function dia(
 function renderPaso(
   dias: DiaPlanificacion[],
   onChangeDia = vi.fn(),
-  errors = {}
+  errors: FormErrors = {}
 ) {
   return render(
-    <TravelCompanionsAndInterestsStep
+    <InteresesYEstiloStep
       dias={dias}
       categorias={CATEGORIAS}
       onChangeDia={onChangeDia}
@@ -45,7 +48,7 @@ function renderPaso(
   );
 }
 
-describe("TravelCompanionsAndInterestsStep", () => {
+describe("InteresesYEstiloStep", () => {
   it("con un solo día no muestra tabs ni atajo", () => {
     renderPaso([
       dia("2026-11-18", 1, { modalidadViaje: "Solo" }),
@@ -88,7 +91,33 @@ describe("TravelCompanionsAndInterestsStep", () => {
     ).toHaveClass("selectable-card-option--selected");
   });
 
-  it("notifica cambios en el día activo", () => {
+  it("guarda el ritmo y presupuesto de cada día por separado", () => {
+    renderPaso([
+      dia("2026-11-18", 1, {
+        ritmoVisita: "Tranquilo",
+        presupuestoNivel: "Economico",
+      }),
+      dia("2026-11-19", 2),
+    ]);
+
+    expect(
+      screen.getByRole("radio", { name: /Relajado/ })
+    ).toHaveClass("selectable-card-option--selected");
+    expect(
+      screen.getByRole("radio", { name: /Económico/ })
+    ).toHaveClass("selectable-card-option--selected");
+
+    fireEvent.click(screen.getByRole("tab", { name: /Día 2/ }));
+
+    expect(
+      screen.getByRole("radio", { name: /Relajado/ })
+    ).not.toHaveClass("selectable-card-option--selected");
+    expect(
+      screen.getByRole("radio", { name: /Económico/ })
+    ).not.toHaveClass("selectable-card-option--selected");
+  });
+
+  it("notifica cambios de modalidad y estilo en el día activo", () => {
     const onChangeDia = vi.fn();
 
     renderPaso(
@@ -105,6 +134,14 @@ describe("TravelCompanionsAndInterestsStep", () => {
     expect(onChangeDia).toHaveBeenCalledWith(2, {
       modalidadViaje: "Amigos",
     });
+
+    fireEvent.click(screen.getByRole("radio", { name: /Activo/ }));
+    fireEvent.click(screen.getByRole("radio", { name: /Flexible/ }));
+
+    expect(onChangeDia).toHaveBeenCalledWith(2, { ritmoVisita: "Activo" });
+    expect(onChangeDia).toHaveBeenCalledWith(2, {
+      presupuestoNivel: "SinRestricciones",
+    });
   });
 
   it("copia las preferencias del día 1 al resto con el atajo", () => {
@@ -115,6 +152,8 @@ describe("TravelCompanionsAndInterestsStep", () => {
         dia("2026-11-18", 1, {
           modalidadViaje: "Solo",
           categoriasPrioritarias: CATEGORIAS.slice(0, 2),
+          ritmoVisita: "Activo",
+          presupuestoNivel: "Equilibrado",
         }),
         dia("2026-11-19", 2),
       ],
@@ -130,7 +169,31 @@ describe("TravelCompanionsAndInterestsStep", () => {
     expect(onChangeDia).toHaveBeenCalledWith(2, {
       modalidadViaje: "Solo",
       categoriasPrioritarias: CATEGORIAS.slice(0, 2),
+      ritmoVisita: "Activo",
+      presupuestoNivel: "Equilibrado",
     });
+  });
+
+  it("marca un tab como completo solo con las 4 secciones resueltas", () => {
+    renderPaso([
+      dia("2026-11-18", 1, {
+        modalidadViaje: "Solo",
+        categoriasPrioritarias: CATEGORIAS.slice(0, 2),
+      }),
+      dia("2026-11-19", 2, {
+        modalidadViaje: "Familia",
+        categoriasPrioritarias: CATEGORIAS.slice(2, 4),
+        ritmoVisita: "Activo",
+        presupuestoNivel: "Economico",
+      }),
+    ]);
+
+    expect(screen.getByRole("tab", { name: /Día 1/ }).textContent).toContain(
+      "Falta completar"
+    );
+    expect(screen.getByRole("tab", { name: /Día 2/ }).textContent).toContain(
+      "Completo"
+    );
   });
 
   it("no permite seleccionar más de 4 categorías", () => {

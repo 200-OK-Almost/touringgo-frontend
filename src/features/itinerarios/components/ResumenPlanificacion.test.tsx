@@ -20,8 +20,6 @@ function crearFormData(
     fechaInicio: "2026-11-18",
     fechaFin: "2026-11-19",
     disponibilidadDiaria: "DiaCompleto",
-    ritmoVisita: "Tranquilo",
-    presupuestoNivel: "Equilibrado",
     dias: [
       {
         fecha: "2026-11-18",
@@ -32,6 +30,8 @@ function crearFormData(
         hospedajeBarrio: "Palermo",
         modalidadViaje: "Pareja",
         categoriasPrioritarias: [CATEGORIA],
+        ritmoVisita: "Tranquilo",
+        presupuestoNivel: "Equilibrado",
       },
       {
         fecha: "2026-11-19",
@@ -42,6 +42,8 @@ function crearFormData(
         hospedajeBarrio: null,
         modalidadViaje: "Pareja",
         categoriasPrioritarias: [CATEGORIA],
+        ritmoVisita: "Activo",
+        presupuestoNivel: "Economico",
       },
     ],
     ...sobrescribir,

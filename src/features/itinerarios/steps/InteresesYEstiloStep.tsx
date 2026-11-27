@@ -16,10 +16,10 @@ import { BsGem, BsPiggyBank, BsWallet2 } from "react-icons/bs";
 import { SelectableCard } from "../../../components/SelectableCard";
 import { SelectableCardGroup } from "../../../components/SelectableCardGroup";
 import type { CategoriaDto } from "../../../api/types";
-import type { NivelPresupuesto } from "../../viaje/types";
 import type { FormErrors } from "../PlanificationForm.validation";
 import type { DiaPlanificacion } from "../planificacionFormData";
 import type { ModalidadViaje, RitmoCaminata } from "../types";
+import type { NivelPresupuesto } from "../../viaje/types";
 import DaySelectorTabs from "../components/DaySelectorTabs";
 import { preferenciasDiaCompletas } from "../lib/diasPlanificacion";
 
@@ -30,12 +30,6 @@ interface InteresesYEstiloStepProps {
     diaNumero: number,
     changes: Partial<DiaPlanificacion>
   ) => void;
-  ritmoVisita: RitmoCaminata | null;
-  presupuestoNivel: NivelPresupuesto | null;
-  onChange: (changes: {
-    ritmoVisita?: RitmoCaminata | null;
-    presupuestoNivel?: NivelPresupuesto | null;
-  }) => void;
   errors: FormErrors;
 }
 
@@ -72,6 +66,8 @@ interface PreferenciasDiaProps {
   onChange: (changes: Partial<DiaPlanificacion>) => void;
   errorModalidad?: string;
   errorCategorias?: string;
+  errorRitmo?: string;
+  errorPresupuesto?: string;
 }
 
 const MAX_CATEGORIAS = 4;
@@ -149,9 +145,13 @@ function PreferenciasDia({
   onChange,
   errorModalidad,
   errorCategorias,
+  errorRitmo,
+  errorPresupuesto,
 }: PreferenciasDiaProps) {
   const modalidadViaje = dia?.modalidadViaje ?? null;
   const categoriasPrioritarias = dia?.categoriasPrioritarias ?? [];
+  const ritmoVisita = dia?.ritmoVisita ?? null;
+  const presupuestoNivel = dia?.presupuestoNivel ?? null;
   const limiteAlcanzado = categoriasPrioritarias.length >= MAX_CATEGORIAS;
 
   const categoriaOptions: CategoriaOption[] = categorias.map((categoria) => ({
@@ -281,6 +281,73 @@ function PreferenciasDia({
           <p>{errorCategorias}</p>
         </div>
       )}
+
+      <div className="intereses-estilo__estilo">
+        <div className="planificacion-form-header">
+          <h3 id="intereses-estilo-title">Estilo del día</h3>
+        </div>
+        <div className="intereses-estilo__grid">
+          <div className="intereses-estilo__grupo">
+            <h4 id="style-ritmo-title" tabIndex={-1} className="intereses-estilo__grupo-title">
+              Ritmo
+            </h4>
+            <SelectableCardGroup
+              role="radiogroup"
+              labelledBy="style-ritmo-title"
+              describedBy={errorRitmo ? "style-ritmo-error" : undefined}
+              className="selectable-card-group grid-2"
+            >
+              {RITMO_OPTIONS.map((ritmo) => (
+                <SelectableCard
+                  key={ritmo.value}
+                  title={ritmo.title}
+                  selected={ritmoVisita === ritmo.value}
+                  icon={ritmo.icon}
+                  description={ritmo.description}
+                  onClick={() => onChange({ ritmoVisita: ritmo.value })}
+                  variant="big"
+                />
+              ))}
+            </SelectableCardGroup>
+            {errorRitmo && (
+              <div id="style-ritmo-error" className="planificacion-field-error" role="alert">
+                <p>{errorRitmo}</p>
+              </div>
+            )}
+          </div>
+
+          <div className="intereses-estilo__grupo">
+            <h4 id="style-presupuesto-title" tabIndex={-1} className="intereses-estilo__grupo-title">
+              Presupuesto
+            </h4>
+            <SelectableCardGroup
+              role="radiogroup"
+              labelledBy="style-presupuesto-title"
+              describedBy={
+                errorPresupuesto ? "style-presupuesto-error" : undefined
+              }
+              className="selectable-card-group grid-3"
+            >
+              {PRESUPUESTO_OPTIONS.map((presupuesto) => (
+                <SelectableCard
+                  key={presupuesto.value}
+                  title={presupuesto.title}
+                  icon={presupuesto.icon}
+                  description={presupuesto.description}
+                  selected={presupuestoNivel == presupuesto.value}
+                  onClick={() => onChange({ presupuestoNivel: presupuesto.value })}
+                  variant="big"
+                />
+              ))}
+            </SelectableCardGroup>
+            {errorPresupuesto && (
+              <div id="style-presupuesto-error" className="planificacion-field-error" role="alert">
+                <p>{errorPresupuesto}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </>
   );
 }
@@ -289,9 +356,6 @@ function InteresesYEstiloStep({
   dias,
   categorias,
   onChangeDia,
-  ritmoVisita,
-  presupuestoNivel,
-  onChange,
   errors,
 }: InteresesYEstiloStepProps) {
   const [diaActivo, setDiaActivo] = useState(1);
@@ -303,9 +367,10 @@ function InteresesYEstiloStep({
   const primerDia = dias[0];
   const puedeCopiarPreferencias = Boolean(
     primerDia?.modalidadViaje ||
+      primerDia?.ritmoVisita ||
+      primerDia?.presupuestoNivel ||
       (primerDia?.categoriasPrioritarias.length ?? 0) > 0
   );
-  const estiloCompleto = ritmoVisita != null && presupuestoNivel != null;
 
   function aplicarMismasPreferencias() {
     if (!primerDia) {
@@ -316,6 +381,8 @@ function InteresesYEstiloStep({
       onChangeDia(diaRestante.dia, {
         modalidadViaje: primerDia.modalidadViaje,
         categoriasPrioritarias: primerDia.categoriasPrioritarias,
+        ritmoVisita: primerDia.ritmoVisita,
+        presupuestoNivel: primerDia.presupuestoNivel,
       });
     });
   }
@@ -328,8 +395,8 @@ function InteresesYEstiloStep({
             <div className="planificacion-form-header">
               <h3>¿Cómo viajás y qué te interesa cada día?</h3>
               <p className="planificacion-form-description text-muted">
-                Elegí la modalidad de viaje y las categorías de interés para
-                cada día.
+                Elegí la modalidad, las categorías, el ritmo y el presupuesto
+                para cada día.
               </p>
             </div>
             <button
@@ -346,9 +413,7 @@ function InteresesYEstiloStep({
             dias={dias}
             diaActivo={diaSeleccionado}
             onChange={setDiaActivo}
-            isComplete={(diaItem) =>
-              preferenciasDiaCompletas(diaItem) && estiloCompleto
-            }
+            isComplete={preferenciasDiaCompletas}
             idPrefix="preferences-day"
             panelId="preferences-day-panel"
           />
@@ -386,82 +451,10 @@ function InteresesYEstiloStep({
           errorCategorias={
             esUnDia ? errors.categoriasPrioritarias : undefined
           }
+          errorRitmo={esUnDia ? errors.ritmoVisita : undefined}
+          errorPresupuesto={esUnDia ? errors.presupuestoNivel : undefined}
         />
       </div>
-
-      <section
-        className="intereses-estilo__estilo"
-        aria-labelledby="intereses-estilo-title"
-      >
-        <div className="planificacion-form-header">
-          <h3 id="intereses-estilo-title">Estilo del viaje</h3>
-          <p className="planificacion-form-description text-muted">
-            Definí el ritmo y el presupuesto para toda la salida.
-          </p>
-        </div>
-
-        <div className="intereses-estilo__grid">
-          <div className="intereses-estilo__grupo">
-            <h4 id="style-ritmo-title" tabIndex={-1} className="intereses-estilo__grupo-title">
-              Ritmo
-            </h4>
-            <SelectableCardGroup
-              role="radiogroup"
-              labelledBy="style-ritmo-title"
-              describedBy={errors.ritmoVisita ? "style-ritmo-error" : undefined}
-              className="selectable-card-group grid-2"
-            >
-              {RITMO_OPTIONS.map((ritmo) => (
-                <SelectableCard
-                  key={ritmo.value}
-                  title={ritmo.title}
-                  selected={ritmoVisita === ritmo.value}
-                  icon={ritmo.icon}
-                  description={ritmo.description}
-                  onClick={() => onChange({ ritmoVisita: ritmo.value })}
-                  variant="big"
-                />
-              ))}
-            </SelectableCardGroup>
-            {errors.ritmoVisita && (
-              <div id="style-ritmo-error" className="planificacion-field-error" role="alert">
-                <p>{errors.ritmoVisita}</p>
-              </div>
-            )}
-          </div>
-
-          <div className="intereses-estilo__grupo">
-            <h4 id="style-presupuesto-title" tabIndex={-1} className="intereses-estilo__grupo-title">
-              Presupuesto
-            </h4>
-            <SelectableCardGroup
-              role="radiogroup"
-              labelledBy="style-presupuesto-title"
-              describedBy={
-                errors.presupuestoNivel ? "style-presupuesto-error" : undefined
-              }
-              className="selectable-card-group grid-3"
-            >
-              {PRESUPUESTO_OPTIONS.map((presupuesto) => (
-                <SelectableCard
-                  key={presupuesto.value}
-                  title={presupuesto.title}
-                  icon={presupuesto.icon}
-                  description={presupuesto.description}
-                  selected={presupuestoNivel == presupuesto.value}
-                  onClick={() => onChange({ presupuestoNivel: presupuesto.value })}
-                  variant="big"
-                />
-              ))}
-            </SelectableCardGroup>
-            {errors.presupuestoNivel && (
-              <div id="style-presupuesto-error" className="planificacion-field-error" role="alert">
-                <p>{errors.presupuestoNivel}</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

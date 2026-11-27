@@ -30,6 +30,8 @@ describe("usePlanificacionDraft", () => {
           hospedajeBarrio: null,
           modalidadViaje: "Solo" as const,
           categoriasPrioritarias: [],
+          ritmoVisita: "Activo" as const,
+          presupuestoNivel: "Equilibrado" as const,
         },
       ],
     };
@@ -38,6 +40,8 @@ describe("usePlanificacionDraft", () => {
 
     const draft = leerPlanificacionDraft();
     expect(draft?.formData.dias[0].barrio).toBe("Palermo");
+    expect(draft?.formData.dias[0].ritmoVisita).toBe("Activo");
+    expect(draft?.formData.dias[0].presupuestoNivel).toBe("Equilibrado");
     expect(draft?.currentStepCounter).toBe(1);
   });
 
@@ -67,6 +71,8 @@ describe("usePlanificacionDraft", () => {
           hospedajeBarrio: null,
           modalidadViaje: "Solo" as const,
           categoriasPrioritarias: [],
+          ritmoVisita: null,
+          presupuestoNivel: null,
         },
       ],
     };
@@ -112,7 +118,7 @@ describe("usePlanificacionDraft", () => {
 
     const draft = leerPlanificacionDraft();
 
-    expect(draft?.version).toBe(3);
+    expect(draft?.version).toBe(4);
     expect(draft?.currentStepCounter).toBe(0);
     expect(draft?.formData.dias).toHaveLength(2);
     expect(draft?.formData.dias[0].barrio).toBe("Recoleta");
@@ -165,7 +171,7 @@ describe("usePlanificacionDraft", () => {
 
     const draft = leerPlanificacionDraft();
 
-    expect(draft?.version).toBe(3);
+    expect(draft?.version).toBe(4);
     expect(draft?.currentStepCounter).toBe(2);
     expect(draft?.formData.dias).toHaveLength(2);
     expect(draft?.formData.dias).toEqual(
@@ -176,6 +182,8 @@ describe("usePlanificacionDraft", () => {
           categoriasPrioritarias: [
             expect.objectContaining({ codigo: "cafe_especialidad" }),
           ],
+          ritmoVisita: "Activo",
+          presupuestoNivel: "Equilibrado",
         }),
         expect.objectContaining({
           dia: 2,
@@ -183,8 +191,64 @@ describe("usePlanificacionDraft", () => {
           categoriasPrioritarias: [
             expect.objectContaining({ codigo: "cafe_especialidad" }),
           ],
+          ritmoVisita: "Activo",
+          presupuestoNivel: "Equilibrado",
         }),
       ])
     );
+  });
+
+  it("migra un borrador v3 copiando el ritmo y presupuesto globales a los días", () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        version: 3,
+        currentStepCounter: 3,
+        formData: {
+          duracion: 2,
+          fechaInicio: "2026-11-18",
+          fechaFin: "2026-11-19",
+          disponibilidadDiaria: "DiaCompleto",
+          ritmoVisita: "Activo",
+          presupuestoNivel: "Equilibrado",
+          tipoTransporte: null,
+          dias: [
+            {
+              fecha: "2026-11-18",
+              dia: 1,
+              barrio: "Palermo",
+              puntoInicio: "NodoUrbano",
+              hospedajeLugarGuid: null,
+              hospedajeBarrio: null,
+              modalidadViaje: "Solo",
+              categoriasPrioritarias: [],
+              ritmoVisita: null,
+              presupuestoNivel: null,
+            },
+            {
+              fecha: "2026-11-19",
+              dia: 2,
+              barrio: "Recoleta",
+              puntoInicio: "NodoUrbano",
+              hospedajeLugarGuid: null,
+              hospedajeBarrio: null,
+              modalidadViaje: "Solo",
+              categoriasPrioritarias: [],
+              ritmoVisita: null,
+              presupuestoNivel: null,
+            },
+          ],
+        },
+      })
+    );
+
+    const draft = leerPlanificacionDraft();
+
+    expect(draft?.version).toBe(4);
+    expect(draft?.currentStepCounter).toBe(2);
+    expect(draft?.formData.dias[0].ritmoVisita).toBe("Activo");
+    expect(draft?.formData.dias[0].presupuestoNivel).toBe("Equilibrado");
+    expect(draft?.formData.dias[1].ritmoVisita).toBe("Activo");
+    expect(draft?.formData.dias[1].presupuestoNivel).toBe("Equilibrado");
   });
 });

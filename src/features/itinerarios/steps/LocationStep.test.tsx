@@ -17,6 +17,8 @@ function dia(
     hospedajeBarrio: null,
     modalidadViaje: barrio ? "Solo" : null,
     categoriasPrioritarias: [],
+    ritmoVisita: null,
+    presupuestoNivel: null,
   };
 }
 

@@ -13,6 +13,8 @@ function dia(numero: number, fecha: string): DiaPlanificacion {
     hospedajeBarrio: null,
     modalidadViaje: null,
     categoriasPrioritarias: [],
+    ritmoVisita: null,
+    presupuestoNivel: null,
   };
 }
 

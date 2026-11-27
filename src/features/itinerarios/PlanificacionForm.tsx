@@ -249,9 +249,6 @@ function PlanificacionForm() {
             categorias={categorias}
             dias={formData.dias}
             onChangeDia={updateDia}
-            ritmoVisita={formData.ritmoVisita}
-            presupuestoNivel={formData.presupuestoNivel}
-            onChange={(changes) => updateFormData(changes)}
             errors={errors}
           />
         );

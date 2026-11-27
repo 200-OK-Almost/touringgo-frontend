@@ -87,9 +87,11 @@ export function ResumenPlanificacion({ formData }: ResumenPlanificacionProps) {
     )
   );
   const estilo = [
-    formData.ritmoVisita ? RITMO_LABEL[formData.ritmoVisita] : null,
-    formData.presupuestoNivel
-      ? PRESUPUESTO_LABEL[formData.presupuestoNivel]
+    formData.dias[0]?.ritmoVisita
+      ? RITMO_LABEL[formData.dias[0].ritmoVisita]
+      : null,
+    formData.dias[0]?.presupuestoNivel
+      ? PRESUPUESTO_LABEL[formData.dias[0].presupuestoNivel]
       : null,
   ]
     .filter(Boolean)

@@ -28,6 +28,8 @@ function dia(
     hospedajeBarrio: null,
     modalidadViaje: barrio ? "Solo" : null,
     categoriasPrioritarias: [],
+    ritmoVisita: null,
+    presupuestoNivel: null,
   };
 }
 
@@ -106,11 +108,30 @@ describe("diasPlanificacion", () => {
     expect(diaEstaCompleto(diaConHospedaje)).toBe(false);
   });
 
+  it("conserva el ritmo y presupuesto de las fechas que se mantienen", () => {
+    const previos = [
+      {
+        ...dia("2026-11-18", 1),
+        ritmoVisita: "Activo" as const,
+        presupuestoNivel: "Economico" as const,
+      },
+    ];
+
+    const dias = construirDias("2026-11-18", "2026-11-19", previos);
+
+    expect(dias[0].ritmoVisita).toBe("Activo");
+    expect(dias[0].presupuestoNivel).toBe("Economico");
+    expect(dias[1].ritmoVisita).toBeNull();
+    expect(dias[1].presupuestoNivel).toBeNull();
+  });
+
   it("detecta preferencias completas y faltantes por día", () => {
     const completo: DiaPlanificacion = {
       ...dia("2026-11-18", 1, "Palermo"),
       modalidadViaje: "Solo",
       categoriasPrioritarias: CATEGORIAS,
+      ritmoVisita: "Activo",
+      presupuestoNivel: "Equilibrado",
     };
     const incompleto = dia("2026-11-19", 2, "Recoleta");
 
@@ -119,5 +140,23 @@ describe("diasPlanificacion", () => {
     expect(
       diasConPreferenciasFaltantes([completo, incompleto])
     ).toEqual(["Día 2"]);
+  });
+
+  it("considera incompleto un día sin ritmo o presupuesto", () => {
+    const sinRitmo: DiaPlanificacion = {
+      ...dia("2026-11-18", 1, "Palermo"),
+      modalidadViaje: "Solo",
+      categoriasPrioritarias: CATEGORIAS,
+      presupuestoNivel: "Equilibrado",
+    };
+    const sinPresupuesto: DiaPlanificacion = {
+      ...dia("2026-11-19", 2, "Palermo"),
+      modalidadViaje: "Solo",
+      categoriasPrioritarias: CATEGORIAS,
+      ritmoVisita: "Activo",
+    };
+
+    expect(preferenciasDiaCompletas(sinRitmo)).toBe(false);
+    expect(preferenciasDiaCompletas(sinPresupuesto)).toBe(false);
   });
 });
