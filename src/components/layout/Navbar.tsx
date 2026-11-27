@@ -9,6 +9,7 @@ import "./Navbar.css";
 import MisViajesModal from "../../features/profile/components/MisViajesModal";
 import { NuevoViajeButton } from "../../features/itinerarios/components/NuevoViajeButton";
 import UnirseViajeModal from "../UnirseViajeModal";
+import GoogleLoginButton from "../GoogleLoginButton";
 
 export interface NavbarProps {
   showNuevoViaje?: boolean;
@@ -64,12 +65,7 @@ export default function Navbar({ showNuevoViaje = false }: NavbarProps) {
             </>
           ) : (
             <div className="nav-profile-container">
-              <button
-                className="login-btn"
-                onClick={() => window.location.assign("/api/usuarios/auth/google")}
-              >
-                Iniciar sesión con Google
-              </button>
+              <GoogleLoginButton />
             </div>
           )}
             
