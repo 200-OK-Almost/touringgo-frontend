@@ -1,4 +1,5 @@
-import type { CategoriaCodigo, PreferenciasCategoriaDTO } from "../types";
+import type { CategoriaCodigo } from "../../../api/types";
+import type { PreferenciasCategoriaDTO } from "../types";
 import CategoriaAfinidadSlider from "./CategoriaAfinidadSlider";
 
 interface InterestsTabProps {

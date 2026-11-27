@@ -49,7 +49,7 @@ function RestriccionesStep({
     <div className="planificacion-form-header">
       <h2>Restricciones y Accesibilidad</h2>
       <p className="planificacion-form-description text-muted">
-        Filtros automáticos para adaptar lugares y gastronomía a tus necesidades.
+        Selecciona las opciones acorde a tus necesidades de movilidad y accesibilidad.
       </p>
     </div>
     <div className="selectable-card-group grid-2">
