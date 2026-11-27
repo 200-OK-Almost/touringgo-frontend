@@ -1,5 +1,6 @@
-import type { BarrioCaba } from "../../../api/types";
+import type { BarrioCaba, CategoriaDto } from "../../../api/types";
 import { BARRIOS } from "../../../lib/filtros";
+import type { ItineraryFormData } from "../planificacionFormData";
 
 export interface TemaPlanificacion {
   barrio: BarrioCaba | null;
@@ -24,4 +25,26 @@ export function leerTemaPlanificacion(
   }
 
   return { barrio, categoriaCodigo };
+}
+
+export function aplicarTemaPlanificacion(
+  formData: ItineraryFormData,
+  tema: TemaPlanificacion,
+  categorias: CategoriaDto[]
+): ItineraryFormData {
+  const categoria = tema.categoriaCodigo
+    ? categorias.find((item) => item.codigo === tema.categoriaCodigo) ?? null
+    : null;
+
+  return {
+    ...formData,
+    dias: formData.dias.map((dia) => ({
+      ...dia,
+      barrio: dia.barrio ?? tema.barrio,
+      categoriasPrioritarias:
+        dia.categoriasPrioritarias.length > 0 || !categoria
+          ? dia.categoriasPrioritarias
+          : [categoria],
+    })),
+  };
 }

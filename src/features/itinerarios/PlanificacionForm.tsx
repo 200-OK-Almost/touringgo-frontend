@@ -23,6 +23,7 @@ import { construirDias } from "./lib/diasPlanificacion";
 import { construirViajeCreateDto } from "./lib/viajePayload";
 import { crearMensajeErrorEnvio } from "./lib/erroresEnvio";
 import {
+  aplicarTemaPlanificacion,
   leerTemaPlanificacion,
   type TemaPlanificacion,
 } from "./lib/temaPlanificacion";
@@ -143,24 +144,10 @@ function PlanificacionForm() {
       return;
     }
 
-    const categoria = temaInicial.categoriaCodigo
-      ? categorias.find((item) => item.codigo === temaInicial.categoriaCodigo) ?? null
-      : null;
-
     temaAplicadoRef.current = true;
 
     // eslint-disable-next-line react-hooks/set-state-in-effect -- precarga explícita desde un recorrido
-    setFormData((prev) => ({
-      ...prev,
-      dias: prev.dias.map((dia) => ({
-        ...dia,
-        barrio: dia.barrio ?? temaInicial.barrio,
-        categoriasPrioritarias:
-          dia.categoriasPrioritarias.length > 0 || !categoria
-            ? dia.categoriasPrioritarias
-            : [categoria],
-      })),
-    }));
+    setFormData((prev) => aplicarTemaPlanificacion(prev, temaInicial, categorias));
   }, [temaInicial, categoriasCargadas, categorias, formData.dias]);
 
   function scrollToFormTop() {
