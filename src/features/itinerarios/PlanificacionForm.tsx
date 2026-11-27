@@ -3,8 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import StepIndicator from "./StepIndicator";
 import DurationStep from "./steps/DurationStep";
 import LocationStep from "./steps/LocationStep";
-import TravelCompanionsAndInterestsStep from "./steps/TravelCompanionsAndInterestsStep";
-import TravelStyleStep from "./steps/TravelStyleStep";
+import InteresesYEstiloStep from "./steps/InteresesYEstiloStep";
 import PlanificacionFormNavigation from "./PlanificacionFormNavigation";
 import PlanificacionErrorSummary from "./components/PlanificacionErrorSummary";
 import ResumenPlanificacion from "./components/ResumenPlanificacion";
@@ -27,8 +26,7 @@ import { crearMensajeErrorEnvio } from "./lib/erroresEnvio";
 const PASOS = [
   { label: "Fechas y duración", shortLabel: "Fechas" },
   { label: "Barrio y punto de partida", shortLabel: "Barrio" },
-  { label: "Compañía e intereses", shortLabel: "Intereses" },
-  { label: "Estilo del viaje", shortLabel: "Estilo" },
+  { label: "Intereses y estilo", shortLabel: "Intereses y estilo" },
 ];
 
 type NavigationDirection = "forward" | "backward";
@@ -247,17 +245,10 @@ function PlanificacionForm() {
 
       case 2:
         return (
-          <TravelCompanionsAndInterestsStep
+          <InteresesYEstiloStep
             categorias={categorias}
             dias={formData.dias}
             onChangeDia={updateDia}
-            errors={errors}
-          />
-        );
-
-      case 3:
-        return (
-          <TravelStyleStep
             ritmoVisita={formData.ritmoVisita}
             presupuestoNivel={formData.presupuestoNivel}
             onChange={(changes) => updateFormData(changes)}
