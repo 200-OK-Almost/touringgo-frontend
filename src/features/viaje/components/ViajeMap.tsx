@@ -58,11 +58,20 @@ function ViajeMap({
     }, [itinerarioViewModel, paradaSeleccionadaId, paradaSeleccionadaOrigen]);
 
     if (!itinerarioViewModel) {
-      return (
-        <div className="viaje-map-placeholder">
-          <p>Este día todavía no tiene itinerario.</p>
-        </div>
-    )}
+        return (
+            <div className="viaje-map-placeholder">
+              <p>Este día todavía no tiene itinerario.</p>
+            </div>
+        );
+    }
+
+    if (itinerarioViewModel.paradas.length === 0) {
+        return (
+            <div className="viaje-map-placeholder">
+              <p>Este día todavía no tiene paradas.</p>
+            </div>
+        );
+    }
   
     const paradas = itinerarioViewModel.paradas
 

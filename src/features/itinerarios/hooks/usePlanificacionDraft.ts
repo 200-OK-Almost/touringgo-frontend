@@ -1,14 +1,20 @@
 import type { BarrioCaba, CategoriaDto } from "../../../api/types";
+import type { NivelPresupuesto } from "../../viaje/types";
 import {
   crearItineraryFormDataInicial,
   type ItineraryFormData,
 } from "../planificacionFormData";
-import type { ModalidadViaje, PuntoInicio } from "../types";
+import type {
+  ModalidadViaje,
+  PuntoInicio,
+  RitmoCaminata,
+} from "../types";
 import { construirDias } from "../lib/diasPlanificacion";
 
 const STORAGE_KEY = "touringgo:planificacion-draft:v1";
-const VERSION = 3;
-const VERSIONES_SOPORTADAS = new Set([1, 2, 3]);
+const VERSION = 4;
+const VERSIONES_SOPORTADAS = new Set([1, 2, 3, 4]);
+const MAX_PASO = 2;
 
 export interface PlanificacionDraft {
   version: number;
@@ -26,6 +32,8 @@ interface LegacyFormData {
   fechaFin?: string | null;
   modalidadViaje?: ModalidadViaje | null;
   categoriasPrioritarias?: CategoriaDto[];
+  ritmoVisita?: RitmoCaminata | null;
+  presupuestoNivel?: NivelPresupuesto | null;
   [key: string]: unknown;
 }
 
@@ -39,6 +47,8 @@ function normalizarFormData(
     hospedajeBarrio,
     modalidadViaje,
     categoriasPrioritarias,
+    ritmoVisita,
+    presupuestoNivel,
     ...resto
   } = raw as LegacyFormData;
 
@@ -64,6 +74,8 @@ function normalizarFormData(
   const categoriasGlobales = Array.isArray(categoriasPrioritarias)
     ? categoriasPrioritarias
     : [];
+  const ritmoGlobal = ritmoVisita ?? null;
+  const presupuestoGlobal = presupuestoNivel ?? null;
   const diasConPreferencias = dias.map((dia) => ({
     ...dia,
     modalidadViaje: dia.modalidadViaje ?? modalidadGlobal,
@@ -71,6 +83,8 @@ function normalizarFormData(
       dia.categoriasPrioritarias.length > 0
         ? dia.categoriasPrioritarias
         : categoriasGlobales,
+    ritmoVisita: dia.ritmoVisita ?? ritmoGlobal,
+    presupuestoNivel: dia.presupuestoNivel ?? presupuestoGlobal,
   }));
 
   return {
@@ -110,7 +124,9 @@ export function leerPlanificacionDraft(): PlanificacionDraft | null {
       version: VERSION,
       formData,
       currentStepCounter:
-        parsed.version === 1 ? 0 : parsed.currentStepCounter,
+        parsed.version === 1
+          ? 0
+          : Math.min(parsed.currentStepCounter, MAX_PASO),
       updatedAt:
         typeof parsed.updatedAt === "string"
           ? parsed.updatedAt
@@ -169,13 +185,13 @@ export function esBorradorConDatos(
         dia.hospedajeLugarGuid ||
         dia.hospedajeBarrio ||
         dia.modalidadViaje ||
-        dia.categoriasPrioritarias.length > 0
+        dia.categoriasPrioritarias.length > 0 ||
+        dia.ritmoVisita ||
+        dia.presupuestoNivel
     ) ||
       formData.fechaInicio ||
       formData.fechaFin ||
       formData.disponibilidadDiaria ||
-      formData.ritmoVisita ||
-      formData.presupuestoNivel ||
       formData.tipoTransporte
   );
 }

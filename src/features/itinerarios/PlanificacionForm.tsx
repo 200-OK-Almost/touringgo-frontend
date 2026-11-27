@@ -3,9 +3,10 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import StepIndicator from "./StepIndicator";
 import DurationStep from "./steps/DurationStep";
 import LocationStep from "./steps/LocationStep";
-import TravelCompanionsAndInterestsStep from "./steps/TravelCompanionsAndInterestsStep";
-import TravelStyleStep from "./steps/TravelStyleStep";
+import InteresesYEstiloStep from "./steps/InteresesYEstiloStep";
 import PlanificacionFormNavigation from "./PlanificacionFormNavigation";
+import PlanificacionErrorSummary from "./components/PlanificacionErrorSummary";
+import ResumenPlanificacion from "./components/ResumenPlanificacion";
 
 import "./PlanificacionForm.css"
 import type { CategoriaDto } from "../../api/types";
@@ -20,12 +21,12 @@ import {
 import { usePlanificacionDraft } from "./hooks/usePlanificacionDraft";
 import { construirDias } from "./lib/diasPlanificacion";
 import { construirViajeCreateDto } from "./lib/viajePayload";
+import { crearMensajeErrorEnvio } from "./lib/erroresEnvio";
 
 const PASOS = [
-  { label: "Duración y disponibilidad diaria" },
-  { label: "Barrio y punto de partida" },
-  { label: "Compañía e Intereses" },
-  { label: "Estilo" },
+  { label: "Fechas y duración", shortLabel: "Fechas" },
+  { label: "Barrio y punto de partida", shortLabel: "Barrio" },
+  { label: "Intereses y estilo", shortLabel: "Intereses y estilo" },
 ];
 
 type NavigationDirection = "forward" | "backward";
@@ -42,7 +43,11 @@ function PlanificacionForm() {
     return Math.min(Math.max(paso, 0), PASOS.length - 1);
   });
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const formRef = useRef<HTMLElement | null>(null);
+  const errorSummaryRef = useRef<HTMLDivElement | null>(null);
+  const submitErrorRef = useRef<HTMLDivElement | null>(null);
+  const isFirstRenderRef = useRef(true);
   const [direction, setDirection] = useState<NavigationDirection>("forward");
   const [categorias, setCategorias] = useState<CategoriaDto[]>([]);
   const [formData, setFormData] = useState<ItineraryFormData>(() =>
@@ -74,6 +79,33 @@ function PlanificacionForm() {
   useEffect(() => {
     saveDraft(formData, currentStepCounter);
   }, [formData, currentStepCounter, saveDraft]);
+
+  useEffect(() => {
+    if (Object.keys(errors).length === 0) {
+      return;
+    }
+
+    errorSummaryRef.current?.focus();
+  }, [errors]);
+
+  useEffect(() => {
+    if (isFirstRenderRef.current) {
+      isFirstRenderRef.current = false;
+      return;
+    }
+
+    document
+      .getElementById("planificacion-step-title")
+      ?.focus({ preventScroll: true });
+  }, [currentStepCounter]);
+
+  useEffect(() => {
+    if (!submitError) {
+      return;
+    }
+
+    submitErrorRef.current?.focus();
+  }, [submitError]);
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -122,8 +154,6 @@ function PlanificacionForm() {
   }
 
   function handleNext() {
-    scrollToFormTop();
-
     const validationErrors = validateStep(formData, currentStepCounter);
     setErrors(validationErrors);
 
@@ -131,6 +161,7 @@ function PlanificacionForm() {
       return;
     }
 
+    scrollToFormTop();
     setDirection("forward");
     setCurrentStepCounter((prev) => {
       if (prev >= PASOS.length - 1) return prev;
@@ -143,13 +174,20 @@ function PlanificacionForm() {
   }
 
   async function handleSubmit() {
+    if (submitLoading) {
+      return;
+    }
+
     setSubmitLoading(true);
+    setSubmitError(null);
 
     try {
       const viajeCreateDto = construirViajeCreateDto(formData);
       const viajeResponse = await createViaje(viajeCreateDto);
       clearDraft();
       navigate(`/viajes/${viajeResponse.id}`);
+    } catch (error) {
+      setSubmitError(crearMensajeErrorEnvio(error));
     } finally {
       setSubmitLoading(false);
     }
@@ -169,6 +207,18 @@ function PlanificacionForm() {
       if (prev <= 0) return prev;
       return prev - 1;
     });
+  }
+
+  function handleStepSelect(step: number) {
+    if (step < 0 || step >= currentStepCounter) {
+      return;
+    }
+
+    setErrors({});
+    setSubmitError(null);
+    scrollToFormTop();
+    setDirection("backward");
+    setCurrentStepCounter(step);
   }
 
   function renderCurrentStep() {
@@ -195,21 +245,10 @@ function PlanificacionForm() {
 
       case 2:
         return (
-          <TravelCompanionsAndInterestsStep
+          <InteresesYEstiloStep
             categorias={categorias}
             dias={formData.dias}
             onChangeDia={updateDia}
-            errors={errors}
-          />
-        );
-
-      case 3:
-        return (
-          <TravelStyleStep
-            ritmoVisita={formData.ritmoVisita}
-            tipoTransporte={formData.tipoTransporte}
-            presupuestoNivel={formData.presupuestoNivel}
-            onChange={(changes) => updateFormData(changes)}
             errors={errors}
           />
         );
@@ -221,11 +260,22 @@ function PlanificacionForm() {
 
   return (
     <main className="planificacion-form-main" ref={formRef}>
+      <header className="planificacion-form-heading">
+        <h1 className="planificacion-form-title">Planificá tu salida</h1>
+        <p className="planificacion-form-description text-muted">
+          Contanos tus preferencias y armamos un itinerario a tu medida.
+        </p>
+      </header>
+
       <StepIndicator
         currentStep={currentStepCounter}
         stepLabel={currentStep.label}
         totalSteps={PASOS.length}
+        steps={PASOS}
+        onStepSelect={handleStepSelect}
       />
+
+      <PlanificacionErrorSummary ref={errorSummaryRef} errors={errors} />
 
       <div
         key={currentStepCounter}
@@ -234,12 +284,36 @@ function PlanificacionForm() {
         {renderCurrentStep()}
       </div>
 
+      {submitError && (
+        <div
+          ref={submitErrorRef}
+          className="planificacion-submit-error"
+          role="alert"
+          tabIndex={-1}
+        >
+          <p>{submitError}</p>
+          <button
+            type="button"
+            className="planificacion-submit-error__retry"
+            onClick={handleSubmit}
+            disabled={submitLoading}
+          >
+            {submitLoading ? "Reintentando..." : "Reintentar"}
+          </button>
+        </div>
+      )}
+
+      <aside className="planificacion-form-resumen" aria-label="Resumen del viaje">
+        <ResumenPlanificacion formData={formData} />
+      </aside>
+
       <PlanificacionFormNavigation
         onBack={handleBack}
         onNext={handleNext}
         isFirstStep={currentStepCounter === 0}
         isLastStep={currentStepCounter === PASOS.length - 1}
         isSubmitLoading={submitLoading}
+        nextLabel={PASOS[currentStepCounter + 1]?.label}
       />
     </main>
   );

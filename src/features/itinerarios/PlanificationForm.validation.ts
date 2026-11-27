@@ -18,6 +18,8 @@ export type FormErrors = Partial<
   hospedajeLugarGuid?: string;
   modalidadViaje?: string;
   categoriasPrioritarias?: string;
+  ritmoVisita?: string;
+  presupuestoNivel?: string;
 };
 
 export function validateStep(formData: ItineraryFormData, step: number): FormErrors {
@@ -40,7 +42,7 @@ export function validateStep(formData: ItineraryFormData, step: number): FormErr
       }
 
       if (formData.disponibilidadDiaria == null) {
-        errors.disponibilidadDiaria = "Seleccioná una opción de disponiblidad";
+        errors.disponibilidadDiaria = "Seleccioná una opción de disponibilidad.";
       }
       break;
 
@@ -111,6 +113,14 @@ export function validateStep(formData: ItineraryFormData, step: number): FormErr
           errors.categoriasPrioritarias = "Seleccioná entre 2 y 4 categorías.";
         }
 
+        if (dia.ritmoVisita == null) {
+          errors.ritmoVisita = "Seleccioná el ritmo de la salida.";
+        }
+
+        if (dia.presupuestoNivel == null) {
+          errors.presupuestoNivel = "Seleccioná un nivel de presupuesto.";
+        }
+
         break;
       }
 
@@ -122,17 +132,6 @@ export function validateStep(formData: ItineraryFormData, step: number): FormErr
 
       break;
     }
-    
-    case 3:
-      if (formData.ritmoVisita == null) {
-        errors.ritmoVisita = "Seleccioná el ritmo de la salida.";
-      }
-      // if (formData.tipoTransporte == null) {
-      //   errors.tipoTransporte = "Seleccioná un medio de transporte.";
-      // }
-      if (formData.presupuestoNivel == null) {
-        errors.presupuestoNivel = "Seleccioná un nivel de presupuesto.";
-      }
   }
 
   return errors;

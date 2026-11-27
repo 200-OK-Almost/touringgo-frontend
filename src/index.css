@@ -37,6 +37,41 @@
 
   --border-radius: 6px;
 
+  /* Planificador: superficies y estados */
+  --surface-tint: #f5fbf8;
+  --surface-tint-strong: #e8f6f0;
+  --on-primary: #ffffff;
+  --primary-soft: rgba(15, 118, 110, 0.04);
+  --primary-soft-hover: rgba(15, 118, 110, 0.08);
+  --primary-range: rgba(16, 185, 129, 0.16);
+  --primary-glow: rgba(16, 185, 129, 0.12);
+  --primary-glow-strong: rgba(16, 185, 129, 0.14);
+  --primary-glow-soft: rgba(209, 250, 229, 0.9);
+  --primary-border-subtle: rgba(15, 118, 110, 0.12);
+  --primary-border-soft: rgba(15, 118, 110, 0.14);
+  --primary-border-strong: rgba(15, 118, 110, 0.28);
+  --primary-shadow: rgba(15, 118, 110, 0.35);
+  --primary-shadow-strong: rgba(15, 118, 110, 0.45);
+  --white-glow-soft: rgba(255, 255, 255, 0.85);
+  --white-glow: rgba(255, 255, 255, 0.9);
+  --white-glow-strong: rgba(255, 255, 255, 0.95);
+  --scrim-soft: rgba(255, 255, 255, 0.6);
+  --scrim-card: rgba(255, 255, 255, 0.58);
+  --scrim-chip: rgba(255, 255, 255, 0.62);
+  --scrim-dark: rgba(15, 23, 42, 0.45);
+  --surface-solid: rgba(255, 255, 255, 0.94);
+
+  /* Superficies glass del planificador */
+  --glass-surface: rgba(255, 255, 255, 0.62);
+  --glass-surface-strong: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-blur: blur(16px) saturate(130%);
+  --glass-gradient: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(245, 251, 248, 0.72) 100%
+  );
+
   /* Typography */
   --font-sans: "Plus Jakarta Sans", system-ui, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, Consolas, monospace;

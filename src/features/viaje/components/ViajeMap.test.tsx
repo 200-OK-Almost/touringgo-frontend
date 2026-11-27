@@ -86,4 +86,20 @@ describe("ViajeMap", () => {
       screen.queryByText("Tramos aproximados en línea recta")
     ).not.toBeInTheDocument();
   });
+
+  it("muestra un mensaje explícito cuando el día no tiene paradas", () => {
+    render(
+      <ViajeMap
+        itinerarioViewModel={crearItinerario(0)}
+        panelWidth={480}
+      />
+    );
+
+    expect(
+      screen.getByText("Este día todavía no tiene paradas.")
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText("Tramos aproximados en línea recta")
+    ).not.toBeInTheDocument();
+  });
 });

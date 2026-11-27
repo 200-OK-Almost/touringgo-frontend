@@ -27,6 +27,8 @@ function dia(
     hospedajeBarrio: null,
     modalidadViaje: barrio ? "Solo" : null,
     categoriasPrioritarias: [],
+    ritmoVisita: null,
+    presupuestoNivel: null,
     ...sobrescribir,
   };
 }
@@ -91,13 +93,15 @@ describe("validateStep — paso Barrio y punto de partida", () => {
   });
 });
 
-describe("validateStep — paso Modalidad y categorías", () => {
+describe("validateStep — paso Intereses y estilo", () => {
   it("valida un solo día completo", () => {
     const errors = validateStep(
       formDataConDias([
         dia("2026-11-18", 1, "Palermo", {
           modalidadViaje: "Solo",
           categoriasPrioritarias: CATEGORIAS,
+          ritmoVisita: "Activo",
+          presupuestoNivel: "Equilibrado",
         }),
       ]),
       2
@@ -118,6 +122,10 @@ describe("validateStep — paso Modalidad y categorías", () => {
     expect(errors.categoriasPrioritarias).toBe(
       "Seleccioná entre 2 y 4 categorías."
     );
+    expect(errors.ritmoVisita).toBe("Seleccioná el ritmo de la salida.");
+    expect(errors.presupuestoNivel).toBe(
+      "Seleccioná un nivel de presupuesto."
+    );
   });
 
   it("indica qué días faltan completar con varios días", () => {
@@ -126,9 +134,32 @@ describe("validateStep — paso Modalidad y categorías", () => {
         dia("2026-11-18", 1, "Palermo", {
           modalidadViaje: "Solo",
           categoriasPrioritarias: CATEGORIAS,
+          ritmoVisita: "Activo",
+          presupuestoNivel: "Equilibrado",
         }),
         dia("2026-11-19", 2, "Recoleta", {
           modalidadViaje: "Familia",
+        }),
+      ]),
+      2
+    );
+
+    expect(errors.dias).toBe("Faltan completar: Día 2.");
+  });
+
+  it("detecta días incompletos por falta de ritmo o presupuesto", () => {
+    const errors = validateStep(
+      formDataConDias([
+        dia("2026-11-18", 1, "Palermo", {
+          modalidadViaje: "Solo",
+          categoriasPrioritarias: CATEGORIAS,
+          ritmoVisita: "Activo",
+          presupuestoNivel: "Equilibrado",
+        }),
+        dia("2026-11-19", 2, "Recoleta", {
+          modalidadViaje: "Familia",
+          categoriasPrioritarias: CATEGORIAS,
+          ritmoVisita: "Activo",
         }),
       ]),
       2
@@ -143,10 +174,14 @@ describe("validateStep — paso Modalidad y categorías", () => {
         dia("2026-11-18", 1, "Palermo", {
           modalidadViaje: "Solo",
           categoriasPrioritarias: CATEGORIAS,
+          ritmoVisita: "Activo",
+          presupuestoNivel: "Equilibrado",
         }),
         dia("2026-11-19", 2, "Recoleta", {
           modalidadViaje: "Familia",
           categoriasPrioritarias: CATEGORIAS,
+          ritmoVisita: "Tranquilo",
+          presupuestoNivel: "Economico",
         }),
       ]),
       2

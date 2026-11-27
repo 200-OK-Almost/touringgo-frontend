@@ -13,6 +13,7 @@ export interface SelectablePlaceCardProps {
   showImage?: boolean;
   disabled?: boolean;
   className?: string;
+  ctaLabel?: string;
 }
 
 export function PinIcon({className}: {className?: string}) {
@@ -58,6 +59,7 @@ export function SelectablePlaceCard({
   showImage = false,
   disabled = false,
   className = "",
+  ctaLabel,
 }: SelectablePlaceCardProps) {
   const puntuacion = formatearPuntuacion(lugar.puntuacion);
   const ubicacion = lugar.subzona
@@ -137,7 +139,7 @@ export function SelectablePlaceCard({
         </div>
 
         <div className="selectable-place-card__accessibility-wrapper">
-          {lugar.accesibleMovilidadReducida ? (
+          {lugar.accesibleMovilidadReducida && (
             <span
               className="selectable-place-card__accessibility selectable-place-card__accessibility--accessible"
               title="Accesible para personas con movilidad reducida"
@@ -145,17 +147,33 @@ export function SelectablePlaceCard({
               <FaWheelchair aria-hidden="true" />
               <span>Accesible (movilidad reducida)</span>
             </span>
-          ) : (
-            <span
-              className="selectable-place-card__accessibility selectable-place-card__accessibility--not-accessible"
-              title="No adaptado para personas con movilidad reducida"
-            >
-              <FaWheelchair aria-hidden="true" />
-              <span>No adaptado</span>
-            </span>
           )}
         </div>
       </div>
+
+      {ctaLabel && (
+        <span
+          className={`selectable-place-card__cta ${
+            selected ? "selectable-place-card__cta--selected" : ""
+          }`}
+        >
+          {selected && (
+            <svg
+              className="selectable-place-card__cta-check"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          )}
+          {ctaLabel}
+        </span>
+      )}
     </button>
   );
 }

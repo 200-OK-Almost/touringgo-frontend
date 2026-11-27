@@ -1,6 +1,8 @@
 .form-navigation {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .form-navigation-button {
@@ -9,6 +11,7 @@
   justify-content: center;
   gap: .5rem;
 
+  min-height: 44px;
   padding: .5rem 2rem;
   border-radius: var(--border-radius);
 }
@@ -25,6 +28,14 @@
 .form-back-button:active {
   background-color: #575e64;
   color: white;
+}
+.form-back-button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+.form-back-button:disabled:hover {
+  background-color: transparent;
+  color: #6c757d;
 }
 
 /* next button */
@@ -58,5 +69,59 @@
   opacity: .5;
 }
 .form-confirm-button-loading {
-  cursor:progress;
+  cursor: progress;
+}
+
+.form-navigation-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: form-navigation-spin 0.7s linear infinite;
+}
+
+@keyframes form-navigation-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-navigation-spinner {
+    animation-duration: 1.4s;
+  }
+}
+
+@media (max-width: 520px) {
+  .form-navigation {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    flex-direction: column-reverse;
+    margin-inline: -1rem;
+    padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--border);
+    background-color: var(--bg);
+    box-shadow: 0 -10px 30px -22px rgba(16, 24, 40, 0.35);
+  }
+
+  .form-navigation-button {
+    width: 100%;
+  }
+
+  .form-confirm-button {
+    min-width: 0;
+  }
+
+  .planificacion-form-main :is(
+    button,
+    input,
+    textarea,
+    select,
+    a,
+    [tabindex]
+  ) {
+    scroll-margin-bottom: 96px;
+  }
 }

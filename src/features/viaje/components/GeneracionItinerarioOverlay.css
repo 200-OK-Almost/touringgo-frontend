@@ -1,0 +1,207 @@
+.generacion-overlay {
+  position: fixed;
+  top: 55px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 50% 0%,
+      var(--primary-glow, rgba(16, 185, 129, 0.12)),
+      transparent 70%
+    ),
+    var(--scrim-dark, rgba(15, 23, 42, 0.45));
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.generacion-overlay__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  width: min(100%, 460px);
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  border: 1px solid var(--white-glow-soft, rgba(255, 255, 255, 0.85));
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: 0 30px 80px -40px rgba(15, 23, 42, 0.6);
+  text-align: center;
+}
+
+.generacion-overlay__icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: var(--primary-soft, rgba(15, 118, 110, 0.04));
+  color: var(--primary);
+  font-size: 1.6rem;
+}
+
+.generacion-overlay__pulse {
+  position: absolute;
+  inset: -6px;
+  border: 2px solid var(--primary);
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: generacion-pulse 1.8s ease-out infinite;
+}
+
+.generacion-overlay__title {
+  font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text-heading);
+}
+
+.generacion-overlay__subtitle {
+  max-width: 36ch;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.generacion-overlay__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.generacion-overlay__step {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.generacion-overlay__step--active {
+  color: var(--text-heading);
+  font-weight: 600;
+}
+
+.generacion-overlay__step--active .generacion-overlay__marker {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.generacion-overlay__step--done .generacion-overlay__marker {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.generacion-overlay__marker {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.generacion-overlay__step-label {
+  min-width: 0;
+}
+
+.generacion-overlay__spinner {
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 2px solid var(--primary);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: generacion-spin 0.8s linear infinite;
+}
+
+.generacion-overlay__bar {
+  width: 100%;
+  height: 0.35rem;
+  margin-top: 0.25rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.generacion-overlay__bar-fill {
+  display: block;
+  width: 40%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--primary);
+  animation: generacion-bar 1.4s ease-in-out infinite;
+}
+
+.generacion-overlay__hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+@keyframes generacion-pulse {
+  from {
+    transform: scale(0.85);
+    opacity: 0.45;
+  }
+  to {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+}
+
+@keyframes generacion-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes generacion-bar {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+@media (max-width: 520px) {
+  .generacion-overlay {
+    padding: 1rem;
+  }
+
+  .generacion-overlay__card {
+    width: 100%;
+    border-radius: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .generacion-overlay__pulse,
+  .generacion-overlay__spinner,
+  .generacion-overlay__bar-fill {
+    animation: none;
+  }
+
+  .generacion-overlay__bar-fill {
+    width: 100%;
+    opacity: 0.6;
+  }
+}
