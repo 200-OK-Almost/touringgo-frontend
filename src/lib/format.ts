@@ -42,7 +42,7 @@ const CATEGORIA_CODIGOS: Record<string, string> = {
   parques_aire_libre: "Parques y aire libre",
   librerias_diseno: "Librerías y diseño",
   bares_vermu: "Bares y vermú",
-  gastronomia_clasica: "Gastronomía clásica / Bodegón",
+  gastronomia_clasica: "Gastronomía clásica",
   cocteleria_autor: "Coctelería de autor",
   alojamiento: "Alojamiento / Hotel",
   hotel: "Hotel / Alojamiento",

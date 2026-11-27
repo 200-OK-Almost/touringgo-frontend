@@ -7,6 +7,7 @@ import { StatusBar } from "../../../components/StatusBar";
 import { ProfileInfoTab } from "./ProfileInfoTab";
 import { PreferencesTab } from "./PreferencesTab";
 import { RestrictionsTab } from "./RestrictionsTab";
+import { InterestsTab } from "./InterestsTab";
 
 import "./ProfileModal.css";
 import { useProfileManager } from "../hooks/useProfileManager";
@@ -16,7 +17,7 @@ export interface ProfileModalProps {
   onClose: () => void;
 }
 
-type TabType = "perfil" | "preferencias" | "restricciones";
+type TabType = "perfil" | "preferencias" | "restricciones" | "intereses";
 
 const TAB_ITEMS: TabItem<TabType>[] = [
   {
@@ -46,7 +47,16 @@ const TAB_ITEMS: TabItem<TabType>[] = [
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
       </svg>
     )
-  }
+  },
+  {
+    id: "intereses",
+    label: "Intereses",
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path d="M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0 0 18 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" strokeWidth="32px"/>
+      </svg>
+    )
+  },
 ];
 
 export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
@@ -61,7 +71,9 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     updateRitmo,
     toggleTransporte,
     toggleDieta,
-    toggleAccesibilidad
+    toggleAccesibilidad,
+    updateCategoriaAfinidadLocal,
+    updateCategoriaAfinidadEnd,
   } = useProfileManager(isOpen);
 
   // Reiniciar la pestaña a "perfil" cuando se cierra el modal
@@ -98,7 +110,9 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
             </div>
           ) : (
             <>
-              {activeTab === "perfil" && <ProfileInfoTab perfil={perfil} />}
+              {activeTab === "perfil" && (
+                <ProfileInfoTab perfil={perfil} />
+              )}
               {activeTab === "preferencias" && (
                 <PreferencesTab 
                   preferencias={perfil.preferencias} 
@@ -111,6 +125,13 @@ export function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                   restricciones={perfil.restricciones} 
                   onDietaToggle={toggleDieta} 
                   onAccesibilidadToggle={toggleAccesibilidad} 
+                />
+              )}
+              {activeTab === "intereses" && (
+                <InterestsTab 
+                  preferenciasCategorias={perfil.preferencias.categorias}
+                  onAfinidadChange={updateCategoriaAfinidadLocal}
+                  onAfinidadChangeEnd={updateCategoriaAfinidadEnd}
                 />
               )}
             </>
