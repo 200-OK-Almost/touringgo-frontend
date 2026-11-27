@@ -19,11 +19,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (response.ok) {
         const data = (await response.json()) as UsuarioDTO;
         setUser(data);
+        return data;
       } else {
         setUser(null);
+        return null;
       }
     } catch {
       setUser(null);
+      return null;
     } finally {
       setIsLoading(false);
     }

@@ -6,7 +6,7 @@ export interface AuthContextValue {
   isAuthenticated: boolean;
   isLoading: boolean;
   logout: () => Promise<void>;
-  checkAuth: () => Promise<void>;
+  checkAuth: () => Promise<UsuarioDTO | null>;
 }
 
 export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
