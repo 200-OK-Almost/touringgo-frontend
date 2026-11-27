@@ -235,6 +235,110 @@
   cursor: pointer;
 }
 
+/* Confirmación del lugar pendiente (modo propio) */
+.hospedaje-selector__confirmar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--primary, #0f766e);
+  border-radius: 10px;
+  background: var(--primary-soft, rgba(15, 118, 110, 0.04));
+}
+
+.hospedaje-selector__confirmar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.hospedaje-selector__confirmar-nombre {
+  font-weight: 700;
+  color: var(--text-heading, #17141c);
+}
+
+.hospedaje-selector__confirmar-detalle {
+  font-size: 0.8125rem;
+  color: var(--text-muted, #6b6375);
+}
+
+.hospedaje-selector__confirmar-acciones {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.hospedaje-selector__confirmar-btn,
+.hospedaje-selector__descartar-btn,
+.hospedaje-elegido__cambiar {
+  min-height: 44px;
+  padding: 0.5rem 1.1rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.hospedaje-selector__confirmar-btn {
+  background: var(--primary, #0f766e);
+  color: var(--on-primary, #ffffff);
+  border: 1px solid var(--primary, #0f766e);
+}
+
+.hospedaje-selector__confirmar-btn:hover {
+  background: var(--primary-hover, #0b5f58);
+}
+
+.hospedaje-selector__descartar-btn,
+.hospedaje-elegido__cambiar {
+  background: transparent;
+  color: var(--primary, #0f766e);
+  border: 1px solid var(--primary, #0f766e);
+}
+
+.hospedaje-selector__descartar-btn:hover,
+.hospedaje-elegido__cambiar:hover {
+  background-color: rgba(15, 118, 110, 0.06);
+}
+
+/* Alojamiento confirmado (modo propio) */
+.hospedaje-elegido {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--primary, #0f766e);
+  border-radius: 12px;
+  background: var(--primary-soft, rgba(15, 118, 110, 0.04));
+}
+
+.hospedaje-elegido__label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--primary, #0f766e);
+}
+
+.hospedaje-elegido__nombre {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-heading, #17141c);
+}
+
+.hospedaje-elegido__detalle {
+  font-size: 0.875rem;
+  color: var(--text-muted, #6b6375);
+}
+
+.hospedaje-elegido__cambiar {
+  align-self: flex-start;
+  margin-top: 0.35rem;
+}
+
 @media (max-width: 640px) {
   .hospedaje-selector {
     padding: 1rem;
