@@ -37,13 +37,29 @@ function resultado(items: LugarResumenDto[]): ResultadoPaginadoDto<LugarResumenD
 }
 
 describe("HospedajeSelector — modo Ya tengo lugar", () => {
+  it("pide elegir un barrio antes de mostrar alojamientos, igual que recomendados", () => {
+    render(
+      <HospedajeSelector
+        puntoInicio="HospedajePropio"
+        barrio={null}
+        selectedLugarId={null}
+        onSelectLugar={vi.fn()}
+      />
+    );
+
+    expect(
+      screen.getByText("Seleccioná un barrio para ver alojamientos")
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("searchbox")).not.toBeInTheDocument();
+  });
+
   it("autocompleta la búsqueda con debounce mientras se tipea", async () => {
     vi.mocked(getLugares).mockResolvedValue(resultado([]));
 
     render(
       <HospedajeSelector
         puntoInicio="HospedajePropio"
-        barrio={null}
+        barrio="Palermo"
         selectedLugarId={null}
         onSelectLugar={vi.fn()}
       />
@@ -64,6 +80,7 @@ describe("HospedajeSelector — modo Ya tengo lugar", () => {
           expect.objectContaining({
             busqueda: "Hotel Palermo",
             tipoLugar: "Alojamiento",
+            barrio: "Palermo",
           })
         ),
       { timeout: 1500 }
@@ -79,7 +96,7 @@ describe("HospedajeSelector — modo Ya tengo lugar", () => {
     render(
       <HospedajeSelector
         puntoInicio="HospedajePropio"
-        barrio={null}
+        barrio="Palermo"
         selectedLugarId={null}
         onSelectLugar={onSelectLugar}
       />
@@ -103,7 +120,7 @@ describe("HospedajeSelector — modo Ya tengo lugar", () => {
     render(
       <HospedajeSelector
         puntoInicio="HospedajePropio"
-        barrio={null}
+        barrio="Palermo"
         selectedLugarId="h1"
         onSelectLugar={vi.fn()}
       />

@@ -28,9 +28,9 @@ export function HospedajeSelector({
 }: HospedajeSelectorProps) {
   const esPropio = puntoInicio === "HospedajePropio";
 
-  // Barrio activo para el filtro de la sección
+  // Barrio activo para el filtro de la sección (siempre el barrio del día)
   const [selectedBarrio, setSelectedBarrio] = useState<BarrioCaba | null>(() => {
-    return puntoInicio === "HospedajeSugerido" ? barrio : null;
+    return barrio;
   });
 
   // Estado del input de búsqueda y búsqueda aplicada
@@ -49,19 +49,13 @@ export function HospedajeSelector({
   const prevPuntoInicioRef = useRef(puntoInicio);
   const prevbarrioRef = useRef(barrio);
 
-  // Sincronización cuando cambia el tipo de puntoInicio o el barrio seleccionado arriba
+  // Sincroniza el barrio del filtro cuando cambia el barrio del día o el modo
   useEffect(() => {
     const puntoInicioChanged = prevPuntoInicioRef.current !== puntoInicio;
     const barrioChanged = prevbarrioRef.current !== barrio;
 
-    if (puntoInicio === "HospedajeSugerido") {
-      // Si cambió a recomendar hospedaje o cambió el barrio de inicio, sincronizar
-      if (puntoInicioChanged || barrioChanged) {
-        setSelectedBarrio(barrio);
-      }
-    } else if (puntoInicio === "HospedajePropio" && puntoInicioChanged) {
-      // Si cambió a "Ya tengo lugar", mostrar sin filtro de barrio pre-aplicado
-      setSelectedBarrio(null);
+    if (puntoInicioChanged || barrioChanged) {
+      setSelectedBarrio(barrio);
     }
 
     prevPuntoInicioRef.current = puntoInicio;
@@ -73,7 +67,7 @@ export function HospedajeSelector({
   // Consulta a la API con paginación incremental (Ver más)
   const fetchLugares = useCallback(
     async (paginaDestino: number, acumular: boolean) => {
-      if (puntoInicio === "HospedajeSugerido" && !selectedBarrio) {
+      if (!selectedBarrio) {
         setLugares([]);
         setTotal(0);
         setPagina(1);
@@ -115,7 +109,7 @@ export function HospedajeSelector({
         }
       }
     },
-    [puntoInicio, selectedBarrio, appliedSearch]
+    [selectedBarrio, appliedSearch]
   );
 
   useEffect(() => {
@@ -150,16 +144,16 @@ export function HospedajeSelector({
     setAppliedSearch("");
   }
 
-  // Si es recomendación y aún no seleccionó barrio arriba, pedir que seleccione uno
-  if (puntoInicio === "HospedajeSugerido" && !barrio) {
+  // Sin barrio del día no se pueden buscar alojamientos (misma lógica en ambos modos)
+  if (!barrio) {
     return (
       <section className="hospedaje-selector" aria-label="Búsqueda de hospedaje">
         <div className="hospedaje-selector__aviso">
           <IoInformationCircleOutline className="hospedaje-selector__aviso-icon" size={24} />
           <div className="hospedaje-selector__aviso-text">
-            <h4>Seleccioná un barrio para ver recomendaciones</h4>
+            <h4>Seleccioná un barrio para ver alojamientos</h4>
             <p>
-              Por favor, elegí primero un barrio en <strong>"¿Qué barrio querés recorrer?"</strong> para que podamos mostrarte hoteles cercanos recomendados.
+              Por favor, elegí primero un barrio en <strong>"¿Qué barrio querés recorrer?"</strong> para que podamos mostrarte los alojamientos disponibles.
             </p>
           </div>
         </div>
@@ -234,16 +228,8 @@ export function HospedajeSelector({
           options={BARRIOS}
           value={selectedBarrio}
           onChange={(b) => setSelectedBarrio(b)}
-          isOptionDisabled={
-            puntoInicio === "HospedajeSugerido" && barrio
-              ? (val) => val !== barrio
-              : undefined
-          }
-          disabledTooltip={
-            puntoInicio === "HospedajeSugerido"
-              ? `Solo se muestran hospedajes del barrio seleccionado${barrio ? ` (${barrioLabel(barrio)})` : ""}`
-              : undefined
-          }
+          isOptionDisabled={(val) => val !== barrio}
+          disabledTooltip={`Solo se muestran alojamientos del barrio seleccionado (${barrioLabel(barrio)})`}
         />
       </div>
 
