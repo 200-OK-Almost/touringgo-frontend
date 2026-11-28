@@ -36,27 +36,118 @@ export function seleccionarPortada(lugares: LugarResumenDto[]): string | null {
   return lugares.find((lugar) => lugar.fotoPortadaUrl)?.fotoPortadaUrl ?? null;
 }
 
-async function cargarTema(tema: TemaItinerario): Promise<ItinerarioDestacado | null> {
-  const resultado = await getLugares({
-    barrio: tema.barrio,
-    subzona: tema.subzona,
-    categoriaCodigo: tema.categoriaCodigo,
-    orden: tema.orden,
-    resenasMinimas: tema.resenasMinimas,
-    puntuacionMinima: tema.puntuacionMinima,
-    pagina: 1,
-    tamano: LUGARES_POR_RECORRIDO,
-  });
+interface SlotResuelto {
+  categoriaCodigo: TemaItinerario["categoriaCodigo"];
+  orden: TemaItinerario["orden"];
+  resenasMinimas: number;
+  puntuacionMinima: number;
+}
 
-  if (resultado.items.length === 0) {
+function resolverSlots(tema: TemaItinerario): SlotResuelto[] {
+  if (!tema.slots || tema.slots.length === 0) {
+    return [
+      {
+        categoriaCodigo: tema.categoriaCodigo,
+        orden: tema.orden,
+        resenasMinimas: tema.resenasMinimas,
+        puntuacionMinima: tema.puntuacionMinima,
+      },
+    ];
+  }
+
+  return tema.slots.map((slot) => ({
+    categoriaCodigo: slot.categoriaCodigo ?? tema.categoriaCodigo,
+    orden: slot.orden ?? tema.orden,
+    resenasMinimas: slot.resenasMinimas ?? tema.resenasMinimas,
+    puntuacionMinima: slot.puntuacionMinima ?? tema.puntuacionMinima,
+  }));
+}
+
+function claveFiltro(tema: TemaItinerario, slot: SlotResuelto): string {
+  return JSON.stringify({
+    barrio: tema.barrio,
+    subzona: tema.subzona ?? null,
+    categoriaCodigo: slot.categoriaCodigo ?? null,
+    orden: slot.orden,
+    resenasMinimas: slot.resenasMinimas,
+    puntuacionMinima: slot.puntuacionMinima,
+  });
+}
+
+async function cargarTema(tema: TemaItinerario): Promise<ItinerarioDestacado | null> {
+  const slots = resolverSlots(tema);
+  const cache = new Map<string, Promise<LugarResumenDto[]>>();
+
+  const buscar = (slot: SlotResuelto): Promise<LugarResumenDto[]> => {
+    const clave = claveFiltro(tema, slot);
+    const cacheado = cache.get(clave);
+
+    if (cacheado) {
+      return cacheado;
+    }
+
+    const solicitud = getLugares({
+      barrio: tema.barrio,
+      subzona: tema.subzona,
+      categoriaCodigo: slot.categoriaCodigo,
+      orden: slot.orden,
+      resenasMinimas: slot.resenasMinimas,
+      puntuacionMinima: slot.puntuacionMinima,
+      pagina: 1,
+      tamano: LUGARES_POR_RECORRIDO,
+    }).then((resultado) => resultado.items);
+
+    cache.set(clave, solicitud);
+    return solicitud;
+  };
+
+  const usados = new Set<string>();
+  const lugares: LugarResumenDto[] = [];
+
+  if (slots.length === 1) {
+    const items = await buscar(slots[0]);
+    lugares.push(...items.slice(0, LUGARES_POR_RECORRIDO));
+  } else {
+    for (const slot of slots) {
+      const items = await buscar(slot);
+      const elegido = items.find((item) => !usados.has(item.id));
+
+      if (elegido) {
+        usados.add(elegido.id);
+        lugares.push(elegido);
+      }
+    }
+
+    if (lugares.length < LUGARES_POR_RECORRIDO) {
+      const fallback = await buscar({
+        categoriaCodigo: tema.categoriaCodigo,
+        orden: tema.orden,
+        resenasMinimas: tema.resenasMinimas,
+        puntuacionMinima: tema.puntuacionMinima,
+      });
+
+      for (const item of fallback) {
+        if (lugares.length >= LUGARES_POR_RECORRIDO) {
+          break;
+        }
+
+        if (!usados.has(item.id)) {
+          usados.add(item.id);
+          lugares.push(item);
+        }
+      }
+    }
+  }
+
+  if (lugares.length === 0) {
     return null;
   }
 
   return {
     tema,
-    lugares: resultado.items,
-    promedioPuntuacion: calcularPromedioPuntuacion(resultado.items),
-    portadaUrl: seleccionarPortada(resultado.items),
+    lugares,
+    promedioPuntuacion: calcularPromedioPuntuacion(lugares),
+    portadaUrl: seleccionarPortada(lugares),
   };
 }
 

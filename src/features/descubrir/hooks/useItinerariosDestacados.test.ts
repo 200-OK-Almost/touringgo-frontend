@@ -45,6 +45,112 @@ function resultado(
   return { items, total: items.length, pagina: 1, tamano: 4 };
 }
 
+const PALERMO_CAFE = crearLugar({
+  id: "palermo-cafe",
+  nombre: "QueBiaba!",
+  puntuacion: 5,
+  fotoPortadaUrl: "https://foto/palermo-cafe.jpg",
+});
+const PALERMO_MAIN_1 = crearLugar({
+  id: "palermo-main-1",
+  nombre: "La Cabrera",
+  puntuacion: 4.4,
+});
+const PALERMO_MAIN_2 = crearLugar({
+  id: "palermo-main-2",
+  nombre: "Temple Craft Soho",
+  puntuacion: 4.6,
+});
+const PALERMO_MAIN_3 = crearLugar({
+  id: "palermo-main-3",
+  nombre: "Blest",
+  puntuacion: 4.5,
+});
+const PALERMO_BAR = crearLugar({
+  id: "palermo-bar",
+  nombre: "Casa Temple",
+  puntuacion: 4.4,
+});
+const SAN_CAFE = crearLugar({
+  id: "san-cafe",
+  nombre: "La Casa del Dulce de Leche",
+  puntuacion: 4.9,
+});
+const SAN_MAIN_1 = crearLugar({
+  id: "san-main-1",
+  nombre: "PASTA BAR",
+  puntuacion: 5,
+});
+const SAN_MAIN_2 = crearLugar({
+  id: "san-main-2",
+  nombre: "Lo de Flora",
+  puntuacion: 4.9,
+});
+const SAN_MAIN_3 = crearLugar({
+  id: "san-main-3",
+  nombre: "El Tata",
+  puntuacion: 4.9,
+});
+const SAN_BAR = crearLugar({
+  id: "san-bar",
+  nombre: "Nápoles",
+  puntuacion: 4.5,
+});
+const RECOLETA_1 = crearLugar({
+  id: "recoleta-1",
+  nombre: "Cassia House",
+  puntuacion: 5,
+  fotoPortadaUrl: "https://foto/recoleta.jpg",
+});
+const RECOLETA_2 = crearLugar({
+  id: "recoleta-2",
+  nombre: "DEYÁ",
+  puntuacion: 4.6,
+});
+const PUERTO_1 = crearLugar({
+  id: "puerto-1",
+  nombre: "Reserva Ecológica",
+  puntuacion: 4.5,
+});
+
+function mockLugares() {
+  getLugaresMock.mockImplementation(async (filtro = {}) => {
+    switch (filtro.barrio) {
+      case "Recoleta":
+        return resultado([RECOLETA_1, RECOLETA_2]);
+
+      case "PuertoMadero":
+        return resultado([PUERTO_1]);
+
+      case "Palermo":
+        if (filtro.categoriaCodigo === "cafe_especialidad") {
+          return resultado([PALERMO_CAFE]);
+        }
+        if (filtro.categoriaCodigo === "bares_vermu") {
+          return resultado([PALERMO_MAIN_1, PALERMO_BAR]);
+        }
+        return resultado([
+          PALERMO_MAIN_1,
+          PALERMO_BAR,
+          PALERMO_MAIN_2,
+          PALERMO_MAIN_3,
+        ]);
+
+      case "SanTelmo":
+        if (filtro.categoriaCodigo === "cafe_especialidad") {
+          return resultado([SAN_CAFE]);
+        }
+        if (filtro.categoriaCodigo === "bares_vermu") {
+          return resultado([SAN_BAR]);
+        }
+        return resultado([SAN_MAIN_1, SAN_MAIN_2, SAN_MAIN_3]);
+
+      default:
+        return resultado([]);
+    }
+  });
+}
+
 describe("calcularPromedioPuntuacion", () => {
   it("ignora los lugares sin puntuación", () => {
     const lugares = [
@@ -78,28 +184,8 @@ describe("useItinerariosDestacados", () => {
     getLugaresMock.mockReset();
   });
 
-  it("consulta los cuatro recorridos y calcula promedio y portada", async () => {
-    getLugaresMock.mockImplementation(async (filtro = {}) => {
-      if (filtro.barrio === "Recoleta") {
-        return resultado([
-          crearLugar({
-            id: "recoleta-1",
-            nombre: "Cassia House",
-            puntuacion: 5,
-            fotoPortadaUrl: "https://foto/recoleta.jpg",
-          }),
-          crearLugar({
-            id: "recoleta-2",
-            nombre: "DEYÁ",
-            puntuacion: 4.6,
-          }),
-        ]);
-      }
-
-      return resultado([
-        crearLugar({ id: `${filtro.barrio}-1`, nombre: "Otro lugar", puntuacion: 4.5 }),
-      ]);
-    });
+  it("compone Palermo Soho y San Telmo con café primero y bar tercero", async () => {
+    mockLugares();
 
     const { result } = renderHook(() => useItinerariosDestacados());
 
@@ -108,32 +194,68 @@ describe("useItinerariosDestacados", () => {
     expect(result.current.itinerarios).toHaveLength(4);
     expect(result.current.error).toBeNull();
 
+    const palermo = result.current.itinerarios.find(
+      (itinerario) => itinerario.tema.id === "palermo-soho-tendencia"
+    );
+    expect(palermo?.lugares.map((lugar) => lugar.id)).toEqual([
+      "palermo-cafe",
+      "palermo-main-1",
+      "palermo-bar",
+      "palermo-main-2",
+    ]);
+
+    const sanTelmo = result.current.itinerarios.find(
+      (itinerario) => itinerario.tema.id === "san-telmo-clasico"
+    );
+    expect(sanTelmo?.lugares.map((lugar) => lugar.id)).toEqual([
+      "san-cafe",
+      "san-main-1",
+      "san-bar",
+      "san-main-2",
+    ]);
+
     const recoleta = result.current.itinerarios.find(
       (itinerario) => itinerario.tema.id === "recoleta-cultural"
     );
-
     expect(recoleta?.promedioPuntuacion).toBe(4.8);
     expect(recoleta?.portadaUrl).toBe("https://foto/recoleta.jpg");
 
-    expect(getLugaresMock).toHaveBeenCalledTimes(4);
     expect(getLugaresMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        barrio: "Recoleta",
-        categoriaCodigo: "museos_galerias",
+        barrio: "Palermo",
+        subzona: "Soho",
+        categoriaCodigo: "cafe_especialidad",
         orden: "puntuacion",
-        resenasMinimas: 10,
-        puntuacionMinima: 4.5,
-        pagina: 1,
-        tamano: 4,
+        resenasMinimas: 50,
+        puntuacionMinima: 4.3,
       })
     );
     expect(getLugaresMock).toHaveBeenCalledWith(
       expect.objectContaining({
         barrio: "Palermo",
         subzona: "Soho",
+        categoriaCodigo: "bares_vermu",
         orden: "resenas",
-        resenasMinimas: 1000,
-        puntuacionMinima: 4.4,
+        resenasMinimas: 100,
+        puntuacionMinima: 4.3,
+      })
+    );
+    expect(getLugaresMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        barrio: "SanTelmo",
+        categoriaCodigo: "cafe_especialidad",
+        orden: "puntuacion",
+        resenasMinimas: 30,
+        puntuacionMinima: 4.3,
+      })
+    );
+    expect(getLugaresMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        barrio: "SanTelmo",
+        categoriaCodigo: "bares_vermu",
+        orden: "resenas",
+        resenasMinimas: 100,
+        puntuacionMinima: 4.3,
       })
     );
   });

@@ -5,6 +5,13 @@ import type {
   LugarResumenDto,
 } from "../../api/types";
 
+export interface SlotItinerario {
+  categoriaCodigo?: CategoriaCodigo;
+  orden?: LugarOrden;
+  resenasMinimas?: number;
+  puntuacionMinima?: number;
+}
+
 export interface TemaItinerario {
   id: string;
   titulo: string;
@@ -16,6 +23,7 @@ export interface TemaItinerario {
   resenasMinimas: number;
   puntuacionMinima: number;
   icono: string;
+  slots?: SlotItinerario[];
 }
 
 export interface ItinerarioDestacado {

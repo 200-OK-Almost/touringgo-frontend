@@ -9,7 +9,10 @@ export function construirViajeRecomendadoDto(
   itinerario: ItinerarioDestacado,
   fecha: Date = new Date()
 ): ViajeRecomendadoCreateDto {
-  const lugares = ordenarPorCercania(itinerario.lugares);
+  const tieneComposicion = Boolean(itinerario.tema.slots?.length);
+  const lugares = tieneComposicion
+    ? itinerario.lugares
+    : ordenarPorCercania(itinerario.lugares);
   const fechaLocal = toDateOnlyString(fecha);
 
   return {
