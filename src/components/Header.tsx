@@ -1,23 +1,23 @@
-import type { ControlCuotaGoogleDto } from "../api/types";
+// import type { ControlCuotaGoogleDto } from "../api/types";
 import { useCuota } from "../hooks/useCuota";
 import "./Header.css";
 
-function BoltIcon() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z" />
-    </svg>
-  );
-}
-
-type CuotaLevel = "ok" | "alta" | "critica";
-
-function getCuotaLevel(data: ControlCuotaGoogleDto): { label: string; tone: CuotaLevel } {
-  const porcentaje = (data.llamadasRealizadas / Math.max(1, data.limiteDiario)) * 100;
-  if (porcentaje > 90) return { label: "CRÍTICA", tone: "critica" };
-  if (porcentaje > 70) return { label: "ALTA", tone: "alta" };
-  return { label: "OK", tone: "ok" };
-}
+// function BoltIcon() {
+//   return (
+//     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+//       <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z" />
+//     </svg>
+//   );
+// }
+//
+// type CuotaLevel = "ok" | "alta" | "critica";
+//
+// function getCuotaLevel(data: ControlCuotaGoogleDto): { label: string; tone: CuotaLevel } {
+//   const porcentaje = (data.llamadasRealizadas / Math.max(1, data.limiteDiario)) * 100;
+//   if (porcentaje > 90) return { label: "CRÍTICA", tone: "critica" };
+//   if (porcentaje > 70) return { label: "ALTA", tone: "alta" };
+//   return { label: "OK", tone: "ok" };
+// }
 
 export default function Header() {
   const cuota = useCuota();
@@ -27,7 +27,7 @@ export default function Header() {
   const statusLabel =
     cuota.status === "loading" ? "Conectando…" : connected ? "Servicio Online" : "Servicio Offline";
 
-  const cuotaLevel = cuota.status === "ok" ? getCuotaLevel(cuota.data) : null;
+  // const cuotaLevel = cuota.status === "ok" ? getCuotaLevel(cuota.data) : null;
 
   return (
     <header className="explorer-header">
@@ -52,6 +52,7 @@ export default function Header() {
           {statusLabel}
         </span>
 
+        {/* 
         {cuota.status === "ok" && (
           <span className="pill pill--cuota" title="Cuota diaria de Google Places API">
             <span className="pill__bolt">
@@ -65,6 +66,7 @@ export default function Header() {
             </span>
           </span>
         )}
+        */}
       </div>
     </header>
   );
