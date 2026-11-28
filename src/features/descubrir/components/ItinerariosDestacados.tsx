@@ -148,6 +148,7 @@ export default function ItinerariosDestacados() {
   }
 
   const debeAnimar = itinerarios.length > 1;
+  const grupos = debeAnimar ? 3 : 1;
   const pausado = documentoOculto || loginOpen || creandoId !== null;
   const trackClassName = [
     "recorridos__track",
@@ -181,34 +182,32 @@ export default function ItinerariosDestacados() {
       <div className="recorridos__viewport">
         <div className={trackClassName} aria-busy={loading}>
           {loading ? (
-            Array.from({ length: 4 }).map((_, index) => (
-              <div className="recorrido-skeleton" key={index} aria-hidden="true">
-                <PlaceCardSkeleton />
-              </div>
-            ))
-          ) : (
-            <>
-              {itinerarios.map((itinerario) => (
-                <RecorridoCard
-                  key={itinerario.tema.id}
-                  itinerario={itinerario}
-                  creando={creandoId === itinerario.tema.id}
-                  disabled={creandoId !== null}
-                  onSelect={handleSelect}
-                />
+            <div className="recorridos__group">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div className="recorrido-skeleton" key={index} aria-hidden="true">
+                  <PlaceCardSkeleton />
+                </div>
               ))}
-              {debeAnimar &&
-                itinerarios.map((itinerario) => (
+            </div>
+          ) : (
+            Array.from({ length: grupos }).map((_, grupo) => (
+              <div
+                key={grupo}
+                className="recorridos__group"
+                aria-hidden={grupo > 0 ? true : undefined}
+              >
+                {itinerarios.map((itinerario) => (
                   <RecorridoCard
-                    key={`duplicado-${itinerario.tema.id}`}
+                    key={`${grupo}-${itinerario.tema.id}`}
                     itinerario={itinerario}
                     creando={creandoId === itinerario.tema.id}
                     disabled={creandoId !== null}
-                    ariaHidden
+                    ariaHidden={grupo > 0}
                     onSelect={handleSelect}
                   />
                 ))}
-            </>
+              </div>
+            ))
           )}
         </div>
       </div>

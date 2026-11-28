@@ -146,7 +146,7 @@ describe("ItinerariosDestacados", () => {
     expect(screen.getByText("Cassia House")).toBeInTheDocument();
   });
 
-  it("duplica las tarjetas para el loop y no muestra flechas", () => {
+  it("repite las tarjetas para el loop y no muestra flechas", () => {
     hookState.value = {
       itinerarios: [crearItinerario(), crearItinerarioSecundario()],
       loading: false,
@@ -155,7 +155,8 @@ describe("ItinerariosDestacados", () => {
 
     const { container } = renderCarrusel();
 
-    expect(container.querySelectorAll(".recorrido-card")).toHaveLength(4);
+    expect(container.querySelectorAll(".recorridos__group")).toHaveLength(3);
+    expect(container.querySelectorAll(".recorrido-card")).toHaveLength(6);
     expect(
       screen.queryByRole("button", { name: "Recorrido anterior" })
     ).toBeNull();
@@ -164,7 +165,7 @@ describe("ItinerariosDestacados", () => {
     ).toBeNull();
   });
 
-  it("oculta la copia duplicada para lectores de pantalla", () => {
+  it("oculta las copias duplicadas para lectores de pantalla", () => {
     hookState.value = {
       itinerarios: [crearItinerario(), crearItinerarioSecundario()],
       loading: false,
@@ -172,17 +173,26 @@ describe("ItinerariosDestacados", () => {
     };
 
     const { container } = renderCarrusel();
+    const groups = Array.from(
+      container.querySelectorAll<HTMLElement>(".recorridos__group")
+    );
     const cards = Array.from(
       container.querySelectorAll<HTMLButtonElement>(".recorrido-card")
     );
 
-    expect(cards).toHaveLength(4);
+    expect(groups).toHaveLength(3);
+    expect(groups[0]).not.toHaveAttribute("aria-hidden");
+    expect(groups[1]).toHaveAttribute("aria-hidden", "true");
+    expect(groups[2]).toHaveAttribute("aria-hidden", "true");
+
+    expect(cards).toHaveLength(6);
     expect(cards[0]).not.toHaveAttribute("aria-hidden");
     expect(cards[1]).not.toHaveAttribute("aria-hidden");
-    expect(cards[2]).toHaveAttribute("aria-hidden", "true");
-    expect(cards[3]).toHaveAttribute("aria-hidden", "true");
-    expect(cards[2]).toHaveAttribute("tabindex", "-1");
-    expect(cards[3]).toHaveAttribute("tabindex", "-1");
+
+    for (const card of cards.slice(2)) {
+      expect(card).toHaveAttribute("aria-hidden", "true");
+      expect(card).toHaveAttribute("tabindex", "-1");
+    }
   });
 
   it("crea el viaje con las paradas y navega a la vista del viaje", async () => {

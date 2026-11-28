@@ -80,10 +80,16 @@
 .recorridos__track {
   --recorrido-gap: 1rem;
   display: flex;
-  gap: var(--recorrido-gap);
   width: max-content;
   animation: recorridos-marquesina 45s linear infinite;
   will-change: transform;
+}
+
+.recorridos__group {
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--recorrido-gap);
+  padding-right: var(--recorrido-gap);
 }
 
 .recorridos__track--pausado {
@@ -99,7 +105,7 @@
     transform: translateX(0);
   }
   to {
-    transform: translateX(calc(-50% - var(--recorrido-gap) / 2));
+    transform: translateX(-33.3333%);
   }
 }
 
